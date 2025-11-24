@@ -1,12 +1,12 @@
 import { Routes, Route } from "react-router-dom";
 import Home from "../pages/Home/Home";
 import Login from "../pages/Auth/Login/Login";
-import Register from "./Auth/Register/Register";
-import NotFound from "./NotFound/NotFound";
-import Reset from "./Auth/Reset/Reset";
-import CookiesPolicy from "./CookiesPolicy/CookiesPolicy";
-import PrivacyPolicy from "./PrivacyPolicy/PrivacyPolicy";
-import Terms from "./Terms/Terms";
+import Register from "../pages/Auth/Register/Register";
+import NotFound from "../pages/NotFound/NotFound";
+import Reset from "../pages/Auth/Reset/Reset";
+import CookiesPolicy from "../pages/CookiesPolicy/CookiesPolicy";
+import PrivacyPolicy from "../pages/PrivacyPolicy/PrivacyPolicy";
+import Terms from "../pages/Terms/Terms";
 
 const Navigation = () => {
   return (
