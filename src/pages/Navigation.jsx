@@ -1,29 +1,29 @@
 import { Routes, Route } from "react-router-dom";
 
-import NotFoundPage from "./NotFoundPage";
+import NotFoundPage from "./NotFoundPage/NotFoundPage";
 
-import LoginPage from "./Auth/LoginPage";
-import RegisterPage from "./Auth/SignupPage";
-import ConfirmPage from "./Auth/ConfirmPage";
-import ResetPasswordPage from "./Auth/ResetPasswordPage";
+import LoginPage from "./Auth/LoginPage/LoginPage";
+import SignupPage from "./Auth/SignupPage/SignupPage";
+import ConfirmPage from "./Auth/ConfirmPage/ConfirmPage";
+import ResetPasswordPage from "./Auth/ResetPasswordPage/ResetPasswordPage";
 
-import HomePage from "./HomePage";
-import ExplorePage from "./ExplorePage/index";
-import MessagesPage from "./MessagesPage";
-import ProfilePage from "./ProfilePage";
+import HomePage from "./HomePage/HomePage";
+import ExplorePage from "./ExplorePage/ExplorePage";
+import MessagesPage from "./MessagesPage/MessagesPage";
+import ProfilePage from "./ProfilePage/ProfilePage";
 
-import CookiesPolicyPage from "./CookiesPolicyPage";
-import PrivacyPolicyPage from "./PrivacyPolicyPage";
-import TermsPage from "./TermsPage";
-import LearnMorePage from "./LearnMorePage";
-import EditProfilePage from "./ProfilePage/EditProfilePage";
+import CookiesPolicyPage from "./CookiesPolicyPage/CookiesPolicyPage";
+import PrivacyPolicyPage from "./PrivacyPolicyPage/PrivacyPolicyPage";
+import TermsPage from "./TermsPage/TermsPage";
+import LearnMorePage from "./LearnMorePage/LearnMorePage";
+import EditProfilePage from "./ProfilePage/EditProfilePage/EditProfilePage";
 
 const Navigation = () => {
   return (
     <Routes>
       <Route>
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/signup" element={<SignupPage />} />
         <Route path="/reset" element={<ResetPasswordPage />} />
         <Route path="/confirm" element={<ConfirmPage />} />
         <Route path="/learn-more" element={<LearnMorePage />} />

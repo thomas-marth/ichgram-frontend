@@ -1,9 +1,36 @@
-body {
-  font-family: "Roboto", sans-serif;
+:root {
+  --primary-color: #000000;
+  --secondary-color: #737373;
+  --accent-color: #0095f6;
+  --accent-hover-color: #0086df;
+  --background-color: #ffffff;
+  --border-color: #dbdbdb;
+  --link-color: #00376b;
 }
 
-* {
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
+}
+
+html,
+body {
+  color: var(--primary-color);
+  font-family: "Roboto", sans-serif;
+  background-color: var(--background-color);
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  font-weight: normal;
+  background: none;
+  border: none;
 }
 
 .container {

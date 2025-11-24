@@ -1,0 +1,16 @@
+.btn {
+  background-color: var(--accent-color);
+  font-weight: 600;
+  color: var(--background-color);
+  padding: 8px 0;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  background-color: var(--accent-hover-color);
+}
