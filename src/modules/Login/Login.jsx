@@ -1,10 +1,10 @@
-import Container from "../Container/Container";
+import Container from "../../shared/components/Container/Container";
 import LoginForm from "./LoginForm/LoginForm";
 
 import { Link } from "react-router-dom";
 
 import logo from "../../assets/logo/logo.png";
-import loginImg from "../../assets/logo/loginImg.png";
+import loginImg from "../../assets/images/loginImg.png";
 import styles from "./Login.module.css";
 
 const Login = () => {
@@ -36,7 +36,7 @@ const Login = () => {
           </div>
 
           <div className={styles.wrappInfo}>
-            <p>
+            <p className={styles.wrappText}>
               Don't have an account?
               <Link to="/signup">Sign up</Link>
             </p>

@@ -1,19 +1,10 @@
-.formStyle {
+.form {
   width: 268px;
 }
 
-.inputBlock {
+.inputWrap {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-bottom: 14px;
-}
-
-.inputStyle {
-  height: 38px;
-  padding-left: 8px;
-  border-radius: 3px;
-  border: 1px solid #dbdbdb;
-  color: #737373;
-  background-color: #fafafa;
+  gap: 8px;
+  margin-bottom: 15px;
 }
