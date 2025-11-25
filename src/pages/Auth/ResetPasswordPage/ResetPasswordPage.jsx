@@ -1,7 +1,13 @@
-export default function ResetPasswordPage() {
+import Header from "./Header";
+import ResetPassword from "../../../modules/ResetPassword/ResetPassword";
+
+const ResetPasswordPage = () => {
   return (
     <>
-      <h1>Reset Password Page</h1>
+      <Header />
+      <ResetPassword />;
     </>
   );
-}
+};
+
+export default ResetPasswordPage;

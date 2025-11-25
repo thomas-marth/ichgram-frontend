@@ -1,0 +1,15 @@
+.header {
+  padding: 3px 44px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.logoWrapper {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  width: 97px;
+  height: auto;
+  display: block;
+}

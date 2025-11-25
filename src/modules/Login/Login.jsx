@@ -1,4 +1,5 @@
 import Container from "../../shared/components/Container/Container";
+import FooterCard from "../../shared/components/FooterCard/FooterCard";
 import LoginForm from "./LoginForm/LoginForm";
 
 import { Link } from "react-router-dom";
@@ -35,12 +36,11 @@ const Login = () => {
             </div>
           </div>
 
-          <div className={styles.wrappInfo}>
-            <p className={styles.wrappText}>
-              Don't have an account?
-              <Link to="/signup">Sign up</Link>
-            </p>
-          </div>
+          <FooterCard
+            prompt="Don't have an account?"
+            linkText="Sign up"
+            to="/signup"
+          />
         </div>
       </div>
     </Container>

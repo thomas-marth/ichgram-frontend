@@ -37,7 +37,7 @@ const Navigation = () => {
         <Route path="/" element={<ExplorePage />} />
       </Route>
       <Route path="/cookies" element={<CookiesPolicyPage />} />
-      <Route path="/privacypolicy" element={<PrivacyPolicyPage />} />
+      <Route path="/privacy" element={<PrivacyPolicyPage />} />
       <Route path="/terms" element={<TermsPage />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>

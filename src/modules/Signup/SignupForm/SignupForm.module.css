@@ -1,0 +1,20 @@
+.form {
+  width: 268px;
+  margin: 0 auto;
+}
+
+.inputWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 18px;
+}
+
+.submitBtn {
+  width: 100%;
+  background-color: var(--accent-color);
+  border: none;
+  padding: 8px 16px;
+  color: #ffffff;
+  font-weight: 600;
+}
