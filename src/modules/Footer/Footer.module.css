@@ -1,0 +1,35 @@
+.footer {
+  padding-block: 1.5rem 4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 3rem;
+}
+
+.menuWrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.navList {
+  display: flex;
+  flex-direction: row;
+  gap: 40px;
+  margin-bottom: 45px;
+}
+
+.navLink {
+  color: var(--secondary-color);
+  transition: all 0.2s ease;
+}
+
+.navLink:hover {
+  color: #292929;
+}
+
+.copyright {
+  text-decoration: none;
+  margin: 0 auto;
+  color: var(--secondary-color);
+}

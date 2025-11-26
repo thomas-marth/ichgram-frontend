@@ -4,8 +4,8 @@ import Container from "../../shared/components/Container/Container";
 import FooterCard from "../../shared/components/FooterCard/FooterCard";
 import SignupForm from "./SignupForm/SignupForm";
 
-import logo from "../../assets/logo/logo.png";
 import styles from "./Signup.module.css";
+import Logo from "./../../shared/components/Logo/Logo";
 
 const Signup = () => {
   return (
@@ -13,10 +13,7 @@ const Signup = () => {
       <div className={styles.container}>
         <div>
           <div className={styles.card}>
-            <div className={styles.logo}>
-              <img src={logo} alt="logo" />
-            </div>
-
+            <Logo size="xl" />
             <p className={styles.title}>
               Sign up to see photos and videos from your friends.
             </p>

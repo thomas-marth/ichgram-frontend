@@ -13,16 +13,7 @@
   padding: 30px 38px;
   text-align: center;
   background: var(--background-color);
-  margin-bottom: 10px;
-}
-
-.logo {
-  width: 190px;
-  margin: 0 auto -10px;
-}
-
-.logo img {
-  width: 100%;
+  margin-bottom: 15px;
 }
 
 .title {
@@ -30,6 +21,7 @@
   font-weight: 600;
   color: var(--secondary-color);
   line-height: 1.25;
+  margin-top: -10px;
   margin-bottom: 38px;
 }
 

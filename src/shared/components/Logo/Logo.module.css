@@ -1,0 +1,17 @@
+.logo {
+  display: flex;
+  justify-content: center;
+}
+
+.logoImg {
+  object-fit: contain;
+  height: auto;
+}
+
+.xs {
+  width: 97px;
+}
+
+.xl {
+  width: 190px;
+}

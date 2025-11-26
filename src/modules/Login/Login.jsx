@@ -4,7 +4,7 @@ import LoginForm from "./LoginForm/LoginForm";
 
 import { Link } from "react-router-dom";
 
-import logo from "../../assets/logo/logo.png";
+import Logo from "./../../shared/components/Logo/Logo";
 import loginImg from "../../assets/images/loginImg.png";
 import styles from "./Login.module.css";
 
@@ -22,9 +22,7 @@ const Login = () => {
         <div>
           <div className={styles.wrappForm}>
             <div className={styles.logo}>
-              <div className={styles.img}>
-                <img src={logo} alt="logo" />
-              </div>
+              <Logo size="xl" />
             </div>
 
             <LoginForm />
