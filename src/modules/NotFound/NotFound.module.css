@@ -1,0 +1,29 @@
+.container {
+  display: flex;
+  max-width: 925px;
+  padding: 0 15px 0;
+  gap: 44px;
+}
+
+.imgWrap img {
+  height: 460px;
+}
+
+.textWrap {
+  padding-top: 3.44rem;
+}
+
+.pageTitle {
+  color: var(--primary-color);
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 36px;
+  margin-bottom: 25px;
+}
+
+.pageDescription {
+  color: var(--secondary-color);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.25;
+}

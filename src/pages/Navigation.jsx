@@ -22,25 +22,23 @@ import EditProfilePage from "./ProfilePage/EditProfilePage/EditProfilePage";
 const Navigation = () => {
   return (
     <Routes>
-      <Route>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="/reset" element={<ResetPasswordPage />} />
-        <Route path="/confirm" element={<ConfirmPage />} />
-        <Route path="/learn-more" element={<LearnMorePage />} />
-      </Route>
-      <Route element={<PrivateLayout />}>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/:id" element={<ProfilePage />} />
-        <Route path="/:id/edit" element={<EditProfilePage />} />
-        <Route path="/direct" element={<MessagesPage />} />
-        <Route path="/direct/:id" element={<MessagesPage />} />
-        <Route path="/explore" element={<ExplorePage />} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Route>
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignupPage />} />
+      <Route path="/reset" element={<ResetPasswordPage />} />
+      <Route path="/confirm" element={<ConfirmPage />} />
+      <Route path="/learn-more" element={<LearnMorePage />} />
       <Route path="/cookies" element={<CookiesPolicyPage />} />
       <Route path="/privacy" element={<PrivacyPolicyPage />} />
       <Route path="/terms" element={<TermsPage />} />
+      <Route path="/" element={<PrivateLayout />}>
+        <Route index element={<HomePage />} />
+        <Route path="profile" element={<ProfilePage />} />
+        <Route path="profile/edit" element={<EditProfilePage />} />
+        <Route path="direct" element={<MessagesPage />} />
+        <Route path="direct/:id" element={<MessagesPage />} />
+        <Route path="explore" element={<ExplorePage />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Route>
     </Routes>
   );
 };
