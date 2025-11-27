@@ -9,7 +9,7 @@ export default function HomePage() {
       <div className={styles.container}>
         <h1>Home Page</h1>
         <Link to="/login">
-          <Button type="submit">Log in</Button>
+          <Button type="submit">Go to the LoginPage</Button>
         </Link>
       </div>
     </div>
