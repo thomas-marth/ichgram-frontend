@@ -39,7 +39,12 @@ const navItems = [
   { to: "/profile", label: "Profile", icon: UserIcon },
 ];
 
-const Sidebar = ({ onOpenSideModal, onCloseSideModal, activeSideModal }) => {
+const Sidebar = ({
+  onOpenSideModal,
+  onCloseSideModal,
+  onSetActiveNavItem,
+  activeNavItem,
+}) => {
   return (
     <aside className={styles.sidebar}>
       <Link to="/" className={styles.navLogo} onClick={onCloseSideModal}>
@@ -51,7 +56,7 @@ const Sidebar = ({ onOpenSideModal, onCloseSideModal, activeSideModal }) => {
             const profileLinkClass =
               label === "Profile" ? styles.profileLink : "";
             if (isModal) {
-              const isActive = label === activeSideModal;
+              const isActive = label === activeNavItem;
               const IconComponent = isActive && ActiveIcon ? ActiveIcon : Icon;
 
               return (
@@ -73,16 +78,19 @@ const Sidebar = ({ onOpenSideModal, onCloseSideModal, activeSideModal }) => {
               <NavLink
                 key={label}
                 to={to}
-                className={({ isActive }) =>
+                className={() =>
                   `${styles.link} ${profileLinkClass} ${
-                    isActive ? styles.active : ""
+                    activeNavItem === label ? styles.active : ""
                   }`.trim()
                 }
-                onClick={onCloseSideModal}
+                onClick={() => {
+                  onCloseSideModal?.();
+                  onSetActiveNavItem?.(null);
+                }}
               >
-                {({ isActive }) => {
+                {() => {
                   const IconComponent =
-                    isActive && ActiveIcon ? ActiveIcon : Icon;
+                    activeNavItem === label && ActiveIcon ? ActiveIcon : Icon;
 
                   return (
                     <>

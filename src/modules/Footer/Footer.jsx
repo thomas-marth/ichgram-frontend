@@ -12,13 +12,16 @@ const navItems = [
 ];
 
 const Footer = forwardRef(
-  ({ onOpenSideModal, onCloseSideModal, activeSideModal }, ref) => {
+  (
+    { onOpenSideModal, onCloseSideModal, onSetActiveNavItem, activeNavItem },
+    ref
+  ) => {
     return (
       <footer ref={ref} className={styles.footer}>
         <div className={styles.menuWrap}>
           <ul className={styles.navList}>
             {navItems.map(({ to, label, isModal }) => {
-              const isActive = label === activeSideModal;
+              const isActive = label === activeNavItem;
 
               if (isModal) {
                 return (
@@ -40,10 +43,13 @@ const Footer = forwardRef(
                 <li key={label}>
                   <NavLink
                     to={to}
-                    className={({ isActive }) =>
+                    className={() =>
                       `${styles.navLink} ${isActive ? styles.active : ""}`
                     }
-                    onClick={onCloseSideModal}
+                    onClick={() => {
+                      onCloseSideModal?.();
+                      onSetActiveNavItem?.(null);
+                    }}
                   >
                     {label}
                   </NavLink>
