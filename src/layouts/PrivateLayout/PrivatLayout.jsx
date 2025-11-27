@@ -1,10 +1,11 @@
 import { Outlet } from "react-router-dom";
-
 import { useEffect, useRef, useState } from "react";
+
 import Sidebar from "./../../modules/Sidebar/Sidebar";
 import Footer from "./../../modules/Footer/Footer";
 import Notifications from "../../modules/Notifications/Notifications";
 import SideModal from "../../modules/SideModal/SideModal";
+
 import styles from "./PrivatLayout.module.css";
 
 const PrivateLayout = () => {
@@ -26,7 +27,10 @@ const PrivateLayout = () => {
   const handleOpenSideModal = (label) => {
     if (label === "Notifications" || label === "Messages") {
       setActiveSideModal(label);
+      return;
     }
+
+    setActiveSideModal(null);
   };
 
   const handleCloseSideModal = () => setActiveSideModal(null);
@@ -42,7 +46,10 @@ const PrivateLayout = () => {
       <div className={styles.layoutBody}>
         <div className={styles.sidebarColumn}>
           <div className={styles.sidebarInner}>
-            <Sidebar onOpenSideModal={handleOpenSideModal} />
+            <Sidebar
+              onOpenSideModal={handleOpenSideModal}
+              onCloseSideModal={handleCloseSideModal}
+            />
           </div>
         </div>
         <div className={styles.content}>
@@ -51,7 +58,11 @@ const PrivateLayout = () => {
           </main>
         </div>
       </div>
-      <Footer ref={footerRef} onOpenSideModal={handleOpenSideModal} />
+      <Footer
+        ref={footerRef}
+        onOpenSideModal={handleOpenSideModal}
+        onCloseSideModal={handleCloseSideModal}
+      />
       {activeSideModal ? (
         <SideModal title={activeSideModal}>
           {activeSideModal === "Notifications" ? <Notifications /> : null}

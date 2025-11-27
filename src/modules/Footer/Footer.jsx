@@ -11,7 +11,7 @@ const navItems = [
   { label: "Create", isModal: true },
 ];
 
-const Footer = forwardRef(({ onOpenSideModal }, ref) => {
+const Footer = forwardRef(({ onOpenSideModal, onCloseSideModal }, ref) => {
   return (
     <footer ref={ref} className={styles.footer}>
       <div className={styles.menuWrap}>
@@ -38,6 +38,7 @@ const Footer = forwardRef(({ onOpenSideModal }, ref) => {
                   className={({ isActive }) =>
                     `${styles.navLink} ${isActive ? styles.active : ""}`
                   }
+                  onClick={onCloseSideModal}
                 >
                   {label}
                 </NavLink>

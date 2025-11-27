@@ -28,10 +28,10 @@ const navItems = [
   { to: "/profile", label: "Profile", icon: UserIcon },
 ];
 
-const Sidebar = ({ onOpenSideModal }) => {
+const Sidebar = ({ onOpenSideModal, onCloseSideModal }) => {
   return (
     <aside className={styles.sidebar}>
-      <Link to="/" className={styles.navLogo}>
+      <Link to="/" className={styles.navLogo} onClick={onCloseSideModal}>
         <Logo size="xs" />
       </Link>
       <nav className={styles.nav}>
@@ -62,6 +62,7 @@ const Sidebar = ({ onOpenSideModal }) => {
                     isActive ? styles.active : ""
                   }`.trim()
                 }
+                onClick={onCloseSideModal}
               >
                 {({ isActive }) => {
                   const IconComponent =
