@@ -36,11 +36,11 @@ const Navigation = () => {
         <Route path="/direct" element={<MessagesPage />} />
         <Route path="/direct/:id" element={<MessagesPage />} />
         <Route path="/explore" element={<ExplorePage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Route>
       <Route path="/cookies" element={<CookiesPolicyPage />} />
       <Route path="/privacy" element={<PrivacyPolicyPage />} />
       <Route path="/terms" element={<TermsPage />} />
-      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 };
