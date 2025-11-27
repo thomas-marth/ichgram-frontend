@@ -8,7 +8,7 @@ const PrivateLayout = () => {
   return (
     <div className={styles.privateLayout}>
       <Sidebar />
-      <main className="main">
+      <main className={styles.main}>
         <Outlet />
       </main>
       <Footer />

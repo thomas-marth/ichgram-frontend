@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 
-import logo from "../../assets/logo/logo.png";
+// import logo from "../../assets/logo/logo.png";
 import HomeIcon from "../../assets/icons/HomeIcon";
 import HomeIconActive from "../../assets/icons/HomeIconActive";
 import SearchIcon from "../../assets/icons/SearchIcon";
@@ -11,9 +11,10 @@ import NotificationsIcon from "../../assets/icons/NotificationsIcon";
 import CreateIcon from "../../assets/icons/CreateIcon";
 import UserIcon from "../../assets/icons/UserIcon";
 import styles from "./Sidebar.module.css";
+import Logo from "./../../shared/components/Logo/Logo";
 
 const navItems = [
-  { to: "/home", label: "Home", icon: HomeIcon, activeIcon: HomeIconActive },
+  { to: "/", label: "Home", icon: HomeIcon, activeIcon: HomeIconActive },
   { label: "Search", icon: SearchIcon, isModal: true },
   {
     to: "/explore",
@@ -30,10 +31,7 @@ const navItems = [
 const Sidebar = () => {
   return (
     <aside className={styles.sidebar}>
-      <div className={styles.logo}>
-        <img src={logo} alt="ICHgram logo" />
-      </div>
-
+      <Logo size="xs" className={styles.navLogo} />
       <nav className={styles.nav}>
         {navItems.map(
           ({ to, label, icon: Icon, activeIcon: ActiveIcon, isModal }) => {

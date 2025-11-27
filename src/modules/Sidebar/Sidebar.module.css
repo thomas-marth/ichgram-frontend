@@ -12,22 +12,25 @@
   z-index: 1000;
 }
 
-.logo {
+.navLogo {
   display: flex;
-  justify-content: center;
-  margin-bottom: 40px;
+  justify-content: start;
+  margin-bottom: 34px;
+  margin-left: 25px;
 }
 
-.logo img {
+/* .logo img {
   width: 120px;
   height: auto;
-}
+} */
 
 .nav {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding-left: 20px;
+  padding: 0 25px;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .link {

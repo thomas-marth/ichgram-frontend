@@ -7,7 +7,7 @@ const Header = () => {
   return (
     <header className={styles.header}>
       <div className={styles.logoWrapper}>
-        <Link to="/login">
+        <Link to="/">
           <Logo size="xs" />
         </Link>
       </div>
