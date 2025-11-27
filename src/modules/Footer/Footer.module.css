@@ -28,6 +28,10 @@
   color: #292929;
 }
 
+.active {
+  color: #292929;
+}
+
 .copyright {
   text-decoration: none;
   margin: 0 auto;
