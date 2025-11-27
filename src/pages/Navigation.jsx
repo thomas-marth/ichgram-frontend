@@ -35,7 +35,7 @@ const Navigation = () => {
         <Route path="/:id/edit" element={<EditProfilePage />} />
         <Route path="/direct" element={<MessagesPage />} />
         <Route path="/direct/:id" element={<MessagesPage />} />
-        <Route path="/" element={<ExplorePage />} />
+        <Route path="/explore" element={<ExplorePage />} />
       </Route>
       <Route path="/cookies" element={<CookiesPolicyPage />} />
       <Route path="/privacy" element={<PrivacyPolicyPage />} />
