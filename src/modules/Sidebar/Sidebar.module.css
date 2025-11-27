@@ -1,7 +1,7 @@
 .sidebar {
-  position: fixed;
-  left: 0;
+  position: sticky;
   top: 0;
+  align-self: start;
   bottom: 0;
   width: 245px;
   background-color: var(--background-color);

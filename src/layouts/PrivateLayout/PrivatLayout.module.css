@@ -5,6 +5,18 @@
   padding-left: 245px;
 }
 
+.layoutBody {
+  display: grid;
+  grid-template-columns: 245px 1fr;
+  flex: 1;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
 .main {
   flex: 1;
   display: flex;

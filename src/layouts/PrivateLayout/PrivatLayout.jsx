@@ -7,10 +7,14 @@ import styles from "./PrivatLayout.module.css";
 const PrivateLayout = () => {
   return (
     <div className={styles.privateLayout}>
-      <Sidebar />
-      <main className={styles.main}>
-        <Outlet />
-      </main>
+      <div className={styles.layoutBody}>
+        <Sidebar />
+        <div className={styles.content}>
+          <main className={styles.main}>
+            <Outlet />
+          </main>
+        </div>
+      </div>
       <Footer />
     </div>
   );
