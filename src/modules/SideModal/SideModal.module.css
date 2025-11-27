@@ -1,22 +1,24 @@
 .sideModal {
   position: fixed;
-  top: 32px;
-  left: 245px;
+  top: 0;
+  left: 244px;
   width: 400px;
-  max-height: calc(100vh - 64px);
+  height: calc(100vh - var(--footer-height, 0px));
   background: var(--background-color, #ffffff);
   border: 1px solid var(--border-color, #e5e5e5);
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-  padding: 18px 16px 10px;
+  border-bottom: none;
+  border-radius: 0 12px 12px 0;
+  /* box-shadow: 0 0 24px rgba(0, 0, 0, 0.08); */
+  padding: 24px 16px 16px;
   z-index: 15;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .header {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
 }
 
@@ -24,13 +26,6 @@
   font-size: 24px;
   font-weight: 700;
   margin: 0;
-}
-
-.closeBtn {
-  font-size: 1.5rem;
-  background: transparent;
-  border: none;
-  cursor: pointer;
 }
 
 .body {

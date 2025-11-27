@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import { NavLink } from "react-router-dom";
 import styles from "./Footer.module.css";
 
@@ -10,9 +11,9 @@ const navItems = [
   { label: "Create", isModal: true },
 ];
 
-const Footer = ({ onOpenSideModal }) => {
+const Footer = forwardRef(({ onOpenSideModal }, ref) => {
   return (
-    <footer className={styles.footer}>
+    <footer ref={ref} className={styles.footer}>
       <div className={styles.menuWrap}>
         <ul className={styles.navList}>
           {navItems.map(({ to, label, isModal }) => {
@@ -48,6 +49,8 @@ const Footer = ({ onOpenSideModal }) => {
       </div>
     </footer>
   );
-};
+});
+
+Footer.displayName = "Footer";
 
 export default Footer;

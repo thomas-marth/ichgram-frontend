@@ -4,21 +4,21 @@ import styles from "./Notifications.module.css";
 const mockNotifications = [
   {
     id: "1",
-    actor: { username: "stellah" },
+    actor: { username: "sashaa" },
     action: "liked your photo",
     timeAgo: "2m",
     post: { image: testPostImg },
   },
   {
     id: "2",
-    actor: { username: "stellah" },
+    actor: { username: "sashaa" },
     action: "commented your photo",
     timeAgo: "3m",
     post: { image: testPostImg },
   },
   {
     id: "3",
-    actor: { username: "stellah" },
+    actor: { username: "sashaa" },
     action: "started following",
     timeAgo: "5m",
     post: null,

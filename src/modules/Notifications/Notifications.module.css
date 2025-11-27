@@ -28,7 +28,6 @@
   align-items: center;
   gap: 1rem;
   padding: 0.5rem 0;
-  border-bottom: 1px solid #eee;
 }
 
 .avatarWrapper {
@@ -38,9 +37,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-shrink: 0;
   border-radius: 50%;
   background: linear-gradient(135deg, #fd0123 0%, #f8f009 50%, #f004dd 100%);
   box-sizing: border-box;
+  aspect-ratio: 1 / 1;
 }
 
 .avatar {
@@ -48,12 +49,13 @@
   height: 100%;
   border-radius: 50%;
   background: #fff;
+  aspect-ratio: 1 / 1;
 }
 
 .content {
   display: flex;
   flex-direction: column;
-  padding-right: 75px;
+  padding-right: 80px;
 }
 
 .content p {

@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Sidebar from "./../../modules/Sidebar/Sidebar";
 import Footer from "./../../modules/Footer/Footer";
 import Notifications from "../../modules/Notifications/Notifications";
@@ -9,6 +9,19 @@ import styles from "./PrivatLayout.module.css";
 
 const PrivateLayout = () => {
   const [activeSideModal, setActiveSideModal] = useState(null);
+  const [footerHeight, setFooterHeight] = useState(0);
+  const footerRef = useRef(null);
+
+  useEffect(() => {
+    const updateFooterHeight = () => {
+      setFooterHeight(footerRef.current?.getBoundingClientRect().height || 0);
+    };
+
+    updateFooterHeight();
+    window.addEventListener("resize", updateFooterHeight);
+
+    return () => window.removeEventListener("resize", updateFooterHeight);
+  }, []);
 
   const handleOpenSideModal = (label) => {
     if (label === "Notifications" || label === "Messages") {
@@ -19,8 +32,13 @@ const PrivateLayout = () => {
   const handleCloseSideModal = () => setActiveSideModal(null);
 
   return (
-    <div className={styles.privateLayout}>
-      {activeSideModal ? <div className={styles.backdrop} aria-hidden /> : null}
+    <div
+      className={styles.privateLayout}
+      style={{ "--footer-height": `${footerHeight}px` }}
+    >
+      {activeSideModal ? (
+        <div className={styles.backdrop} onClick={handleCloseSideModal} />
+      ) : null}
       <div className={styles.layoutBody}>
         <div className={styles.sidebarColumn}>
           <div className={styles.sidebarInner}>
@@ -33,9 +51,9 @@ const PrivateLayout = () => {
           </main>
         </div>
       </div>
-      <Footer onOpenSideModal={handleOpenSideModal} />
+      <Footer ref={footerRef} onOpenSideModal={handleOpenSideModal} />
       {activeSideModal ? (
-        <SideModal title={activeSideModal} onClose={handleCloseSideModal}>
+        <SideModal title={activeSideModal}>
           {activeSideModal === "Notifications" ? <Notifications /> : null}
         </SideModal>
       ) : null}
