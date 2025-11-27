@@ -35,9 +35,15 @@ const Sidebar = () => {
       <nav className={styles.nav}>
         {navItems.map(
           ({ to, label, icon: Icon, activeIcon: ActiveIcon, isModal }) => {
+            const profileLinkClass =
+              label === "Profile" ? styles.profileLink : "";
             if (isModal) {
               return (
-                <button key={label} type="button" className={styles.link}>
+                <button
+                  key={label}
+                  type="button"
+                  className={`${styles.link} ${profileLinkClass}`.trim()}
+                >
                   <Icon className={styles.icon} />
                   <span>{label}</span>
                 </button>
@@ -49,7 +55,9 @@ const Sidebar = () => {
                 key={label}
                 to={to}
                 className={({ isActive }) =>
-                  `${styles.link} ${isActive ? styles.active : ""}`
+                  `${styles.link} ${profileLinkClass} ${
+                    isActive ? styles.active : ""
+                  }`.trim()
                 }
               >
                 {({ isActive }) => {

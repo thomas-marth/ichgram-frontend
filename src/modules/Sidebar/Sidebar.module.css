@@ -51,6 +51,10 @@
   color: var(--primary-color);
 }
 
+.profileLink {
+  margin-top: 51px;
+}
+
 .icon {
   stroke-width: 2;
 }
