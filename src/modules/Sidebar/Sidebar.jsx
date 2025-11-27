@@ -1,13 +1,14 @@
 import { Link, NavLink } from "react-router-dom";
 
-// import logo from "../../assets/logo/logo.png";
 import HomeIcon from "../../assets/icons/HomeIcon";
 import HomeIconActive from "../../assets/icons/HomeIconActive";
 import SearchIcon from "../../assets/icons/SearchIcon";
 import ExploreIcon from "../../assets/icons/ExploreIcon";
 import ExploreIconActive from "../../assets/icons/ExploreIconActive";
 import MessagesIcon from "../../assets/icons/MessagesIcon";
+import MessagesIconActive from "../../assets/icons/MessagesIconActive";
 import NotificationsIcon from "../../assets/icons/NotificationsIcon";
+import NotificationsIconActive from "../../assets/icons/NotificationsIconActive";
 import CreateIcon from "../../assets/icons/CreateIcon";
 import UserIcon from "../../assets/icons/UserIcon";
 import styles from "./Sidebar.module.css";
@@ -22,13 +23,23 @@ const navItems = [
     icon: ExploreIcon,
     activeIcon: ExploreIconActive,
   },
-  { label: "Messages", icon: MessagesIcon, isModal: true },
-  { label: "Notifications", icon: NotificationsIcon, isModal: true },
+  {
+    label: "Messages",
+    icon: MessagesIcon,
+    activeIcon: MessagesIconActive,
+    isModal: true,
+  },
+  {
+    label: "Notifications",
+    icon: NotificationsIcon,
+    activeIcon: NotificationsIconActive,
+    isModal: true,
+  },
   { label: "Create", icon: CreateIcon, isModal: true },
   { to: "/profile", label: "Profile", icon: UserIcon },
 ];
 
-const Sidebar = ({ onOpenSideModal, onCloseSideModal }) => {
+const Sidebar = ({ onOpenSideModal, onCloseSideModal, activeSideModal }) => {
   return (
     <aside className={styles.sidebar}>
       <Link to="/" className={styles.navLogo} onClick={onCloseSideModal}>
@@ -40,14 +51,19 @@ const Sidebar = ({ onOpenSideModal, onCloseSideModal }) => {
             const profileLinkClass =
               label === "Profile" ? styles.profileLink : "";
             if (isModal) {
+              const isActive = label === activeSideModal;
+              const IconComponent = isActive && ActiveIcon ? ActiveIcon : Icon;
+
               return (
                 <button
                   key={label}
                   type="button"
-                  className={`${styles.link} ${profileLinkClass}`.trim()}
+                  className={`${styles.link} ${profileLinkClass} ${
+                    isActive ? styles.active : ""
+                  }`.trim()}
                   onClick={() => onOpenSideModal?.(label)}
                 >
-                  <Icon className={styles.icon} />
+                  <IconComponent className={styles.icon} />
                   <span>{label}</span>
                 </button>
               );

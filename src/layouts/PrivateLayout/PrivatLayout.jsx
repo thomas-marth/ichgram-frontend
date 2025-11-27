@@ -49,6 +49,7 @@ const PrivateLayout = () => {
             <Sidebar
               onOpenSideModal={handleOpenSideModal}
               onCloseSideModal={handleCloseSideModal}
+              activeSideModal={activeSideModal}
             />
           </div>
         </div>
@@ -62,6 +63,7 @@ const PrivateLayout = () => {
         ref={footerRef}
         onOpenSideModal={handleOpenSideModal}
         onCloseSideModal={handleCloseSideModal}
+        activeSideModal={activeSideModal}
       />
       {activeSideModal ? (
         <SideModal title={activeSideModal}>
