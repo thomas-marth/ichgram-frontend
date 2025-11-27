@@ -28,7 +28,7 @@ const navItems = [
   { to: "/profile", label: "Profile", icon: UserIcon },
 ];
 
-const Sidebar = () => {
+const Sidebar = ({ onOpenSideModal }) => {
   return (
     <aside className={styles.sidebar}>
       <Link to="/" className={styles.navLogo}>
@@ -45,6 +45,7 @@ const Sidebar = () => {
                   key={label}
                   type="button"
                   className={`${styles.link} ${profileLinkClass}`.trim()}
+                  onClick={() => onOpenSideModal?.(label)}
                 >
                   <Icon className={styles.icon} />
                   <span>{label}</span>

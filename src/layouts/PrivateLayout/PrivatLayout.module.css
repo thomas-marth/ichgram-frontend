@@ -16,6 +16,8 @@
   background-color: var(--background-color);
   border-right: 1px solid var(--border-color);
   display: flex;
+  position: relative;
+  z-index: 20;
 }
 
 .sidebarInner {
@@ -26,7 +28,7 @@
   height: 100%;
 }
 
-.content {
+/* .content {
   display: flex;
   flex-direction: column;
   min-height: 100%;
@@ -36,7 +38,7 @@
   display: grid;
   grid-template-columns: 245px 1fr;
   flex: 1;
-}
+} */
 
 .content {
   display: flex;
@@ -49,4 +51,12 @@
   display: flex;
   flex-direction: column;
   padding: 89px 123px 0 113px;
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 5;
+  pointer-events: none;
 }

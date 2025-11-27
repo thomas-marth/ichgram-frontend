@@ -10,7 +10,7 @@ const navItems = [
   { label: "Create", isModal: true },
 ];
 
-const Footer = () => {
+const Footer = ({ onOpenSideModal }) => {
   return (
     <footer className={styles.footer}>
       <div className={styles.menuWrap}>
@@ -22,6 +22,7 @@ const Footer = () => {
                   <button
                     type="button"
                     className={`${styles.navLink} ${styles.navButton}`}
+                    onClick={() => onOpenSideModal?.(label)}
                   >
                     {label}
                   </button>

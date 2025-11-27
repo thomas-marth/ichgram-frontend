@@ -6,6 +6,8 @@
   align-items: center;
   gap: 3rem;
   padding-left: 244px;
+  position: relative;
+  z-index: 20;
 }
 
 .menuWrap {
