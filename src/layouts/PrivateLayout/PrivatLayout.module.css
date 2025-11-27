@@ -1,5 +1,13 @@
-.main {
+.privateLayout {
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  min-height: 81vh;
+  padding-left: 245px;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 32px 32px 0;
 }
