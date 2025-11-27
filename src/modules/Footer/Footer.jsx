@@ -19,7 +19,10 @@ const Footer = () => {
             if (isModal) {
               return (
                 <li key={label}>
-                  <button type="button" className={styles.navLink}>
+                  <button
+                    type="button"
+                    className={`${styles.navLink} ${styles.navButton}`}
+                  >
                     {label}
                   </button>
                 </li>
