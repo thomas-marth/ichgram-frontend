@@ -2,7 +2,7 @@ import Button from "../../shared/components/Button/Button";
 import { Link } from "react-router-dom";
 
 import styles from "./HomePage.module.css";
-import Footer from "./../../modules/Footer/Footer";
+// import Footer from "./../../modules/Footer/Footer";
 
 export default function HomePage() {
   return (
@@ -13,7 +13,7 @@ export default function HomePage() {
           <Button type="submit">Log in</Button>
         </Link>
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }

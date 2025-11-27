@@ -7,6 +7,7 @@ import SignupPage from "./Auth/SignupPage/SignupPage";
 import ConfirmPage from "./Auth/ConfirmPage/ConfirmPage";
 import ResetPasswordPage from "./Auth/ResetPasswordPage/ResetPasswordPage";
 
+import PrivateLayout from "./../layouts/PrivateLayout/PrivatLayout";
 import HomePage from "./HomePage/HomePage";
 import ExplorePage from "./ExplorePage/ExplorePage";
 import MessagesPage from "./MessagesPage/MessagesPage";
@@ -28,7 +29,7 @@ const Navigation = () => {
         <Route path="/confirm" element={<ConfirmPage />} />
         <Route path="/learn-more" element={<LearnMorePage />} />
       </Route>
-      <Route>
+      <Route element={<PrivateLayout />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/:id" element={<ProfilePage />} />
         <Route path="/:id/edit" element={<EditProfilePage />} />
