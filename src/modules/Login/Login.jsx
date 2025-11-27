@@ -1,5 +1,5 @@
 import Container from "../../shared/components/Container/Container";
-import FooterCard from "../../shared/components/FooterCard/FooterCard";
+import CardFooter from "../../shared/components/CardFooter/CardFooter";
 import LoginForm from "./LoginForm/LoginForm";
 
 import { Link } from "react-router-dom";
@@ -34,7 +34,7 @@ const Login = () => {
             </div>
           </div>
 
-          <FooterCard
+          <CardFooter
             prompt="Don't have an account?"
             linkText="Sign up"
             to="/signup"

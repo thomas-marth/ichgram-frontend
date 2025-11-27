@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 
 import Container from "../../shared/components/Container/Container";
-import FooterCard from "../../shared/components/FooterCard/FooterCard";
+import CardFooter from "../../shared/components/CardFooter/CardFooter";
 import SignupForm from "./SignupForm/SignupForm";
 
 import styles from "./Signup.module.css";
@@ -32,7 +32,7 @@ const Signup = () => {
             </p>
           </div>
 
-          <FooterCard prompt="Have an account?" linkText="Log in" to="/login" />
+          <CardFooter prompt="Have an account?" linkText="Log in" to="/login" />
         </div>
       </div>
     </Container>
