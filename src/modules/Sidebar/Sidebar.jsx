@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 // import logo from "../../assets/logo/logo.png";
 import HomeIcon from "../../assets/icons/HomeIcon";
@@ -31,7 +31,9 @@ const navItems = [
 const Sidebar = () => {
   return (
     <aside className={styles.sidebar}>
-      <Logo size="xs" className={styles.navLogo} />
+      <Link to="/" className={styles.navLogo}>
+        <Logo size="xs" />
+      </Link>
       <nav className={styles.nav}>
         {navItems.map(
           ({ to, label, icon: Icon, activeIcon: ActiveIcon, isModal }) => {
