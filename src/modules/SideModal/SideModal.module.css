@@ -2,14 +2,14 @@
   position: fixed;
   top: 0;
   left: 244px;
-  width: 400px;
+  width: 397px;
   height: calc(100vh - var(--footer-height, 0px));
   background: var(--background-color, #ffffff);
   border: 1px solid var(--border-color, #e5e5e5);
   border-bottom: none;
-  border-radius: 0 12px 12px 0;
+  border-radius: 0 0.75rem 0.75rem 0;
   /* box-shadow: 0 0 24px rgba(0, 0, 0, 0.08); */
-  padding: 24px 16px 16px;
+  padding: 1.25rem 24px;
   z-index: 15;
   display: flex;
   flex-direction: column;
@@ -23,13 +23,13 @@
 }
 
 .h2 {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 700;
   margin: 0;
 }
 
 .body {
-  margin-top: 12px;
+  margin-top: 1.03rem;
   flex: 1;
   overflow: hidden;
 }
