@@ -8,7 +8,11 @@ const PrivateLayout = () => {
   return (
     <div className={styles.privateLayout}>
       <div className={styles.layoutBody}>
-        <Sidebar />
+        <div className={styles.sidebarColumn}>
+          <div className={styles.sidebarInner}>
+            <Sidebar />
+          </div>
+        </div>
         <div className={styles.content}>
           <main className={styles.main}>
             <Outlet />
