@@ -57,7 +57,7 @@ const Footer = forwardRef(
               );
             })}
           </ul>
-          <p className={styles.copyright}>{`\u00A9 2024 ICHgram`}</p>
+          <p className={styles.copyright}>{`\u00A9 2025 ICHgram`}</p>
         </div>
       </footer>
     );
