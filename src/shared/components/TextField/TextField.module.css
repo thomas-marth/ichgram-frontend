@@ -1,12 +1,20 @@
+.inputWrapper {
+  position: relative;
+  width: 100%;
+}
+
 .input {
   font-family: "Roboto", sans-serif;
   height: 38px;
   padding-left: 8px;
+  padding-right: 38px;
+  width: 100%;
   border-radius: 3px;
   border: 1px solid var(--border-color);
   color: var(--secondary-color);
   background-color: var(--background-input-color);
   outline: none;
+  box-sizing: border-box;
 }
 
 .input::selection {
@@ -24,4 +32,25 @@ input::placeholder {
 input:focus {
   border-color: var(--accent-color);
   border-width: 2px;
+}
+
+.clearButton {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+
+.clearButton img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
 }

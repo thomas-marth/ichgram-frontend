@@ -5,6 +5,7 @@ import Sidebar from "./../../modules/Sidebar/Sidebar";
 import Footer from "./../../modules/Footer/Footer";
 import Notifications from "../../modules/Notifications/Notifications";
 import SideModal from "../../modules/SideModal/SideModal";
+import Search from "../../modules/Search/Search";
 
 import styles from "./PrivatLayout.module.css";
 
@@ -61,7 +62,11 @@ const PrivateLayout = () => {
   const handleOpenSideModal = (label) => {
     setActiveNavItem(label);
 
-    if (label === "Notifications" || label === "Messages") {
+    if (
+      label === "Notifications" ||
+      label === "Messages" ||
+      label === "Search"
+    ) {
       setActiveSideModal(label);
     } else {
       setActiveSideModal(null);
@@ -109,6 +114,7 @@ const PrivateLayout = () => {
       {activeSideModal ? (
         <SideModal title={activeSideModal}>
           {activeSideModal === "Notifications" ? <Notifications /> : null}
+          {activeSideModal === "Search" ? <Search /> : null}
         </SideModal>
       ) : null}
     </div>
