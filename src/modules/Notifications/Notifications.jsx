@@ -1,25 +1,26 @@
 import testPostImg from "../../assets/images/testPost-img.png";
+import testUserImage from "../../assets/images/test-user.jpg";
 import Avatar from "../../shared/components/Avatar/Avatar";
 import styles from "./Notifications.module.css";
 
 const mockNotifications = [
   {
     id: "1",
-    creator: { username: "sashaa" },
+    creator: { username: "sashaa", avatar: testUserImage },
     action: "liked your photo",
     timeAgo: "2m",
     post: { image: testPostImg },
   },
   {
     id: "2",
-    creator: { username: "sashaa" },
+    creator: { username: "sashaa", avatar: testUserImage },
     action: "commented your photo",
     timeAgo: "3m",
     post: { image: testPostImg },
   },
   {
     id: "3",
-    creator: { username: "sashaa" },
+    creator: { username: "sashaa", avatar: testUserImage },
     action: "started following",
     timeAgo: "5m",
     post: null,
@@ -34,7 +35,12 @@ const Notifications = () => {
       <ul className={styles.notificationList}>
         {mockNotifications.map((notification) => (
           <li key={notification.id} className={styles.notificationItem}>
-            <Avatar size="sm" withGradient />
+            <Avatar
+              size="xs"
+              src={notification.creator.avatar}
+              alt={`${notification.creator.username} avatar`}
+              withGradient
+            />
 
             <div className={styles.content}>
               <p>

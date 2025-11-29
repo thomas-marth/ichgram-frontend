@@ -8,17 +8,26 @@ const sizeClasses = {
   xl: styles.extraLarge,
 };
 
+const gradientClasses = {
+  xs: styles.gradientXs,
+  xl: styles.gradientXl,
+};
+
 const Avatar = ({ size = "sm", src, alt = "", withGradient = false }) => {
   const sizeClass = sizeClasses[size] ?? styles.medium;
+  const gradientClass = gradientClasses[size];
+  const shouldApplyGradient = withGradient && Boolean(gradientClass);
   const wrapperClassName = [styles.avatarWrapper, sizeClass];
 
-  if (withGradient) {
-    wrapperClassName.push(styles.withGradient);
+  if (shouldApplyGradient) {
+    wrapperClassName.push(styles.withGradient, gradientClass);
   }
 
   return (
     <div className={wrapperClassName.join(" ")}>
-      <div className={withGradient ? styles.gapRing : styles.innerWrapper}>
+      <div
+        className={shouldApplyGradient ? styles.gapRing : styles.innerWrapper}
+      >
         {src ? (
           <img className={styles.avatar} src={src} alt={alt} />
         ) : (
