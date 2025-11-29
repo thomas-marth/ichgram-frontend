@@ -30,28 +30,6 @@
   padding: 0.5rem 0;
 }
 
-.avatarWrapper {
-  width: 2.5rem;
-  height: 2.5rem;
-  padding: 2px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-shrink: 0;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #fd0123 0%, #f8f009 50%, #f004dd 100%);
-  box-sizing: border-box;
-  aspect-ratio: 1 / 1;
-}
-
-.avatar {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: #fff;
-  aspect-ratio: 1 / 1;
-}
-
 .content {
   display: flex;
   flex-direction: column;

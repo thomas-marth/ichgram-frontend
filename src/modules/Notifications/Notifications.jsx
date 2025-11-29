@@ -1,4 +1,5 @@
 import testPostImg from "../../assets/images/testPost-img.png";
+import Avatar from "../../shared/components/Avatar/Avatar";
 import styles from "./Notifications.module.css";
 
 const mockNotifications = [
@@ -33,9 +34,7 @@ const Notifications = () => {
       <ul className={styles.notificationList}>
         {mockNotifications.map((notification) => (
           <li key={notification.id} className={styles.notificationItem}>
-            <div className={styles.avatarWrapper}>
-              <div className={styles.avatar} />
-            </div>
+            <Avatar size="sm" withGradient />
 
             <div className={styles.content}>
               <p>

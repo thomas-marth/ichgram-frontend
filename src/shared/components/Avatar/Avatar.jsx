@@ -8,12 +8,23 @@ const sizeClasses = {
   xl: styles.extraLarge,
 };
 
-const Avatar = ({ size = "sm" }) => {
+const Avatar = ({ size = "sm", src, alt = "", withGradient = false }) => {
   const sizeClass = sizeClasses[size] ?? styles.medium;
+  const wrapperClassName = [styles.avatarWrapper, sizeClass];
+
+  if (withGradient) {
+    wrapperClassName.push(styles.withGradient);
+  }
 
   return (
-    <div className={`${styles.avatarWrapper} ${sizeClass}`.trim()}>
-      <div className={styles.avatar} />
+    <div className={wrapperClassName.join(" ")}>
+      <div className={withGradient ? styles.gapRing : styles.innerWrapper}>
+        {src ? (
+          <img className={styles.avatar} src={src} alt={alt} />
+        ) : (
+          <div className={styles.avatar} />
+        )}
+      </div>
     </div>
   );
 };
