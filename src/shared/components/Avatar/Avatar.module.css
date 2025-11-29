@@ -1,13 +1,19 @@
 .avatarWrapper {
   --avatar-size: 40px;
+  --gradient-width: 0px;
+  --gap-size: 0px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
   box-sizing: border-box;
   flex-shrink: 0;
-  width: var(--avatar-size);
-  height: var(--avatar-size);
+  width: calc(
+    var(--avatar-size) + 2 * (var(--gradient-width) + var(--gap-size))
+  );
+  height: calc(
+    var(--avatar-size) + 2 * (var(--gradient-width) + var(--gap-size))
+  );
 }
 
 .innerWrapper,
@@ -22,14 +28,12 @@
 }
 
 .withGradient {
-  padding: 3px;
-  width: calc(var(--avatar-size) + 16px);
-  height: calc(var(--avatar-size) + 16px);
+  padding: var(--gradient-width);
   background: linear-gradient(135deg, #fd0123 0%, #f8f009 50%, #f004dd 100%);
 }
 
 .gapRing {
-  padding: 5px;
+  padding: var(--gap-size);
   background: #fff;
 }
 
@@ -60,4 +64,14 @@
 
 .extraLarge {
   --avatar-size: 150px;
+}
+
+.gradientXs {
+  --gradient-width: 2px;
+  --gap-size: 1px;
+}
+
+.gradientXl {
+  --gradient-width: 3px;
+  --gap-size: 5px;
 }

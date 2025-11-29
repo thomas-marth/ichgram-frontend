@@ -36,15 +36,15 @@ const Notifications = () => {
         {mockNotifications.map((notification) => (
           <li key={notification.id} className={styles.notificationItem}>
             <Avatar
-              size="xs"
+              size="sm"
               src={notification.creator.avatar}
               alt={`${notification.creator.username} avatar`}
-              withGradient
+              // withGradient
             />
 
             <div className={styles.content}>
               <p>
-                <strong>{notification.creator.username}</strong>{" "}
+                <b>{notification.creator.username}</b>{" "}
                 <span>{notification.action}</span>
                 <span className={styles.timeAgo}>{notification.timeAgo}</span>
               </p>
