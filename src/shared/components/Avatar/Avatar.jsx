@@ -1,6 +1,7 @@
 import styles from "./Avatar.module.css";
 
 const sizeClasses = {
+  xs: styles.extraSmall,
   sm: styles.small,
   md: styles.medium,
   lg: styles.large,

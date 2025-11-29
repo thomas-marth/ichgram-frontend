@@ -16,6 +16,11 @@
   background: #fff;
 }
 
+.extraSmall {
+  width: 27.5px;
+  height: 27.5px;
+}
+
 .small {
   width: 40px;
   height: 40px;
