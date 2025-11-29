@@ -54,3 +54,11 @@ input:focus {
   height: 20px;
   object-fit: contain;
 }
+
+.clearButton:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.clearButton:focus-visible {
+  outline: 2px solid var(--accent-color);
+}
