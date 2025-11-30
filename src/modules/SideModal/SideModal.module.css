@@ -3,7 +3,7 @@
   top: 0;
   left: 244px;
   width: 397px;
-  height: calc(100vh - var(--footer-height, 0px));
+  height: 100vh;
   background: var(--background-color, #ffffff);
   border: 1px solid var(--border-color, #e5e5e5);
   border-bottom: none;
