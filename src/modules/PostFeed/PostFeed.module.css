@@ -1,0 +1,36 @@
+.feed {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  width: 100%;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 44px 56px;
+}
+
+.card {
+  display: flex;
+  justify-content: center;
+}
+
+.doneWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: #8e8e8e;
+  text-align: center;
+}
+
+.doneTitle {
+  font-weight: 600;
+  margin: 0;
+  color: #262626;
+}
+
+.doneSubtitle {
+  margin: 0;
+}
