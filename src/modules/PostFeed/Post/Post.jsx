@@ -37,7 +37,7 @@ const Post = ({ post }) => {
           <Avatar size="xs" src={profile.avatar} alt={profile.username} />
           <div className={styles.profileInfo}>
             <span className={styles.username}>{profile.username}</span>
-            <span className={styles.timeAgo}>{timeAgo}</span>
+            <span className={styles.timeAgo}> • {timeAgo} • </span>
           </div>
         </div>
         <a className={styles.follow} href="/">

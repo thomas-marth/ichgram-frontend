@@ -50,7 +50,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 89px 123px 0 113px;
+  /* padding: 89px 123px 0 113px; */
 }
 
 .backdrop {

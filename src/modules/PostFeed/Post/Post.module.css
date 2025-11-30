@@ -8,9 +8,10 @@
 .header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   font-size: 13px;
   line-height: 16px;
+  gap: 27px;
 }
 
 .profile {
@@ -43,11 +44,14 @@
 
 .imageWrapper {
   width: 100%;
+  line-height: 0;
 }
 
 .postImage {
   width: 100%;
-  max-height: 403px;
+  max-width: 403.097px;
+  height: auto;
+  max-height: 503.871px;
   object-fit: cover;
   border-radius: 4px;
 }

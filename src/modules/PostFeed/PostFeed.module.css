@@ -2,13 +2,22 @@
   display: flex;
   flex-direction: column;
   gap: 28px;
-  width: 100%;
+  max-width: 846px;
+  /* margin: 0 auto; */
+
+  /* padding: 55.5px 78px 73px 78px; */
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 44px 56px;
+  gap: 21px 40px;
+}
+
+@media (max-width: 1280px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .card {

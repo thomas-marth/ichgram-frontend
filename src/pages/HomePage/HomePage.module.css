@@ -1,11 +1,18 @@
 .container {
-  /* max-width: 180px; */
-  /* margin: 0 auto; */
-  width: 100%;
-  max-width: 960px;
+  width: fit-content;
+  padding-top: 55px;
+  padding-right: 270px;
+  padding-left: 78px;
   margin: 0 auto;
 }
 
 h1 {
   margin: 0 0 20px;
+}
+
+@media (max-width: 1280px) {
+  .container {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
 }
