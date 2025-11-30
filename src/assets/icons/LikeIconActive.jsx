@@ -1,4 +1,9 @@
-const LikeIconActive = ({ className, width = 24, height = 24, ...props }) => (
+const LikeIconActive = ({
+  className,
+  width = 20.67,
+  height = 20.67,
+  ...props
+}) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={width}
