@@ -43,13 +43,29 @@ const PrivateLayout = () => {
 
   useEffect(() => {
     const updateFooterHeight = () => {
-      setFooterHeight(footerRef.current?.getBoundingClientRect().height || 0);
+      const footerRect = footerRef.current?.getBoundingClientRect();
+
+      if (!footerRect) {
+        setFooterHeight(0);
+        return;
+      }
+
+      const visibleFooterHeight = Math.max(
+        0,
+        Math.min(footerRect.height, window.innerHeight - footerRect.top)
+      );
+
+      setFooterHeight(visibleFooterHeight);
     };
 
     updateFooterHeight();
     window.addEventListener("resize", updateFooterHeight);
+    window.addEventListener("scroll", updateFooterHeight);
 
-    return () => window.removeEventListener("resize", updateFooterHeight);
+    return () => {
+      window.removeEventListener("resize", updateFooterHeight);
+      window.removeEventListener("scroll", updateFooterHeight);
+    };
   }, []);
 
   const routeActiveNavItem = useMemo(

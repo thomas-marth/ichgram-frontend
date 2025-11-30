@@ -34,7 +34,12 @@ const Post = ({ post }) => {
     <article className={styles.post}>
       <header className={styles.header}>
         <div className={styles.profile}>
-          <Avatar size="xs" src={profile.avatar} alt={profile.username} />
+          <Avatar
+            size="xs"
+            src={profile.avatar}
+            alt={profile.username}
+            withGradient
+          />
           <div className={styles.profileInfo}>
             <span className={styles.username}>{profile.username}</span>
             <span className={styles.timeAgo}> • {timeAgo} • </span>
