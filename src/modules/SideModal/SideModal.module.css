@@ -8,7 +8,7 @@
   border: 1px solid var(--border-color, #e5e5e5);
   border-bottom: none;
   border-radius: 0 0.75rem 0.75rem 0;
-  padding: 1.25rem 24px;
+  padding: 1.5rem 1.5rem;
   z-index: 15;
   display: flex;
   flex-direction: column;
@@ -24,11 +24,12 @@
 .h2 {
   font-size: 1.5rem;
   font-weight: 700;
+  line-height: 1.25;
   margin: 0;
 }
 
 .body {
-  margin-top: 1.03rem;
+  /* margin-top: 1.03rem; */
   flex: 1;
   overflow: hidden;
 }

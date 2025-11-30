@@ -27,10 +27,11 @@ const Search = () => {
   return (
     <div className={styles.searchPanel}>
       <TextField
+        className={styles.searchInput}
         placeholder="Search"
         value={query}
         onChange={handleChange}
-        showClearButton={Boolean(query)}
+        showClearButton
         onClear={handleClear}
       />
 

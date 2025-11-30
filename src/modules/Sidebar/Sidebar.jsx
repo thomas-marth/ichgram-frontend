@@ -13,10 +13,16 @@ import CreateIcon from "../../assets/icons/CreateIcon";
 import UserIcon from "../../assets/icons/UserIcon";
 import styles from "./Sidebar.module.css";
 import Logo from "./../../shared/components/Logo/Logo";
+import SearchIconActive from "../../assets/icons/SearchIconActive";
 
 const navItems = [
   { to: "/", label: "Home", icon: HomeIcon, activeIcon: HomeIconActive },
-  { label: "Search", icon: SearchIcon, isModal: true },
+  {
+    label: "Search",
+    icon: SearchIcon,
+    activeIcon: SearchIconActive,
+    isModal: true,
+  },
   {
     to: "/explore",
     label: "Explore",

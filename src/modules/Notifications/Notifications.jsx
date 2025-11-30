@@ -44,7 +44,7 @@ const Notifications = () => {
 
             <div className={styles.content}>
               <p>
-                <b>{notification.creator.username}</b>{" "}
+                {notification.creator.username}{" "}
                 <span>{notification.action}</span>
                 <span className={styles.timeAgo}>{notification.timeAgo}</span>
               </p>
