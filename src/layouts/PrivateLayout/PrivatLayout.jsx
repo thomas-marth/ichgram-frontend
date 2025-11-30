@@ -43,19 +43,14 @@ const PrivateLayout = () => {
 
   useEffect(() => {
     const updateFooterHeight = () => {
-      const footerRect = footerRef.current?.getBoundingClientRect();
+      const footerElement = footerRef.current;
 
-      if (!footerRect) {
+      if (!footerElement) {
         setFooterHeight(0);
         return;
       }
 
-      const visibleFooterHeight = Math.max(
-        0,
-        Math.min(footerRect.height, window.innerHeight - footerRect.top)
-      );
-
-      setFooterHeight(visibleFooterHeight);
+      setFooterHeight(footerElement.offsetHeight);
     };
 
     updateFooterHeight();
