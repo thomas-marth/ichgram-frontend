@@ -6,14 +6,35 @@ import Messenger from "./Messenger/Messenger";
 import styles from "./Chat.module.css";
 
 const Chat = ({ chats, currentUser, initialChatId }) => {
-  const [chatList, setChatList] = useState(chats ?? []);
+  const [localMessages, setLocalMessages] = useState({});
   const [activeChatId, setActiveChatId] = useState(
     initialChatId || chats?.[0]?.id || null
   );
 
+  const chatList = useMemo(
+    () =>
+      (chats ?? []).map((chat) => ({
+        ...chat,
+        messages: [...(chat.messages || []), ...(localMessages[chat.id] || [])],
+      })),
+    [chats, localMessages]
+  );
+
+  const resolvedActiveChatId = useMemo(() => {
+    if (chatList.some((chat) => chat.id === activeChatId)) {
+      return activeChatId;
+    }
+
+    if (chatList.some((chat) => chat.id === initialChatId)) {
+      return initialChatId;
+    }
+
+    return chatList[0]?.id ?? null;
+  }, [activeChatId, chatList, initialChatId]);
+
   const activeChat = useMemo(
-    () => chatList.find((chat) => chat.id === activeChatId),
-    [activeChatId, chatList]
+    () => chatList.find((chat) => chat.id === resolvedActiveChatId),
+    [chatList, resolvedActiveChatId]
   );
 
   const handleClickOnChat = (chat) => {
@@ -22,24 +43,18 @@ const Chat = ({ chats, currentUser, initialChatId }) => {
 
   const handleSendMessage = (chatId, text) => {
     const newMessageId = `${chatId}-${Date.now()}`;
-    const updatedChatList = chatList.map((chat) => {
-      if (chat.id !== chatId) return chat;
+    const message = {
+      id: newMessageId,
+      text,
+      authorId: currentUser.id,
+      author: currentUser,
+      createdAt: new Date().toISOString(),
+    };
 
-      const message = {
-        id: newMessageId,
-        text,
-        authorId: currentUser.id,
-        author: currentUser,
-        createdAt: new Date().toISOString(),
-      };
-
-      return {
-        ...chat,
-        messages: [...(chat.messages || []), message],
-      };
-    });
-
-    setChatList(updatedChatList);
+    setLocalMessages((prevMessages) => ({
+      ...prevMessages,
+      [chatId]: [...(prevMessages[chatId] || []), message],
+    }));
   };
 
   const chatElements = chatList?.map((chat) => (
