@@ -6,7 +6,7 @@ import Messenger from "./Messenger/Messenger";
 
 import styles from "./Chat.module.css";
 
-const Chat = ({ chats, currentUser, initialChatId }) => {
+const Chat = ({ chats, currentUser, initialUserId }) => {
   const navigate = useNavigate();
   const [localMessages, setLocalMessages] = useState({});
 
@@ -19,21 +19,24 @@ const Chat = ({ chats, currentUser, initialChatId }) => {
     [chats, localMessages]
   );
 
-  const resolvedActiveChatId = useMemo(() => {
-    if (chatList.some((chat) => chat.id === initialChatId)) {
-      return initialChatId;
+  const activeChat = useMemo(() => {
+    if (!initialUserId) {
+      return null;
     }
 
-    return null;
-  }, [chatList, initialChatId]);
-
-  const activeChat = useMemo(
-    () => chatList.find((chat) => chat.id === resolvedActiveChatId),
-    [chatList, resolvedActiveChatId]
-  );
+    return (
+      chatList.find(
+        (chat) =>
+          chat.member1Id === initialUserId || chat.member2Id === initialUserId
+      ) ?? null
+    );
+  }, [chatList, initialUserId]);
 
   const handleClickOnChat = (chat) => {
-    navigate(`/direct/${chat.id}`);
+    const otherUserId =
+      chat.member1Id === currentUser.id ? chat.member2Id : chat.member1Id;
+
+    navigate(`/direct/${otherUserId}`);
   };
 
   const handleSendMessage = (chatId, text) => {

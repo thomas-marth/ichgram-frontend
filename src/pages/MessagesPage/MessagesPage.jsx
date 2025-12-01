@@ -9,7 +9,7 @@ import Chat from "../../modules/Chat/Chat";
 import styles from "./MessagesPage.module.css";
 
 const MessagesPage = () => {
-  const { id } = useParams();
+  const { id: initialUserId } = useParams();
 
   const currentUser = useMemo(
     () => ({
@@ -23,14 +23,14 @@ const MessagesPage = () => {
 
   const chats = useMemo(() => {
     const nikitaUser = {
-      id: "chat-user-1",
+      id: "UID00119485",
       username: "nikita",
       fullname: "nikita - ichgram",
       avatar: nikitaAvatar,
     };
 
     const sashaaUser = {
-      id: "chat-user-2",
+      id: "UID00129489",
       username: "sasha",
       fullname: "sasha - ichgram",
       avatar: sashaaAvatar,
@@ -88,7 +88,11 @@ const MessagesPage = () => {
 
   return (
     <div className={styles.chatPage}>
-      <Chat chats={chats} currentUser={currentUser} initialChatId={id} />
+      <Chat
+        chats={chats}
+        currentUser={currentUser}
+        initialUserId={initialUserId}
+      />
     </div>
   );
 };
