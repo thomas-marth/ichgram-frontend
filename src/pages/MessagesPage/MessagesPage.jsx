@@ -53,7 +53,7 @@ const MessagesPage = () => {
           },
           {
             id: "msg-2",
-            text: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
             authorId: currentUser.id,
             author: currentUser,
             createdAt: "2025-06-21T12:00:00Z",
