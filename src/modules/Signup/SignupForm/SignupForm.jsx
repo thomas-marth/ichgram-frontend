@@ -1,7 +1,9 @@
+import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
 import TextField from "../../../shared/components/TextField/TextField";
 import Button from "../../../shared/components/Button/Button";
+import signupStyles from "../Signup.module.css";
 import styles from "./SignupForm.module.css";
 
 const SignupForm = () => {
@@ -50,6 +52,20 @@ const SignupForm = () => {
           error={errors.password}
         />
       </div>
+
+      <p className={signupStyles.infoText}>
+        People who use our service may have uploaded your contact information to
+        Instagram.
+        <Link to="/learn-more" className={styles.learnMore}>
+          Learn More
+        </Link>
+      </p>
+
+      <p className={signupStyles.policyText}>
+        By signing up, you agree to our <Link to="/terms">Terms</Link>,
+        <Link to="/privacy"> Privacy Policy</Link> and{" "}
+        <Link to="/cookies">Cookies Policy</Link>.
+      </p>
 
       <Button type="submit" className={styles.submitBtn}>
         Sign up

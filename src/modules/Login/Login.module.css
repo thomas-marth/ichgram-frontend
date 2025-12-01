@@ -90,10 +90,11 @@
   color: var(--link-color);
   font-size: 12px;
   line-height: 1.3;
+  transition: all 0.2s ease;
 }
 
 .text a:hover {
-  text-decoration: underline;
+  color: var(--accent-color);
 }
 
 .imgWrap {
