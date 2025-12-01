@@ -90,10 +90,10 @@ const PrivateLayout = () => {
 
       const hasScrollableContent = scrollHeight - footerHeight > viewportHeight;
       const shouldHideByLayout =
-        hasScrollableContent || gapBetweenContentAndFooter < 140;
+        hasScrollableContent || gapBetweenContentAndFooter < 70;
 
       const currentScrollBottom = window.scrollY + viewportHeight;
-      const revealThreshold = scrollHeight - footerHeight - 140;
+      const revealThreshold = scrollHeight - footerHeight - 70;
       const reachedRevealPoint = currentScrollBottom >= revealThreshold;
 
       setIsFooterVisible(reachedRevealPoint || !shouldHideByLayout);
@@ -183,7 +183,7 @@ const PrivateLayout = () => {
         activeNavItem={currentActiveNavItem}
       />
       {activeSideModal ? (
-        <SideModal title={activeSideModal}>
+        <SideModal title={activeSideModal} isFooterVisible={isFooterVisible}>
           {activeSideModal === "Notifications" ? <Notifications /> : null}
           {activeSideModal === "Search" ? <Search /> : null}
         </SideModal>

@@ -15,6 +15,10 @@
   overflow: hidden;
 }
 
+.withFooter {
+  height: calc(100dvh - var(--footer-height, 0px));
+}
+
 .header {
   display: flex;
   justify-content: flex-start;
