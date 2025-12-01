@@ -1,8 +1,9 @@
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 
-import nikitaAvatar from "../../assets/images/test-user.jpg";
-import sashaaAvatar from "../../assets/images/test-user2.jpg";
+import currentUserAvatar from "../../assets/images/test-current-user.jpg";
+import nikitaAvatar from "../../assets/images/test-user2.jpg";
+import sashaaAvatar from "../../assets/images/test-user.jpg";
 import Chat from "../../modules/Chat/Chat";
 
 import styles from "./MessagesPage.module.css";
@@ -12,66 +13,64 @@ const MessagesPage = () => {
 
   const currentUser = useMemo(
     () => ({
-      id: "1",
-      username: "nikita",
-      fullname: "nikita - ichgram",
-      avatar: nikitaAvatar,
+      id: "current-user",
+      username: "itcareerhub",
+      fullname: "itcareerhub",
+      avatar: currentUserAvatar,
     }),
     []
   );
 
   const chats = useMemo(() => {
+    const nikitaUser = {
+      id: "chat-user-1",
+      username: "nikita",
+      fullname: "nikita - ichgram",
+      avatar: nikitaAvatar,
+    };
+
     const sashaaUser = {
-      id: "2",
-      username: "sashaa",
-      fullname: "sashaa - ichgram",
+      id: "chat-user-2",
+      username: "sasha",
+      fullname: "sasha - ichgram",
       avatar: sashaaAvatar,
     };
-
-    const nikitaUser = {
-      id: currentUser.id,
-      username: currentUser.username,
-      fullname: currentUser.fullname,
-      avatar: currentUser.avatar,
-    };
-
-    const sharedMessages = [
-      {
-        id: "msg-1",
-        text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
-        authorId: sashaaUser.id,
-        author: sashaaUser,
-        createdAt: "2024-06-20T12:00:00Z",
-      },
-      {
-        id: "msg-2",
-        text: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-        authorId: nikitaUser.id,
-        author: nikitaUser,
-        createdAt: "2024-06-21T12:00:00Z",
-      },
-      {
-        id: "msg-3",
-        text: "Tellus at urna condimentum mattis pellentesque id nibh tortor id.",
-        authorId: nikitaUser.id,
-        author: nikitaUser,
-        createdAt: "2024-06-22T12:00:00Z",
-      },
-    ];
 
     return [
       {
         id: "chat-1",
-        member1Id: nikitaUser.id,
-        member1: nikitaUser,
-        member2Id: sashaaUser.id,
-        member2: sashaaUser,
-        messages: sharedMessages,
+        member1Id: currentUser.id,
+        member1: currentUser,
+        member2Id: nikitaUser.id,
+        member2: nikitaUser,
+        messages: [
+          {
+            id: "msg-1",
+            text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
+            authorId: nikitaUser.id,
+            author: nikitaUser,
+            createdAt: "2025-06-20T12:00:00Z",
+          },
+          {
+            id: "msg-2",
+            text: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            authorId: currentUser.id,
+            author: currentUser,
+            createdAt: "2025-06-21T12:00:00Z",
+          },
+          {
+            id: "msg-3",
+            text: "Tellus at urna condimentum mattis pellentesque id nibh tortor id.",
+            authorId: currentUser.id,
+            author: currentUser,
+            createdAt: "2025-06-22T12:00:00Z",
+          },
+        ],
       },
       {
         id: "chat-2",
-        member1Id: nikitaUser.id,
-        member1: nikitaUser,
+        member1Id: currentUser.id,
+        member1: currentUser,
         member2Id: sashaaUser.id,
         member2: sashaaUser,
         messages: [
@@ -80,7 +79,7 @@ const MessagesPage = () => {
             text: "All at urna condimentum mattis pellentesque id.",
             authorId: sashaaUser.id,
             author: sashaaUser,
-            createdAt: "2024-06-18T12:00:00Z",
+            createdAt: "2025-06-18T12:00:00Z",
           },
         ],
       },
@@ -89,12 +88,7 @@ const MessagesPage = () => {
 
   return (
     <div className={styles.chatPage}>
-      <Chat
-        key={id || "all"}
-        chats={chats}
-        currentUser={currentUser}
-        initialChatId={id}
-      />
+      <Chat chats={chats} currentUser={currentUser} initialChatId={id} />
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import ChatItem from "./ChatItem/ChatItem";
 import Messenger from "./Messenger/Messenger";
@@ -6,10 +7,8 @@ import Messenger from "./Messenger/Messenger";
 import styles from "./Chat.module.css";
 
 const Chat = ({ chats, currentUser, initialChatId }) => {
+  const navigate = useNavigate();
   const [localMessages, setLocalMessages] = useState({});
-  const [activeChatId, setActiveChatId] = useState(
-    initialChatId || chats?.[0]?.id || null
-  );
 
   const chatList = useMemo(
     () =>
@@ -21,16 +20,12 @@ const Chat = ({ chats, currentUser, initialChatId }) => {
   );
 
   const resolvedActiveChatId = useMemo(() => {
-    if (chatList.some((chat) => chat.id === activeChatId)) {
-      return activeChatId;
-    }
-
     if (chatList.some((chat) => chat.id === initialChatId)) {
       return initialChatId;
     }
 
-    return chatList[0]?.id ?? null;
-  }, [activeChatId, chatList, initialChatId]);
+    return null;
+  }, [chatList, initialChatId]);
 
   const activeChat = useMemo(
     () => chatList.find((chat) => chat.id === resolvedActiveChatId),
@@ -38,7 +33,7 @@ const Chat = ({ chats, currentUser, initialChatId }) => {
   );
 
   const handleClickOnChat = (chat) => {
-    setActiveChatId(chat.id);
+    navigate(`/direct/${chat.id}`);
   };
 
   const handleSendMessage = (chatId, text) => {
@@ -75,12 +70,16 @@ const Chat = ({ chats, currentUser, initialChatId }) => {
         </div>
         <div className={styles.chats}>{chatElements}</div>
       </div>
-      {activeChat && (
+      {activeChat ? (
         <Messenger
           chat={activeChat}
           currentUser={currentUser}
           onSendMessage={handleSendMessage}
         />
+      ) : (
+        <div className={styles.emptyState}>
+          <p className={styles.emptyStateText}>Start a new conversation</p>
+        </div>
       )}
     </div>
   );
