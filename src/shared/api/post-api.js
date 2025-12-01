@@ -1,13 +1,13 @@
-import autoCampingImg from "../assets/images/explore/auto-camping.jpg";
-import autoImg from "../assets/images/explore/auto.jpg";
-import caffeeImg from "../assets/images/explore/caffee.jpg";
-import chinaImg from "../assets/images/explore/china.jpg";
-import hikingImg from "../assets/images/explore/hiking.jpg";
-import mountainsImg from "../assets/images/explore/mountains.jpg";
-import newYorkImg from "../assets/images/explore/new-york.jpg";
-import roadImg from "../assets/images/explore/road.jpg";
-import streetImg from "../assets/images/explore/street.jpg";
-import workImg from "../assets/images/explore/work.jpg";
+import autoCampingImg from "../../assets/images/explore/auto-camping.jpg";
+import autoImg from "../../assets/images/explore/auto.jpg";
+import caffeeImg from "../../assets/images/explore/caffee.jpg";
+import chinaImg from "../../assets/images/explore/china.jpg";
+import hikingImg from "../../assets/images/explore/hiking.jpg";
+import mountainsImg from "../../assets/images/explore/mountains.jpg";
+import newYorkImg from "../../assets/images/explore/new-york.jpg";
+import roadImg from "../../assets/images/explore/road.jpg";
+import streetImg from "../../assets/images/explore/street.jpg";
+import workImg from "../../assets/images/explore/work.jpg";
 
 const explorePosts = [
   { id: 1, image: autoImg, alt: "Vintage car interior" },
