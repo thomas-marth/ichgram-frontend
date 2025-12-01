@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import LoadingErrorOutput from "../../../shared/components/LoadingErrorOutput/LoadingErrorOutput";
 import TextField from "../../../shared/components/TextField/TextField";
 import Button from "../../../shared/components/Button/Button";
+import Avatar from "../../../shared/components/Avatar/Avatar";
 
 import Message from "./Message/Message";
 
@@ -59,11 +60,7 @@ export default function Messenger({ chat, currentUser, onSendMessage }) {
       </div>
       <div className={styles.userInfo}>
         <div className={styles.userInfoAvatarWrapper}>
-          <img
-            src={otherUser?.avatar}
-            alt=""
-            className={styles.userInfoAvatar}
-          />
+          <Avatar size="lg" src={otherUser?.avatar} alt={otherUser?.username} />
         </div>
         <p className={styles.userInfoUsername}>{otherUser?.username}</p>
         <p className={styles.userInfoFullname}>{otherUser?.fullname}</p>

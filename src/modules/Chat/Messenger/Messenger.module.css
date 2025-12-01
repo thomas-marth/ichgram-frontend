@@ -37,12 +37,6 @@
   width: 6rem;
   height: 6rem;
 }
-.userInfoAvatar {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-}
 .userInfoUsername {
   font-size: 1.25rem;
   font-weight: 600;
