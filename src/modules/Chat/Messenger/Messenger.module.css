@@ -25,11 +25,13 @@
 }
 
 .userInfo {
-  padding: 4rem;
+  padding: 4rem 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1rem;
+  width: 173px;
+  margin: 0 auto;
 }
 .userInfoAvatarWrapper {
   width: 6rem;
@@ -50,15 +52,7 @@
   color: var(--color-text-secondary);
 }
 .userInfoButton {
-  text-decoration: none;
-  padding: 0.5rem 3rem;
-  cursor: pointer;
-  font-size: 0.8rem;
-  font-weight: 600;
-  background-color: var(--color-background-button-secondary);
-  border: none;
-  border-radius: 0.5rem;
-  color: var(--color-text-primary);
+  width: 100%;
 }
 .userInfoButton:hover {
   filter: brightness(0.95);
@@ -78,6 +72,7 @@
 
 .form {
   margin-top: 67px;
+  margin-bottom: 92px;
   padding: 0 1rem;
 }
 

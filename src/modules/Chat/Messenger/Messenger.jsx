@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useRef } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
 import LoadingErrorOutput from "../../../shared/components/LoadingErrorOutput/LoadingErrorOutput";
 import TextField from "../../../shared/components/TextField/TextField";
+import Button from "../../../shared/components/Button/Button";
 
 import Message from "./Message/Message";
 
@@ -12,6 +13,7 @@ import styles from "./Messenger.module.css";
 export default function Messenger({ chat, currentUser, onSendMessage }) {
   const { register, handleSubmit, reset } = useForm();
   const msgBoxRef = useRef(null);
+  const navigate = useNavigate();
 
   const otherUser = useMemo(
     () => (chat.member1Id === currentUser.id ? chat.member2 : chat.member1),
@@ -28,6 +30,10 @@ export default function Messenger({ chat, currentUser, onSendMessage }) {
     if (!text) return;
     onSendMessage?.(chat.id, text);
     reset();
+  };
+
+  const handleViewProfile = () => {
+    navigate(`/profile/${otherUser?.id}`);
   };
 
   const messageElements = (chat.messages || []).map((message) => (
@@ -61,12 +67,13 @@ export default function Messenger({ chat, currentUser, onSendMessage }) {
         </div>
         <p className={styles.userInfoUsername}>{otherUser?.username}</p>
         <p className={styles.userInfoFullname}>{otherUser?.fullname}</p>
-        <Link
-          to={`/profile/${otherUser?.id}`}
+        <Button
+          variant="gray"
+          onClick={handleViewProfile}
           className={styles.userInfoButton}
         >
           View profile
-        </Link>
+        </Button>
         <p className={styles.date}>{dateLabel}</p>
       </div>
       <div className={styles.messages} ref={msgBoxRef}>
