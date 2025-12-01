@@ -1,0 +1,9 @@
+.wrapper {
+  padding: 1rem 1.5rem;
+  text-align: center;
+  color: var(--secondary-color);
+}
+
+.message {
+  font-size: 0.95rem;
+}
