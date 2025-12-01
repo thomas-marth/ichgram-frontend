@@ -122,6 +122,27 @@ const PrivateLayout = () => {
     };
   }, [footerHeight, location.pathname]);
 
+  useEffect(() => {
+    if (!activeSideModal) {
+      return undefined;
+    }
+
+    const { overflow, paddingRight } = document.body.style;
+    const scrollbarWidth =
+      window.innerWidth - document.documentElement.clientWidth;
+
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = overflow;
+      document.body.style.paddingRight = paddingRight;
+    };
+  }, [activeSideModal]);
+
   const routeActiveNavItem = useMemo(
     () => getActiveNavItemFromPath(location.pathname),
     [location.pathname]
