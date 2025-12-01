@@ -1,0 +1,23 @@
+.chat {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+}
+
+.chatsHeader {
+  height: 75px;
+  padding: 1.5rem;
+}
+
+.chatsHeaderUsername {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+.chatsWrapper {
+  border-right: 1px solid var(--color-border);
+}
+
+.chats {
+  display: flex;
+  flex-direction: column;
+}

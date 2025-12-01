@@ -1,0 +1,89 @@
+.messenger {
+}
+
+.header {
+  height: 75px;
+  padding: 1rem;
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.avatarWrapper {
+  height: 2.75rem;
+  width: 2.75rem;
+}
+.avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+.username {
+  font-weight: 600;
+}
+
+.userInfo {
+  padding: 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+.userInfoAvatarWrapper {
+  width: 6rem;
+  height: 6rem;
+}
+.userInfoAvatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+.userInfoUsername {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+.userInfoFullname {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+.userInfoButton {
+  text-decoration: none;
+  padding: 0.5rem 3rem;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background-color: var(--color-background-button-secondary);
+  border: none;
+  border-radius: 0.5rem;
+  color: var(--color-text-primary);
+}
+.userInfoButton:hover {
+  filter: brightness(0.95);
+}
+
+.date {
+  margin-top: 5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+.messages {
+  padding: 1rem;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.form {
+  padding: 1rem;
+}
+
+.input {
+  border-radius: 1.25rem;
+  width: 100%;
+  color: #000;
+  border: 1px solid var(--color-border);
+  padding: 0.75rem 1rem;
+}
