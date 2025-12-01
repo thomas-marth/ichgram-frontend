@@ -71,19 +71,35 @@
   color: var(--color-text-secondary);
 }
 .messages {
-  padding: 1rem;
+  padding: 0 1rem;
   max-height: 500px;
   overflow-y: auto;
 }
 
 .form {
-  padding: 1rem;
+  margin-top: 67px;
+  padding: 0 1rem;
 }
 
 .input {
-  border-radius: 1.25rem;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.2;
+  height: 44px;
+  border-radius: 1.38rem;
   width: 100%;
-  color: #000;
-  border: 1px solid var(--color-border);
-  padding: 0.75rem 1rem;
+  color: #8e8e8e;
+  background: var(--background-color);
+  border-radius: 22px;
+  border: 1px solid var(--border-color);
+  padding: 13px 51px;
+}
+
+.input::placeholder {
+  padding: 13px 0;
+  color: #8e8e8e;
+  font-family: Roboto;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.2;
 }

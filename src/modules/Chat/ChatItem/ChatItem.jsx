@@ -14,7 +14,7 @@ const ChatItem = ({ chat, active, handleClick, currentUser }) => {
 
   const lastMessage = (chat.messages || []).slice(-1)[0];
   const lastMessageDate = formatRelativeWeeks(lastMessage?.createdAt);
-  const lastMessageText = lastMessage?.text;
+  // const lastMessageText = lastMessage?.text;
 
   return (
     <button
@@ -37,7 +37,7 @@ const ChatItem = ({ chat, active, handleClick, currentUser }) => {
             {otherUser?.username} text a message &bull; 2 week
           </span>
         )}
-        {lastMessageText && <p className={styles.preview}>{lastMessageText}</p>}
+        {/* {lastMessageText && <p className={styles.preview}>{lastMessageText}</p>} */}
       </div>
     </button>
   );
