@@ -42,24 +42,26 @@ const PrivateLayout = () => {
   };
 
   useEffect(() => {
+    const footerElement = footerRef.current;
+
+    if (!footerElement) {
+      return undefined;
+    }
+
     const updateFooterHeight = () => {
-      const footerElement = footerRef.current;
-
-      if (!footerElement) {
-        setFooterHeight(0);
-        return;
-      }
-
       setFooterHeight(footerElement.offsetHeight);
     };
 
     updateFooterHeight();
+
+    const resizeObserver = new ResizeObserver(updateFooterHeight);
+    resizeObserver.observe(footerElement);
+
     window.addEventListener("resize", updateFooterHeight);
-    window.addEventListener("scroll", updateFooterHeight);
 
     return () => {
+      resizeObserver.disconnect();
       window.removeEventListener("resize", updateFooterHeight);
-      window.removeEventListener("scroll", updateFooterHeight);
     };
   }, []);
 
