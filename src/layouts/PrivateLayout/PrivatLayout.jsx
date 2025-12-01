@@ -78,25 +78,15 @@ const PrivateLayout = () => {
     let animationFrame = null;
 
     const calculateFooterVisibility = () => {
-      const mainRect = mainElement.getBoundingClientRect();
-      const footerRect = footerElement.getBoundingClientRect();
-
-      const mainBottom = mainRect.bottom + window.scrollY;
-      const footerTop = footerRect.top + window.scrollY;
-      const gapBetweenContentAndFooter = footerTop - mainBottom;
-
       const scrollHeight = document.documentElement.scrollHeight;
       const viewportHeight = window.innerHeight;
-
-      const hasScrollableContent = scrollHeight - footerHeight > viewportHeight;
-      const shouldHideByLayout =
-        hasScrollableContent || gapBetweenContentAndFooter < 70;
-
       const currentScrollBottom = window.scrollY + viewportHeight;
+
+      const hasScrollableContent = scrollHeight > viewportHeight;
       const revealThreshold = scrollHeight - footerHeight - 10;
       const reachedRevealPoint = currentScrollBottom >= revealThreshold;
 
-      setIsFooterVisible(reachedRevealPoint || !shouldHideByLayout);
+      setIsFooterVisible(!hasScrollableContent || reachedRevealPoint);
     };
 
     const handleScrollOrResize = () => {
@@ -154,13 +144,10 @@ const PrivateLayout = () => {
 
   const currentActiveNavItem = activeNavItem ?? routeActiveNavItem;
 
-  const contentPaddingBottom = useMemo(() => {
-    if (location.pathname.startsWith("/direct")) {
-      return Math.max(Math.min(footerHeight, 48), 16);
-    }
-
-    return 16;
-  }, [footerHeight, location.pathname]);
+  const contentPaddingBottom = useMemo(
+    () => Math.max(footerHeight, 16),
+    [footerHeight]
+  );
 
   const handleOpenSideModal = (label) => {
     setActiveNavItem(label);
