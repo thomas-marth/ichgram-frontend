@@ -3,6 +3,7 @@
   flex-direction: column;
   gap: 12px;
   width: 100%;
+  height: 100%;
 }
 
 .header {
@@ -106,5 +107,6 @@
   display: block;
   width: 100%;
   padding-bottom: 14px;
+  margin-top: auto;
   border-bottom: 0.861px solid #dbdbdb;
 }

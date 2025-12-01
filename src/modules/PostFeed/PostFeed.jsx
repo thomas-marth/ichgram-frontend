@@ -14,8 +14,7 @@ const mockPosts = [
     image: postImage,
     likesCount: 101824,
     captionTitle: "It's golden, Ponyboy!",
-    captionBody:
-      "heyyyyy | Morning view is just amazing! heyyyyy | Morning view is just amazing! heyyyyy | Morning view is just amazing! heyyyyy | Morning view is just amazing! heyyyyy | Morning view is just amazing! heyyyyy | Morning view is just amazing! heyyyyy | Morning view is just amazing! heyyyyy | Morning view is just amazing! heyyyyy | Morning view is just amazing! heyyyyy | Morning view is just amazing! heyyyyy | Morning view is just amazing! | Morning view is just amazing! | Morning view is just amazing! | Morning view is just amazing!",
+    captionBody: "heyyyyy | Morning view is just amazing!",
     commentsCount: 732,
     isLiked: true,
   },
