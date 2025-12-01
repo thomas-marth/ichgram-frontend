@@ -13,7 +13,9 @@ const PrivateLayout = () => {
   const [activeSideModal, setActiveSideModal] = useState(null);
   const [activeNavItem, setActiveNavItem] = useState(null);
   const [footerHeight, setFooterHeight] = useState(0);
+  const [isFooterVisible, setIsFooterVisible] = useState(false);
   const footerRef = useRef(null);
+  const mainRef = useRef(null);
   const location = useLocation();
 
   const getActiveNavItemFromPath = (pathname) => {
@@ -65,6 +67,61 @@ const PrivateLayout = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const footerElement = footerRef.current;
+    const mainElement = mainRef.current;
+
+    if (!footerElement || !mainElement) {
+      return undefined;
+    }
+
+    let animationFrame = null;
+
+    const calculateFooterVisibility = () => {
+      const mainRect = mainElement.getBoundingClientRect();
+      const footerRect = footerElement.getBoundingClientRect();
+
+      const mainBottom = mainRect.bottom + window.scrollY;
+      const footerTop = footerRect.top + window.scrollY;
+      const gapBetweenContentAndFooter = footerTop - mainBottom;
+
+      const scrollHeight = document.documentElement.scrollHeight;
+      const viewportHeight = window.innerHeight;
+
+      const hasScrollableContent = scrollHeight - footerHeight > viewportHeight;
+      const shouldHideByLayout =
+        hasScrollableContent || gapBetweenContentAndFooter < 140;
+
+      const currentScrollBottom = window.scrollY + viewportHeight;
+      const revealThreshold = scrollHeight - footerHeight - 140;
+      const reachedRevealPoint = currentScrollBottom >= revealThreshold;
+
+      setIsFooterVisible(reachedRevealPoint || !shouldHideByLayout);
+    };
+
+    const handleScrollOrResize = () => {
+      if (animationFrame !== null) {
+        cancelAnimationFrame(animationFrame);
+      }
+
+      animationFrame = requestAnimationFrame(calculateFooterVisibility);
+    };
+
+    calculateFooterVisibility();
+
+    window.addEventListener("scroll", handleScrollOrResize, { passive: true });
+    window.addEventListener("resize", handleScrollOrResize);
+
+    return () => {
+      if (animationFrame !== null) {
+        cancelAnimationFrame(animationFrame);
+      }
+
+      window.removeEventListener("scroll", handleScrollOrResize);
+      window.removeEventListener("resize", handleScrollOrResize);
+    };
+  }, [footerHeight, location.pathname]);
+
   const routeActiveNavItem = useMemo(
     () => getActiveNavItemFromPath(location.pathname),
     [location.pathname]
@@ -111,13 +168,14 @@ const PrivateLayout = () => {
           </div>
         </div>
         <div className={styles.content}>
-          <main className={styles.main}>
+          <main ref={mainRef} className={styles.main}>
             <Outlet />
           </main>
         </div>
       </div>
       <Footer
         ref={footerRef}
+        isVisible={isFooterVisible}
         onOpenSideModal={handleOpenSideModal}
         onCloseSideModal={handleCloseSideModal}
         onSetActiveNavItem={setActiveNavItem}

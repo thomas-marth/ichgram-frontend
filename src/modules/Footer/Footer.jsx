@@ -13,11 +13,20 @@ const navItems = [
 
 const Footer = forwardRef(
   (
-    { onOpenSideModal, onCloseSideModal, onSetActiveNavItem, activeNavItem },
+    {
+      onOpenSideModal,
+      onCloseSideModal,
+      onSetActiveNavItem,
+      activeNavItem,
+      isVisible = true,
+    },
     ref
   ) => {
     return (
-      <footer ref={ref} className={styles.footer}>
+      <footer
+        ref={ref}
+        className={`${styles.footer} ${isVisible ? styles.visible : ""}`.trim()}
+      >
         <div className={styles.menuWrap}>
           <ul className={styles.navList}>
             {navItems.map(({ to, label, isModal }) => {
