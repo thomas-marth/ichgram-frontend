@@ -82,6 +82,7 @@
 .captionTitle {
   font-weight: 400;
   color: #262626;
+  white-space: pre-wrap;
 }
 
 .captionBody {
@@ -89,6 +90,7 @@
   gap: 6px;
   color: #262626;
   font-size: 14px;
+  white-space: pre-wrap;
 }
 
 .moreButton {

@@ -13,7 +13,7 @@ const mockPosts = [
     image: postImage,
     likesCount: 101824,
     captionBody:
-      "𝘐𝘵’𝘴 𝒈𝒐𝒍𝒅𝒆𝒏, 𝘗𝘰𝘯𝘺𝘣𝘰𝘺! \nheyyyyy | Morning view is just amazing!",
+      "𝘐𝘵’𝘴 𝒈𝒐𝒍𝒅𝒆𝒏, 𝘗𝘰𝘯𝘺𝘣𝘰𝘺! | heyyyyy \n| Morning view is just amazing!",
     commentsCount: 732,
     isLiked: true,
   },
@@ -24,7 +24,7 @@ const mockPosts = [
     image: postImage,
     likesCount: 101824,
     captionBody:
-      "𝘐𝘵’𝘴 𝒈𝒐𝒍𝒅𝒆𝒏, 𝘗𝘰𝘯𝘺𝘣𝘰𝘺! \nheyyyyy | Morning view is just amazing!",
+      "𝘐𝘵’𝘴 𝒈𝒐𝒍𝒅𝒆𝒏, 𝘗𝘰𝘯𝘺𝘣𝘰𝘺! | heyyyyy  \n| Morning view is just amazing!",
     commentsCount: 732,
     isLiked: false,
   },
@@ -35,7 +35,7 @@ const mockPosts = [
     image: postImage,
     likesCount: 101824,
     captionBody:
-      "𝘐𝘵’𝘴 𝒈𝒐𝒍𝒅𝒆𝒏, 𝘗𝘰𝘯𝘺𝘣𝘰𝘺! \nheyyyyy | Morning view is just amazing!",
+      "𝘐𝘵’𝘴 𝒈𝒐𝒍𝒅𝒆𝒏, 𝘗𝘰𝘯𝘺𝘣𝘰𝘺! | heyyyyy \n| Morning view is just amazing!",
     commentsCount: 732,
     isLiked: false,
   },
@@ -46,7 +46,7 @@ const mockPosts = [
     image: postImage,
     likesCount: 101824,
     captionBody:
-      "𝘐𝘵’𝘴 𝒈𝒐𝒍𝒅𝒆𝒏, 𝘗𝘰𝘯𝘺𝘣𝘰𝘺! \n heyyyyy | Morning view is just amazing!",
+      "𝘐𝘵’𝘴 𝒈𝒐𝒍𝒅𝒆𝒏, 𝘗𝘰𝘯𝘺𝘣𝘰𝘺! | heyyyyy \n| Morning view is just amazing!",
     commentsCount: 732,
     isLiked: true,
   },
