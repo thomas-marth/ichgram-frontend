@@ -30,10 +30,10 @@ const navItems = [
     activeIcon: ExploreIconActive,
   },
   {
+    to: "/direct",
     label: "Messages",
     icon: MessagesIcon,
     activeIcon: MessagesIconActive,
-    isModal: true,
   },
   {
     label: "Notifications",

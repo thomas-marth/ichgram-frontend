@@ -157,11 +157,7 @@ const PrivateLayout = () => {
   const handleOpenSideModal = (label) => {
     setActiveNavItem(label);
 
-    if (
-      label === "Notifications" ||
-      label === "Messages" ||
-      label === "Search"
-    ) {
+    if (label === "Notifications" || label === "Search") {
       setActiveSideModal(label);
     } else {
       setActiveSideModal(null);

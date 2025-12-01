@@ -6,7 +6,7 @@ const navItems = [
   { to: "/", label: "Home" },
   { label: "Search", isModal: true },
   { to: "/explore", label: "Explore" },
-  { label: "Messages", isModal: true },
+  { to: "/direct", label: "Messages" },
   { label: "Notifications", isModal: true },
   { label: "Create", isModal: true },
 ];
