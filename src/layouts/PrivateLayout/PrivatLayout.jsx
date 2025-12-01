@@ -154,6 +154,14 @@ const PrivateLayout = () => {
 
   const currentActiveNavItem = activeNavItem ?? routeActiveNavItem;
 
+  const contentPaddingBottom = useMemo(() => {
+    if (location.pathname.startsWith("/direct")) {
+      return Math.max(Math.min(footerHeight, 48), 16);
+    }
+
+    return 16;
+  }, [footerHeight, location.pathname]);
+
   const handleOpenSideModal = (label) => {
     setActiveNavItem(label);
 
@@ -189,7 +197,11 @@ const PrivateLayout = () => {
           </div>
         </div>
         <div className={styles.content}>
-          <main ref={mainRef} className={styles.main}>
+          <main
+            ref={mainRef}
+            className={styles.main}
+            style={{ paddingBottom: `${contentPaddingBottom}px` }}
+          >
             <Outlet />
           </main>
         </div>
