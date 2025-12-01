@@ -107,6 +107,9 @@ const PrivateLayout = () => {
       animationFrame = requestAnimationFrame(calculateFooterVisibility);
     };
 
+    const contentResizeObserver = new ResizeObserver(handleScrollOrResize);
+    contentResizeObserver.observe(mainElement);
+
     calculateFooterVisibility();
 
     window.addEventListener("scroll", handleScrollOrResize, { passive: true });
@@ -119,6 +122,7 @@ const PrivateLayout = () => {
 
       window.removeEventListener("scroll", handleScrollOrResize);
       window.removeEventListener("resize", handleScrollOrResize);
+      contentResizeObserver.disconnect();
     };
   }, [footerHeight, location.pathname]);
 
