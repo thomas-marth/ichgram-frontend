@@ -1,5 +1,4 @@
 import Post from "./Post/Post";
-import DoneIcon from "../../assets/icons/DoneIcon";
 import postImage from "../../assets/images/test-post-large.jpg";
 import testUserAvatar from "../../assets/images/test-user.jpg";
 import doneIcon from "../../assets/icons/done.svg";
@@ -13,8 +12,8 @@ const mockPosts = [
     timeAgo: "2 week",
     image: postImage,
     likesCount: 101824,
-    captionTitle: "It's golden, Ponyboy!",
-    captionBody: "heyyyyy | Morning view is just amazing!",
+    captionBody:
+      "𝘐𝘵’𝘴 𝒈𝒐𝒍𝒅𝒆𝒏, 𝘗𝘰𝘯𝘺𝘣𝘰𝘺! \nheyyyyy | Morning view is just amazing!",
     commentsCount: 732,
     isLiked: true,
   },
@@ -24,8 +23,8 @@ const mockPosts = [
     timeAgo: "2 week",
     image: postImage,
     likesCount: 101824,
-    captionTitle: "It's golden, Ponyboy!",
-    captionBody: "heyyyyy | Morning view is just amazing!",
+    captionBody:
+      "𝘐𝘵’𝘴 𝒈𝒐𝒍𝒅𝒆𝒏, 𝘗𝘰𝘯𝘺𝘣𝘰𝘺! \nheyyyyy | Morning view is just amazing!",
     commentsCount: 732,
     isLiked: false,
   },
@@ -35,8 +34,8 @@ const mockPosts = [
     timeAgo: "2 week",
     image: postImage,
     likesCount: 101824,
-    captionTitle: "It's golden, Ponyboy!",
-    captionBody: "heyyyyy | Morning view is just amazing!",
+    captionBody:
+      "𝘐𝘵’𝘴 𝒈𝒐𝒍𝒅𝒆𝒏, 𝘗𝘰𝘯𝘺𝘣𝘰𝘺! \nheyyyyy | Morning view is just amazing!",
     commentsCount: 732,
     isLiked: false,
   },
@@ -46,8 +45,8 @@ const mockPosts = [
     timeAgo: "2 week",
     image: postImage,
     likesCount: 101824,
-    captionTitle: "It's golden, Ponyboy!",
-    captionBody: "heyyyyy | Morning view is just amazing!",
+    captionBody:
+      "𝘐𝘵’𝘴 𝒈𝒐𝒍𝒅𝒆𝒏, 𝘗𝘰𝘯𝘺𝘣𝘰𝘺! \n heyyyyy | Morning view is just amazing!",
     commentsCount: 732,
     isLiked: true,
   },

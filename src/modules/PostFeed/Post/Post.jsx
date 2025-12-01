@@ -12,7 +12,6 @@ const Post = ({ post }) => {
     timeAgo,
     image,
     likesCount,
-    captionTitle,
     captionBody,
     commentsCount,
     isLiked,
@@ -20,15 +19,27 @@ const Post = ({ post }) => {
 
   const [expanded, setExpanded] = useState(false);
 
+  const captionLines = useMemo(
+    () =>
+      captionBody
+        .split("|")
+        .map((line) => line.trim())
+        .filter(Boolean),
+    [captionBody]
+  );
+
+  const firstCaptionLine = captionLines[0] ?? "";
+  const remainingCaption = captionLines.slice(1).join(" | ");
+
   const truncatedCaption = useMemo(() => {
-    if (expanded || captionBody.length <= 15) {
-      return captionBody;
+    if (expanded || remainingCaption.length <= 15) {
+      return remainingCaption;
     }
 
-    return `${captionBody.slice(0, 15)}...`;
-  }, [captionBody, expanded]);
+    return `${remainingCaption.slice(0, 15)}...`;
+  }, [expanded, remainingCaption]);
 
-  const shouldShowMore = captionBody.length > 15 && !expanded;
+  const shouldShowMore = remainingCaption.length > 15 && !expanded;
 
   return (
     <article className={styles.post}>
@@ -63,19 +74,25 @@ const Post = ({ post }) => {
 
       <div className={styles.caption}>
         <span className={styles.username}>{profile.username}</span>
-        <span className={styles.captionTitle}> {captionTitle}</span>
+        {firstCaptionLine && (
+          <span className={styles.captionTitle}> {firstCaptionLine}</span>
+        )}
       </div>
 
       <div className={styles.captionBody}>
-        <span>{truncatedCaption}</span>
-        {shouldShowMore && (
-          <button
-            type="button"
-            className={styles.moreButton}
-            onClick={() => setExpanded(true)}
-          >
-            more
-          </button>
+        {remainingCaption && (
+          <>
+            <span>{truncatedCaption}</span>
+            {shouldShowMore && (
+              <button
+                type="button"
+                className={styles.moreButton}
+                onClick={() => setExpanded(true)}
+              >
+                more
+              </button>
+            )}
+          </>
         )}
       </div>
 
