@@ -1,4 +1,4 @@
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { signupUser } from "./../../redux/auth/authThunks";
 
 import Container from "../../shared/components/Container/Container";
@@ -9,8 +9,14 @@ import styles from "./Signup.module.css";
 import Logo from "./../../shared/components/Logo/Logo";
 
 const Signup = () => {
+  const { error, loading } = useSelector((store) => {
+    return {
+      loading: store.auth.loading,
+      error: store.auth.error,
+    };
+  });
   const dispatch = useDispatch();
-  const onSubmit = async (payload) => {
+  const onRegister = async (payload) => {
     dispatch(signupUser(payload));
   };
 
@@ -24,7 +30,9 @@ const Signup = () => {
               Sign up to see photos and videos from your friends.
             </p>
 
-            <SignupForm submitForm={onSubmit} />
+            <SignupForm submitForm={onRegister} />
+            {loading && <p>Register request...</p>}
+            {error && <p>{error}</p>}
           </div>
 
           <CardFooter prompt="Have an account?" linkText="Log in" to="/login" />
