@@ -24,7 +24,7 @@ const SignupForm = ({ submitForm }) => {
       <div className={styles.inputWrap}>
         <TextField
           register={register}
-          rules={{ required: "email is required" }}
+          rules={{ required: "Email is required" }}
           name="email"
           type="email"
           placeholder="Email"
@@ -33,7 +33,7 @@ const SignupForm = ({ submitForm }) => {
 
         <TextField
           register={register}
-          rules={{ required: "fullname is required" }}
+          rules={{ required: "Fullname is required" }}
           name="fullName"
           placeholder="Full Name"
           error={errors.fullName}
@@ -41,7 +41,7 @@ const SignupForm = ({ submitForm }) => {
 
         <TextField
           register={register}
-          rules={{ required: "username is required" }}
+          rules={{ required: "Username is required" }}
           name="username"
           placeholder="Username"
           error={errors.username}
@@ -49,7 +49,7 @@ const SignupForm = ({ submitForm }) => {
 
         <TextField
           register={register}
-          rules={{ required: "password required" }}
+          rules={{ required: "Password required" }}
           name="password"
           type="password"
           placeholder="Password"
