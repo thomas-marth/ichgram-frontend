@@ -1,15 +1,11 @@
 import axios from "axios";
 
-const { VITE_API_URL } = import.meta.env;
+// console.log(import.meta.env);
 
-const apiBase = VITE_API_URL ?? window.location.origin;
-const normalizedBase = apiBase.endsWith("/") ? apiBase.slice(0, -1) : apiBase;
-const baseURL = normalizedBase.endsWith("/api")
-  ? normalizedBase
-  : `${normalizedBase}/api`;
-
+const { VITE_API_URL: baseURL } = import.meta.env;
+// console.log(baseURL);
 const authInstance = axios.create({
-  baseURL,
+  baseURL: `${baseURL}/api`,
   withCredentials: true,
 });
 
