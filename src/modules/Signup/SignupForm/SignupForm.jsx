@@ -6,7 +6,7 @@ import Button from "../../../shared/components/Button/Button";
 import signupStyles from "../Signup.module.css";
 import styles from "./SignupForm.module.css";
 
-const SignupForm = () => {
+const SignupForm = ({ submitForm }) => {
   const {
     register,
     handleSubmit,
@@ -15,7 +15,7 @@ const SignupForm = () => {
   } = useForm();
 
   const onSubmit = async (values) => {
-    console.log(values);
+    submitForm(values);
     reset();
   };
 
@@ -24,6 +24,7 @@ const SignupForm = () => {
       <div className={styles.inputWrap}>
         <TextField
           register={register}
+          rules={{ required: "email is required" }}
           name="email"
           type="email"
           placeholder="Email"
@@ -32,6 +33,7 @@ const SignupForm = () => {
 
         <TextField
           register={register}
+          rules={{ required: "fullname is required" }}
           name="fullName"
           placeholder="Full Name"
           error={errors.fullName}
@@ -39,6 +41,7 @@ const SignupForm = () => {
 
         <TextField
           register={register}
+          rules={{ required: "username is required" }}
           name="username"
           placeholder="Username"
           error={errors.username}
@@ -46,6 +49,7 @@ const SignupForm = () => {
 
         <TextField
           register={register}
+          rules={{ required: "password required" }}
           name="password"
           type="password"
           placeholder="Password"
