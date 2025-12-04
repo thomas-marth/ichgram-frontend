@@ -7,6 +7,7 @@ const initialState = {
   error: null,
   accessToken: null,
   refreshToken: null,
+  isSignupSuccess: false,
 };
 
 const authSlice = createSlice({
@@ -23,6 +24,7 @@ const authSlice = createSlice({
       .addCase(signupUser.fulfilled, (state, { payload }) => {
         state.loading = false;
         state.user = payload.user || null;
+        state.isSignupSuccess = true;
         state.accessToken = payload.accessToken || null;
         state.refreshToken = payload.refreshToken || null;
       })

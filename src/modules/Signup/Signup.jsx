@@ -1,24 +1,25 @@
 import { useSelector, useDispatch } from "react-redux";
+import { Navigate } from "react-router-dom";
+
 import { signupUser } from "./../../redux/auth/authThunks";
+import { selectAuthRequest } from "../../redux/auth/authSelectors";
 
 import Container from "../../shared/components/Container/Container";
 import CardFooter from "../../shared/components/CardFooter/CardFooter";
 import SignupForm from "./SignupForm/SignupForm";
-
-import styles from "./Signup.module.css";
 import Logo from "./../../shared/components/Logo/Logo";
 
+import styles from "./Signup.module.css";
+
 const Signup = () => {
-  const { error, loading } = useSelector((store) => {
-    return {
-      loading: store.auth.loading,
-      error: store.auth.error,
-    };
-  });
+  const { error, loading, isSignupSuccess } = useSelector(selectAuthRequest);
   const dispatch = useDispatch();
+
   const onRegister = async (payload) => {
     dispatch(signupUser(payload));
   };
+
+  if (isSignupSuccess) return <Navigate to="/login" />;
 
   return (
     <Container>
@@ -30,9 +31,12 @@ const Signup = () => {
               Sign up to see photos and videos from your friends.
             </p>
 
-            <SignupForm submitForm={onRegister} />
+            <SignupForm
+              requestErrors={error}
+              isSubmitSuccess={isSignupSuccess}
+              submitForm={onRegister}
+            />
             {loading && <p>Register request...</p>}
-            {error && <p>{error}</p>}
           </div>
 
           <CardFooter prompt="Have an account?" linkText="Log in" to="/login" />

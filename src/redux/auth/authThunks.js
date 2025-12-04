@@ -8,7 +8,9 @@ export const signupUser = createAsyncThunk(
       const data = await authApi.signupUserApi(payload);
       return data;
     } catch (error) {
-      return rejectWithValue(error?.response?.data?.message || error?.message);
+      return rejectWithValue({
+        email: error?.response?.data.message || error?.message,
+      });
     }
   }
 );

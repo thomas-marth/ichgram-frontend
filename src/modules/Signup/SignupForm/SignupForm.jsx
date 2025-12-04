@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
@@ -6,17 +7,33 @@ import Button from "../../../shared/components/Button/Button";
 import signupStyles from "../Signup.module.css";
 import styles from "./SignupForm.module.css";
 
-const SignupForm = ({ submitForm }) => {
+const SignupForm = ({ requestErrors, isSubmitSuccess, submitForm }) => {
   const {
     register,
     handleSubmit,
+    setError,
     reset,
     formState: { errors },
   } = useForm();
 
+  useEffect(() => {
+    if (requestErrors) {
+      for (const key in requestErrors) {
+        setError(key, {
+          message: requestErrors[key],
+        });
+      }
+    }
+  }, [requestErrors, setError]);
+
+  useEffect(() => {
+    if (isSubmitSuccess) {
+      reset();
+    }
+  }, [isSubmitSuccess, reset]);
+
   const onSubmit = async (values) => {
     submitForm(values);
-    reset();
   };
 
   return (
