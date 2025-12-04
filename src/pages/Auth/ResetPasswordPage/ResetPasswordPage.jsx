@@ -1,10 +1,10 @@
-import Header from "./Header";
+// import Header from "./Header";
 import ResetPassword from "../../../modules/ResetPassword/ResetPassword";
 
 const ResetPasswordPage = () => {
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       <ResetPassword />;
     </>
   );
