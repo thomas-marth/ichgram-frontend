@@ -1,5 +1,5 @@
 import axios from "axios";
-import { store } from "../../store/store";
+import { store } from "../../redux/store";
 
 // console.log(import.meta.env);
 
