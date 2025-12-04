@@ -1,9 +1,7 @@
-import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Navigate } from "react-router-dom";
 
 import { signupUser } from "./../../redux/auth/authThunks";
-import { resetSignupStatus } from "../../redux/auth/authSlice";
 import { selectAuthRequest } from "../../redux/auth/authSelectors";
 
 import Container from "../../shared/components/Container/Container";
@@ -16,10 +14,6 @@ import styles from "./Signup.module.css";
 const Signup = () => {
   const { error, loading, isSignupSuccess } = useSelector(selectAuthRequest);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(resetSignupStatus());
-  }, [dispatch]);
 
   const onRegister = async (payload) => {
     dispatch(signupUser(payload));

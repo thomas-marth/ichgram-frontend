@@ -1,7 +1,9 @@
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Navigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { loginUser } from "./../../redux/auth/authThunks";
+import { resetSignupStatus } from "../../redux/auth/authSlice";
 import { selectAuthRequest } from "../../redux/auth/authSelectors";
 
 import Container from "../../shared/components/Container/Container";
@@ -15,6 +17,10 @@ import styles from "./Login.module.css";
 const Login = () => {
   const { error, loading } = useSelector(selectAuthRequest);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(resetSignupStatus());
+  }, [dispatch]);
 
   const onLogin = async (payload) => {
     dispatch(loginUser(payload));
