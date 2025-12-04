@@ -9,6 +9,19 @@ const instance = axios.create({
   baseURL: `${baseURL}/api`,
 });
 
+instance.interceptors.request.use(
+  (config) => {
+    const { auth } = store.getState();
+
+    if (auth.accessToken) {
+      config.headers.Authorization = `Bearer ${auth.accessToken}`;
+    }
+
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 instance.interceptors.response.use(
   (res) => res,
   async (error) => {
