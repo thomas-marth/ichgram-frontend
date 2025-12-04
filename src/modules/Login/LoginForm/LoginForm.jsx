@@ -4,7 +4,7 @@ import TextField from "../../../shared/components/TextField/TextField";
 import Button from "../../../shared/components/Button/Button";
 import styles from "./LoginForm.module.css";
 
-const LoginForm = () => {
+const LoginForm = ({ submitForm }) => {
   const {
     register,
     handleSubmit,
@@ -13,7 +13,7 @@ const LoginForm = () => {
   } = useForm();
 
   const onSubmit = async (values) => {
-    console.log(values);
+    submitForm(values);
     reset();
   };
 
