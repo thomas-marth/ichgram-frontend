@@ -14,3 +14,17 @@ export const signupUser = createAsyncThunk(
     }
   }
 );
+
+export const loginUser = createAsyncThunk(
+  "auth/login",
+  async (payload, { rejectWithValue }) => {
+    try {
+      const data = await authApi.loginUserApi(payload);
+      return data;
+    } catch (error) {
+      return rejectWithValue({
+        email: error?.response?.data.message || error?.message,
+      });
+    }
+  }
+);

@@ -51,9 +51,9 @@ const SignupForm = ({ requestErrors, isSubmitSuccess, submitForm }) => {
         <TextField
           register={register}
           rules={{ required: "Fullname is required" }}
-          name="fullName"
+          name="fullname"
           placeholder="Full Name"
-          error={errors.fullName}
+          error={errors.fullname}
         />
 
         <TextField

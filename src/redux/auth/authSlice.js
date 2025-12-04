@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { signupUser } from "./authThunks";
+import { signupUser, loginUser } from "./authThunks";
 
 const initialState = {
   user: null,
@@ -25,10 +25,25 @@ const authSlice = createSlice({
         state.loading = false;
         state.user = payload.user || null;
         state.isSignupSuccess = true;
+        // state.accessToken = payload.accessToken || null;
+        // state.refreshToken = payload.refreshToken || null;
+      })
+      .addCase(signupUser.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.error = payload;
+      })
+      .addCase(loginUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(loginUser.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.user = payload.user || null;
+        state.isSignupSuccess = true;
         state.accessToken = payload.accessToken || null;
         state.refreshToken = payload.refreshToken || null;
       })
-      .addCase(signupUser.rejected, (state, { payload }) => {
+      .addCase(loginUser.rejected, (state, { payload }) => {
         state.loading = false;
         state.error = payload;
       });
