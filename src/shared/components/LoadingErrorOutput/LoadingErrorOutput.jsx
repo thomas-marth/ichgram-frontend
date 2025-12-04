@@ -1,14 +1,21 @@
 import styles from "./LoadingErrorOutput.module.css";
 
-export default function LoadingErrorOutput({ loading, error }) {
-  if (!loading && !error) return null;
+export default function LoadingErrorOutput({ loading, error, message }) {
+  const hasContent = loading || error || message;
+
+  if (!hasContent) return null;
 
   return (
     <div className={styles.wrapper} role="status" aria-live="polite">
       {loading && <p className={styles.message}>Loading recommendations...</p>}
+      {message && !loading && !error && (
+        <p className={styles.message}>{message}</p>
+      )}
       {error && !loading && (
         <p className={styles.message}>
-          Something went wrong. Please try again.
+          {typeof error === "string"
+            ? error
+            : "Something went wrong. Please try again."}
         </p>
       )}
     </div>

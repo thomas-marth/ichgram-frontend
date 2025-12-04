@@ -1,17 +1,13 @@
 .explore {
   width: fit-content;
   max-width: 959px;
-  margin-inline: auto;
+  margin: 0 auto;
   padding: 89px 0px 91px 0px;
   display: grid;
   gap: 0.25rem;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   grid-auto-rows: auto;
   counter-reset: div;
-  margin: 0 auto;
-
-  /* height: 100%;
-  overflow-y: auto; */
 }
 
 .explore div:nth-child(10n + 3),

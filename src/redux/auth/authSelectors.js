@@ -5,3 +5,5 @@ export const selectAuthRequest = (store) => {
     isSignupSuccess: store.auth.isSignupSuccess,
   };
 };
+
+export const selectUser = (store) => store.auth.user;
