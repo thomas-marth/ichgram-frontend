@@ -103,3 +103,13 @@
 .websiteLink:visited {
   color: var(--color-link-visited);
 }
+
+.logout {
+  margin-left: 55px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.logout:hover {
+  color: var(--secondary-color);
+}

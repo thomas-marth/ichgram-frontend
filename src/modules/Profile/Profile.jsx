@@ -119,6 +119,9 @@ const Profile = ({ user }) => {
                 </Button>
               </Link>
             )}
+            <Link to="/logout" className={styles.logout}>
+              Logout
+            </Link>
           </div>
           <div className={styles.stats}>
             <div className={styles.statsItem}>
