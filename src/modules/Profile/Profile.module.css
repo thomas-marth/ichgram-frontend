@@ -32,7 +32,7 @@
 .headline {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1.38rem;
 }
 
 .handle {
@@ -49,7 +49,7 @@
 
 .actionButton {
   width: auto;
-  padding: 0.5rem 65px;
+  padding: 0.5rem 3.13rem;
 
   font-weight: 600;
 }

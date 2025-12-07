@@ -11,19 +11,19 @@ import styles from "./ProfilePage.module.css";
 const mockProfiles = {
   1: {
     id: 1,
-    username: "ichgram",
+    username: "itcareerhub",
     website: "https://ichgram.com",
     about: `• Гарантия помощи с трудоустройством в ведущие IT-компании  \n
       • Выпускники зарабатывают от 45к евро \n БЕСПЛАТНАЯ консультация`,
-    totalPosts: 24,
-    totalFollowers: 1250,
-    totalFollows: 410,
+    totalPosts: 129,
+    totalFollowers: 9993,
+    totalFollows: 59,
     avatar: profileLogo,
     isFollowed: true,
   },
   2: {
     id: 2,
-    username: "ichgram-friend",
+    username: "itcareerhub",
     website: "https://friend.ichgram.com",
     about: "Capturing city lights, coding, and coffee.",
     totalPosts: 18,
