@@ -85,10 +85,9 @@
   background: none;
   padding: 0;
   margin-left: 0.25rem;
-
-  color: var(--color-link-primary);
-  font-size: 0.8rem;
-  font-weight: 600;
+  color: var(--secondary-color);
+  font-size: 0.88rem;
+  font-weight: 400;
   line-height: inherit;
   vertical-align: baseline;
   cursor: pointer;
