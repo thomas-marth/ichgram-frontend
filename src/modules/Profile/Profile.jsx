@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
+import Avatar from "../../shared/components/Avatar/Avatar";
 import Button from "../../shared/components/Button/Button";
 import LoadingErrorOutput from "../../shared/components/LoadingErrorOutput/LoadingErrorOutput";
 
@@ -38,10 +39,7 @@ const Profile = ({ user }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [message, setMessage] = useState(null);
-
-  useEffect(() => {
-    setProfileData(user);
-  }, [user]);
+  const [isAboutExpanded, setIsAboutExpanded] = useState(false);
 
   const isOwner = authorizedUser?.id === profileData?.id;
 
@@ -49,6 +47,21 @@ const Profile = ({ user }) => {
     () => buildAvatar(profileData?.avatar),
     [profileData?.avatar]
   );
+
+  const aboutText = useMemo(() => {
+    const rawAbout = profileData?.about ?? "";
+    return rawAbout
+      .split("\n")
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .join("\n");
+  }, [profileData?.about]);
+  const shouldTruncateAbout = aboutText.length > 108;
+  const displayedAbout = useMemo(() => {
+    if (!shouldTruncateAbout || isAboutExpanded) return aboutText;
+
+    return `${aboutText.slice(0, 108)}...`;
+  }, [aboutText, isAboutExpanded, shouldTruncateAbout]);
 
   const handleFollow = async () => {
     if (!profileData) return;
@@ -79,7 +92,7 @@ const Profile = ({ user }) => {
       <LoadingErrorOutput loading={loading} error={error} message={message} />
       <div className={styles.profileTop}>
         <div className={styles.avatarWrapper}>
-          <img src={avatarUrl} alt="" className={styles.avatar} />
+          <Avatar size="xl" src={avatarUrl} alt="User avatar" withGradient />
         </div>
         <div className={styles.contentArea}>
           <div className={styles.headline}>
@@ -100,15 +113,16 @@ const Profile = ({ user }) => {
               </Button>
             )}
             {!isOwner ? (
-              <Link
-                to={`/messages/${profileData?.id}`}
-                className={styles.actionLink}
-              >
-                Message
+              <Link to={`/messages/${profileData?.id}`}>
+                <Button variant="gray" className={styles.actionButton}>
+                  Message
+                </Button>
               </Link>
             ) : (
-              <Link to="edit" className={styles.actionLink}>
-                Edit profile
+              <Link to="edit">
+                <Button variant="gray" className={styles.actionButton}>
+                  Edit profile
+                </Button>
               </Link>
             )}
           </div>
@@ -124,7 +138,21 @@ const Profile = ({ user }) => {
             >{`${profileData?.totalFollows} following`}</span>
           </div>
           <div>
-            <p className={styles.about}>{profileData?.about}</p>
+            <p className={styles.about}>
+              {displayedAbout}
+              {shouldTruncateAbout && (
+                <>
+                  {" "}
+                  <button
+                    type="button"
+                    className={styles.toggleAbout}
+                    onClick={() => setIsAboutExpanded((prev) => !prev)}
+                  >
+                    {isAboutExpanded ? "less" : "more"}
+                  </button>
+                </>
+              )}
+            </p>
           </div>
           <div>
             <Link

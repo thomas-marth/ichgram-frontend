@@ -4,13 +4,15 @@
 
 .profileTop {
   display: grid;
-  grid-template-columns: 1fr 3fr 0.5fr;
-  gap: 6rem;
+  grid-template-columns: 1fr 3fr;
+  gap: 5.31rem;
+  align-items: flex-start;
 }
 
 .avatarWrapper {
-  width: 150px;
-  height: 150px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
 }
 
 .avatar {
@@ -23,6 +25,7 @@
 .contentArea {
   display: flex;
   flex-direction: column;
+  max-width: 434px;
   gap: 1.5rem;
 }
 
@@ -44,15 +47,11 @@
   padding: 0.5rem 3rem;
 }
 
-.actionLink {
-  text-decoration: none;
-  color: var(--color-text-primary);
-  border-radius: 0.5rem;
-  font-size: 14px;
+.actionButton {
+  width: auto;
+  padding: 0.5rem 65px;
+
   font-weight: 600;
-  padding: 0.5rem 4rem;
-  border: none;
-  background-color: var(--color-background-button-secondary);
 }
 
 .stats {
@@ -67,6 +66,23 @@
 
 .about {
   font-size: 0.8rem;
+  line-height: 1.4;
+  white-space: pre-line;
+  margin: 0;
+}
+
+.toggleAbout {
+  border: none;
+  background: none;
+  padding: 0;
+  margin-left: 0.25rem;
+
+  color: var(--color-link-primary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: inherit;
+  vertical-align: baseline;
+  cursor: pointer;
 }
 
 .websiteLink {

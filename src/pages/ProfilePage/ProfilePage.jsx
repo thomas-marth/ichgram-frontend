@@ -13,7 +13,8 @@ const mockProfiles = {
     id: 1,
     username: "ichgram",
     website: "https://ichgram.com",
-    about: "Photography, travel, and everyday inspirations.",
+    about: `• Гарантия помощи с трудоустройством в ведущие IT-компании  \n
+      • Выпускники зарабатывают от 45к евро \n БЕСПЛАТНАЯ консультация`,
     totalPosts: 24,
     totalFollowers: 1250,
     totalFollows: 410,
@@ -44,7 +45,7 @@ const ProfilePage = () => {
 
   return (
     <div className={styles.profilePage}>
-      <Profile user={profileData} />
+      <Profile key={profileData?.id ?? "profile"} user={profileData} />
     </div>
   );
 };
