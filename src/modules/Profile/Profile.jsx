@@ -16,7 +16,7 @@ const { VITE_API_URL: baseURL } = import.meta.env;
 
 const defaultCurrentUser = {
   id: 1,
-  username: "ichgram",
+  username: "itcareerhub",
   website: "https://ichgram.com",
   about: "Photographer, traveler, and coffee lover.",
   totalPosts: 12,
@@ -127,15 +127,24 @@ const Profile = ({ user }) => {
             )}
           </div>
           <div className={styles.stats}>
-            <span
-              className={styles.statsItem}
-            >{`${profileData?.totalPosts} posts`}</span>
-            <span
-              className={styles.statsItem}
-            >{`${profileData?.totalFollowers} followers`}</span>
-            <span
-              className={styles.statsItem}
-            >{`${profileData?.totalFollows} following`}</span>
+            <div className={styles.statsItem}>
+              <span className={styles.statsNumber}>
+                {profileData?.totalPosts}{" "}
+              </span>
+              <span>posts</span>
+            </div>
+            <div className={styles.statsItem}>
+              <span className={styles.statsNumber}>
+                {profileData?.totalFollowers}{" "}
+              </span>
+              <span>followers</span>
+            </div>
+            <div className={styles.statsItem}>
+              <span className={styles.statsNumber}>
+                {profileData?.totalFollows}{" "}
+              </span>
+              <span>following</span>
+            </div>
           </div>
           <div>
             <p className={styles.about}>

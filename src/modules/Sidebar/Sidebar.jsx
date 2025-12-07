@@ -42,7 +42,7 @@ const navItems = [
     isModal: true,
   },
   { label: "Create", icon: CreateIcon, isModal: true },
-  { to: "/profile", label: "Profile", icon: UserIcon },
+  { to: "/profile/1", label: "Profile", icon: UserIcon },
 ];
 
 const Sidebar = ({
