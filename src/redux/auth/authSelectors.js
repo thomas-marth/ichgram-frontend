@@ -7,3 +7,4 @@ export const selectAuthRequest = (store) => {
 };
 
 export const selectUser = (store) => store.auth.user;
+export const selectIsAuthenticated = (store) => Boolean(store.auth.accessToken);

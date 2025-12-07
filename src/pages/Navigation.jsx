@@ -6,12 +6,14 @@ import LoginPage from "./Auth/LoginPage/LoginPage";
 import SignupPage from "./Auth/SignupPage/SignupPage";
 import ConfirmPage from "./Auth/ConfirmPage/ConfirmPage";
 import ResetPasswordPage from "./Auth/ResetPasswordPage/ResetPasswordPage";
+import LogoutPage from "./Auth/LogoutPage/LogoutPage";
 
 import PrivateLayout from "./../layouts/PrivateLayout/PrivatLayout";
 import HomePage from "./HomePage/HomePage";
 import ExplorePage from "./ExplorePage/ExplorePage";
 import MessagesPage from "./MessagesPage/MessagesPage";
 import ProfilePage from "./ProfilePage/ProfilePage";
+import ProtectedRoute from "../shared/components/ProtectedRoute/ProtectedRoute";
 
 import CookiesPolicyPage from "./CookiesPolicyPage/CookiesPolicyPage";
 import PrivacyPolicyPage from "./PrivacyPolicyPage/PrivacyPolicyPage";
@@ -30,7 +32,15 @@ const Navigation = () => {
       <Route path="/cookies" element={<CookiesPolicyPage />} />
       <Route path="/privacy" element={<PrivacyPolicyPage />} />
       <Route path="/terms" element={<TermsPage />} />
-      <Route path="/" element={<PrivateLayout />}>
+      <Route path="/logout" element={<LogoutPage />} />
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <PrivateLayout />
+          </ProtectedRoute>
+        }
+      >
         <Route index element={<HomePage />} />
         <Route path="/profile/:id" element={<ProfilePage />} />
         <Route path="profile/:id/edit" element={<EditProfilePage />} />

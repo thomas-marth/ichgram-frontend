@@ -18,6 +18,7 @@ const authSlice = createSlice({
       state.isSignupSuccess = false;
       state.error = null;
     },
+    logout: () => ({ ...initialState }),
   },
 
   extraReducers: (builder) => {
@@ -54,5 +55,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { resetSignupStatus } = authSlice.actions;
+export const resetSignupStatus = authSlice.actions.resetSignupStatus;
+export const logout = authSlice.actions.logout;
 export default authSlice.reducer;
