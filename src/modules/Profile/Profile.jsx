@@ -5,25 +5,14 @@ import { useMemo, useState } from "react";
 import Avatar from "../../shared/components/Avatar/Avatar";
 import Button from "../../shared/components/Button/Button";
 import LoadingErrorOutput from "../../shared/components/LoadingErrorOutput/LoadingErrorOutput";
+import { mockProfiles } from "../../shared/mocks/mockProfiles";
 
 import { selectUser } from "../../redux/auth/authSelectors";
 import { followUserApi } from "../../shared/api/follow-api";
-import fallbackAvatar from "../../assets/images/ich-profile-logo.png";
 
 import styles from "./Profile.module.css";
 
 const { VITE_API_URL: baseURL } = import.meta.env;
-
-const defaultCurrentUser = {
-  id: 1,
-  username: "itcareerhub",
-  website: "https://ichgram.com",
-  about: "Photographer, traveler, and coffee lover.",
-  totalPosts: 12,
-  totalFollowers: 845,
-  totalFollows: 379,
-  avatar: fallbackAvatar,
-};
 
 const buildAvatar = (avatar) => {
   if (!avatar) return "";
@@ -33,7 +22,10 @@ const buildAvatar = (avatar) => {
 };
 
 const Profile = ({ user }) => {
-  const authorizedUser = useSelector(selectUser) ?? defaultCurrentUser;
+  const reduxUser = useSelector(selectUser);
+  const testCurrentUser = mockProfiles[1];
+  const authorizedUser =
+    reduxUser && reduxUser.id ? reduxUser : testCurrentUser;
 
   const [profileData, setProfileData] = useState(user);
   const [loading, setLoading] = useState(false);
@@ -41,7 +33,9 @@ const Profile = ({ user }) => {
   const [message, setMessage] = useState(null);
   const [isAboutExpanded, setIsAboutExpanded] = useState(false);
 
-  const isOwner = authorizedUser?.id === profileData?.id;
+  const isOwner =
+    String(profileData?.id ?? "") === String(testCurrentUser?.id ?? "") ||
+    String(authorizedUser?.id ?? "") === String(profileData?.id ?? "");
 
   const avatarUrl = useMemo(
     () => buildAvatar(profileData?.avatar),

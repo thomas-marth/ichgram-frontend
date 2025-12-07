@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 
 import Profile from "../../modules/Profile/Profile";
 import Explore from "../../modules/Explore/Explore";
-import profileLogo from "../../assets/images/ich-profile-logo.png";
+import { mockProfiles } from "../../shared/mocks/mockProfiles";
 import postImage1 from "../../assets/images/post-image1.jpg";
 import postImage2 from "../../assets/images/post-image2.jpg";
 import postImage3 from "../../assets/images/post-image3.jpg";
@@ -14,32 +14,6 @@ import postImage6 from "../../assets/images/post-image6.jpg";
 
 // import Button from "./../../shared/components/Button/Button";
 import styles from "./ProfilePage.module.css";
-
-const mockProfiles = {
-  1: {
-    id: 1,
-    username: "itcareerhub",
-    website: "bit.ly/3rpiIbh",
-    about: `• Гарантия помощи с трудоустройством в ведущие IT-компании  \n
-      • Выпускники зарабатывают от 45к евро \n БЕСПЛАТНАЯ консультация`,
-    totalPosts: 129,
-    totalFollowers: 9993,
-    totalFollows: 59,
-    avatar: profileLogo,
-    isFollowed: true,
-  },
-  2: {
-    id: 2,
-    username: "ichgram-friend",
-    website: "bit.ly/3rpiIbh",
-    about: "Capturing city lights, coding, and coffee.",
-    totalPosts: 18,
-    totalFollowers: 960,
-    totalFollows: 310,
-    avatar: profileLogo,
-    isFollowed: false,
-  },
-};
 
 const ProfilePage = () => {
   const { id } = useParams();
