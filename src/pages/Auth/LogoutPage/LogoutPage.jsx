@@ -2,15 +2,22 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import { logout } from "../../../redux/auth/authSlice.js";
+import { logoutUser } from "../../../redux/auth/authThunks";
 
 const LogoutPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(logout());
-    navigate("/login", { replace: true });
+    const processLogout = async () => {
+      try {
+        await dispatch(logoutUser()).unwrap();
+      } finally {
+        navigate("/login", { replace: true });
+      }
+    };
+
+    processLogout();
   }, [dispatch, navigate]);
 
   return null;

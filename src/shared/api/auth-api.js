@@ -21,7 +21,7 @@ export const refreshTokensApi = async () => {
 };
 
 export const logoutUserApi = async () => {
-  const { data } = await instance.get("/auth/logout");
+  const { data } = await instance.post("/auth/logout");
   return data;
 };
 

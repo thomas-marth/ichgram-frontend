@@ -1,5 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { signupUser, loginUser, getCurrentUser } from "./authThunks";
+import {
+  signupUser,
+  loginUser,
+  getCurrentUser,
+  logoutUser,
+} from "./authThunks";
 
 const initialState = {
   user: null,
@@ -18,7 +23,6 @@ const authSlice = createSlice({
       state.isSignupSuccess = false;
       state.error = null;
     },
-    logout: () => ({ ...initialState }),
   },
 
   extraReducers: (builder) => {
@@ -67,10 +71,21 @@ const authSlice = createSlice({
         state.error = payload;
         state.accessToken = null;
         state.refreshToken = null;
+      })
+      .addCase(logoutUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(logoutUser.fulfilled, () => ({ ...initialState }))
+      .addCase(logoutUser.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.error = payload;
+        state.user = null;
+        state.accessToken = null;
+        state.refreshToken = null;
       });
   },
 });
 
 export const resetSignupStatus = authSlice.actions.resetSignupStatus;
-export const logout = authSlice.actions.logout;
 export default authSlice.reducer;

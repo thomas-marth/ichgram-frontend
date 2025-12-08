@@ -43,3 +43,17 @@ export const getCurrentUser = createAsyncThunk(
     }
   }
 );
+
+export const logoutUser = createAsyncThunk(
+  "auth/logout",
+  async (_, { rejectWithValue }) => {
+    try {
+      const data = await authApi.logoutUserApi();
+      return data;
+    } catch (error) {
+      return rejectWithValue({
+        message: error?.response?.data?.message || error?.message,
+      });
+    }
+  }
+);
