@@ -24,3 +24,12 @@ export const logoutUserApi = async () => {
   const { data } = await instance.get("/auth/logout");
   return data;
 };
+
+export const getCurrentUserApi = async (accessToken) => {
+  const { data } = await instance.get("/auth/current", {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  return data;
+};

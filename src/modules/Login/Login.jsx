@@ -1,13 +1,8 @@
-import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { loginUser } from "./../../redux/auth/authThunks";
-import { resetSignupStatus } from "../../redux/auth/authSlice";
-import {
-  selectAuthRequest,
-  selectIsAuthenticated,
-} from "../../redux/auth/authSelectors";
+import { selectAuthRequest } from "../../redux/auth/authSelectors";
 
 import Container from "../../shared/components/Container/Container";
 import CardFooter from "../../shared/components/CardFooter/CardFooter";
@@ -19,19 +14,8 @@ import styles from "./Login.module.css";
 
 const Login = () => {
   const { error, loading } = useSelector(selectAuthRequest);
-  const isAuthenticated = useSelector(selectIsAuthenticated);
+
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    dispatch(resetSignupStatus());
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/", { replace: true });
-    }
-  }, [isAuthenticated, navigate]);
 
   const onLogin = async (payload) => {
     dispatch(loginUser(payload));

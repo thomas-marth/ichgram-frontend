@@ -1,20 +1,30 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import TextField from "../../../shared/components/TextField/TextField";
 import Button from "../../../shared/components/Button/Button";
 import styles from "./LoginForm.module.css";
 
-const LoginForm = ({ submitForm }) => {
+const LoginForm = ({ requestErrors, submitForm }) => {
   const {
     register,
     handleSubmit,
-    reset,
+    setError,
     formState: { errors },
   } = useForm();
 
+  useEffect(() => {
+    if (requestErrors) {
+      for (const key in requestErrors) {
+        setError(key, {
+          message: requestErrors[key],
+        });
+      }
+    }
+  }, [requestErrors, setError]);
+
   const onSubmit = async (values) => {
     submitForm(values);
-    reset();
   };
 
   return (
@@ -23,6 +33,7 @@ const LoginForm = ({ submitForm }) => {
         <TextField
           register={register}
           name="email"
+          rules={{ required: "Email or username is required" }}
           placeholder="Username, or email"
           error={errors.email}
         />
@@ -30,6 +41,7 @@ const LoginForm = ({ submitForm }) => {
         <TextField
           register={register}
           name="password"
+          rules={{ required: "Password required" }}
           type="password"
           placeholder="Password"
           error={errors.password}

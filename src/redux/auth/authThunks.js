@@ -28,3 +28,18 @@ export const loginUser = createAsyncThunk(
     }
   }
 );
+
+export const getCurrentUser = createAsyncThunk(
+  "current",
+  async (_, { rejectWithValue, getState }) => {
+    try {
+      const { auth } = getState();
+      const data = await authApi.getCurrentUserApi(auth.accessToken);
+      return data;
+    } catch (error) {
+      return rejectWithValue({
+        email: error?.response?.data.message || error?.message,
+      });
+    }
+  }
+);

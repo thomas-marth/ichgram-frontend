@@ -13,7 +13,8 @@ import HomePage from "./HomePage/HomePage";
 import ExplorePage from "./ExplorePage/ExplorePage";
 import MessagesPage from "./MessagesPage/MessagesPage";
 import ProfilePage from "./ProfilePage/ProfilePage";
-import ProtectedRoute from "../shared/components/ProtectedRoute/ProtectedRoute";
+import PublicRoute from "./../shared/components/PublicRoute/PublicRoute";
+import PrivateRoute from "../shared/components/PrivateRoute/PrivateRoute";
 
 import CookiesPolicyPage from "./CookiesPolicyPage/CookiesPolicyPage";
 import PrivacyPolicyPage from "./PrivacyPolicyPage/PrivacyPolicyPage";
@@ -24,21 +25,22 @@ import EditProfilePage from "./ProfilePage/EditProfilePage/EditProfilePage";
 const Navigation = () => {
   return (
     <Routes>
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/signup" element={<SignupPage />} />
-      <Route path="/reset" element={<ResetPasswordPage />} />
-      <Route path="/confirm" element={<ConfirmPage />} />
-      <Route path="/learn-more" element={<LearnMorePage />} />
-      <Route path="/cookies" element={<CookiesPolicyPage />} />
-      <Route path="/privacy" element={<PrivacyPolicyPage />} />
-      <Route path="/terms" element={<TermsPage />} />
-      <Route path="/logout" element={<LogoutPage />} />
+      <Route element={<PublicRoute />}>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/reset" element={<ResetPasswordPage />} />
+        <Route path="/confirm" element={<ConfirmPage />} />
+        <Route path="/learn-more" element={<LearnMorePage />} />
+        <Route path="/cookies" element={<CookiesPolicyPage />} />
+        <Route path="/privacy" element={<PrivacyPolicyPage />} />
+        <Route path="/terms" element={<TermsPage />} />
+      </Route>
       <Route
         path="/"
         element={
-          <ProtectedRoute>
+          <PrivateRoute>
             <PrivateLayout />
-          </ProtectedRoute>
+          </PrivateRoute>
         }
       >
         <Route index element={<HomePage />} />
@@ -47,6 +49,7 @@ const Navigation = () => {
         <Route path="direct" element={<MessagesPage />} />
         <Route path="direct/:id" element={<MessagesPage />} />
         <Route path="explore" element={<ExplorePage />} />
+        <Route path="/logout" element={<LogoutPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
