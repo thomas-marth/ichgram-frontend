@@ -14,7 +14,8 @@
 .sidebarColumn {
   width: 245px;
   background-color: var(--background-color);
-  border-right: 1px solid var(--border-color);
+  box-shadow: 3px 0 12px -3px rgba(0, 0, 0, 0.1);
+  /* border-right: 1px solid var(--border-color); */
   display: flex;
   position: relative;
   z-index: 20;
