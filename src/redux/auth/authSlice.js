@@ -23,6 +23,12 @@ const authSlice = createSlice({
       state.isSignupSuccess = false;
       state.error = null;
     },
+    logout: () => initialState,
+    setCredentials: (state, { payload }) => {
+      state.user = payload.user;
+      state.accessToken = payload.accessToken;
+      state.refreshToken = payload.refreshToken;
+    },
   },
 
   extraReducers: (builder) => {
@@ -87,5 +93,5 @@ const authSlice = createSlice({
   },
 });
 
-export const resetSignupStatus = authSlice.actions.resetSignupStatus;
+export const { resetSignupStatus, logout, setCredentials } = authSlice.actions;
 export default authSlice.reducer;
