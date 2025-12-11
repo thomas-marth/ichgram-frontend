@@ -72,9 +72,10 @@ const authSlice = createSlice({
         state.accessToken = payload.accessToken;
         state.refreshToken = payload.refreshToken;
       })
-      .addCase(getCurrentUser.rejected, (state, { payload }) => {
+      .addCase(getCurrentUser.rejected, (state) => {
         state.loading = false;
-        state.error = payload;
+        state.error = null;
+        state.user = null;
         state.accessToken = null;
         state.refreshToken = null;
       })
