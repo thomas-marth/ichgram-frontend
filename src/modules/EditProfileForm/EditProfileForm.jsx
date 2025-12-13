@@ -1,44 +1,25 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import Avatar from "../../shared/components/Avatar/Avatar";
 import Button from "../../shared/components/Button/Button";
 import instance from "../../shared/api/instance";
 import { setCredentials } from "../../redux/auth/authSlice";
-import { getCurrentUser } from "../../redux/auth/authThunks";
 import noPhoto from "../../assets/images/noPhoto.png";
 
 import styles from "./EditProfileForm.module.css";
 
 const EditProfileFormFields = ({ user, onCredentialsUpdate }) => {
   const [username, setUsername] = useState(user?.username ?? "");
-  const [bioWebsite, setBioWebsite] = useState(
-    user?.website ?? user?.bio_website ?? ""
-  );
-  const [bio, setBio] = useState(user?.about ?? user?.bio ?? "");
-  const [profileImage, setProfileImage] = useState(
-    user?.avatar ?? user?.profile_image ?? ""
-  );
+  const [website, setWebsite] = useState(user?.website ?? "");
+  const [about, setAbout] = useState(user?.about ?? "");
+  const [profileImage, setProfileImage] = useState(user?.avatar ?? "");
   const [profileImageFile, setProfileImageFile] = useState(null);
-  const [charCount, setCharCount] = useState(
-    (user?.about ?? user?.bio ?? "").length
-  );
-
-  const applyUserData = (nextUser) => {
-    setUsername(nextUser?.username ?? "");
-    setBioWebsite(nextUser?.website ?? nextUser?.bio_website ?? "");
-
-    const updatedBio = nextUser?.about ?? nextUser?.bio ?? "";
-    setBio(updatedBio);
-    setCharCount(updatedBio.length);
-
-    setProfileImage(nextUser?.avatar ?? nextUser?.profile_image ?? "");
-    setProfileImageFile(null);
-  };
+  const [charCount, setCharCount] = useState((user?.about ?? "").length);
 
   const previewImage = useMemo(
-    () => profileImage || user?.avatar || user?.profile_image || noPhoto,
-    [profileImage, user?.avatar, user?.profile_image]
+    () => profileImage || user?.avatar || noPhoto,
+    [profileImage, user?.avatar]
   );
 
   const handleSubmit = async (event) => {
@@ -47,14 +28,14 @@ const EditProfileFormFields = ({ user, onCredentialsUpdate }) => {
     try {
       const formData = new FormData();
       formData.append("username", username);
-      formData.append("website", bioWebsite);
-      formData.append("about", bio);
+      formData.append("website", website);
+      formData.append("about", about);
 
       if (profileImageFile) {
         formData.append("avatar", profileImageFile);
       }
 
-      const { data } = await instance.put("/users/current", formData, {
+      const { data } = await instance.put("/user/current", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -63,7 +44,6 @@ const EditProfileFormFields = ({ user, onCredentialsUpdate }) => {
       const updatedUser = data?.user ?? data;
 
       onCredentialsUpdate(updatedUser);
-      applyUserData(updatedUser);
     } catch (error) {
       console.error("Error updating user profile:", error);
     }
@@ -82,10 +62,10 @@ const EditProfileFormFields = ({ user, onCredentialsUpdate }) => {
     }
   };
 
-  const handleBioChange = (event) => {
-    const updatedBio = event.target.value;
-    setBio(updatedBio);
-    setCharCount(updatedBio.length);
+  const handleAboutChange = (event) => {
+    const updatedAbout = event.target.value;
+    setAbout(updatedAbout);
+    setCharCount(updatedAbout.length);
   };
 
   return (
@@ -93,11 +73,11 @@ const EditProfileFormFields = ({ user, onCredentialsUpdate }) => {
       <h4>Edit profile</h4>
 
       <div className={styles.imageRow}>
-        <Avatar size="lg" src={previewImage} alt={username} />
+        <Avatar size="m" src={previewImage} alt={username} />
 
         <div className={styles.userInfo}>
           <p className={styles.username}>{username || "Username"}</p>
-          <p className={styles.userBio}>{bio || "Add a short bio"}</p>
+          <p className={styles.userAbout}>{about || "Add a short about"}</p>
         </div>
 
         <label className={styles.uploadButton}>
@@ -125,8 +105,8 @@ const EditProfileFormFields = ({ user, onCredentialsUpdate }) => {
         Website
         <input
           type="text"
-          value={bioWebsite}
-          onChange={(event) => setBioWebsite(event.target.value)}
+          value={website}
+          onChange={(event) => setWebsite(event.target.value)}
           className={styles.inputField}
         />
       </label>
@@ -134,8 +114,8 @@ const EditProfileFormFields = ({ user, onCredentialsUpdate }) => {
       <label className={styles.fieldLabel}>
         About you
         <textarea
-          value={bio}
-          onChange={handleBioChange}
+          value={about}
+          onChange={handleAboutChange}
           className={styles.textareaField}
           maxLength={150}
         />
@@ -155,12 +135,6 @@ const EditProfileForm = () => {
     (state) => state.auth
   );
 
-  useEffect(() => {
-    if (!user) {
-      dispatch(getCurrentUser());
-    }
-  }, [dispatch, user]);
-
   const handleCredentialsUpdate = (updatedUser) => {
     dispatch(
       setCredentials({
@@ -176,20 +150,11 @@ const EditProfileForm = () => {
       [
         user?.id ?? "current-user",
         user?.username ?? "",
-        user?.about ?? user?.bio ?? "",
-        user?.website ?? user?.bio_website ?? "",
-        user?.avatar ?? user?.profile_image ?? "",
+        user?.about ?? "",
+        user?.website ?? "",
+        user?.avatar ?? "",
       ].join("|"),
-    [
-      user?.about,
-      user?.avatar,
-      user?.bio,
-      user?.bio_website,
-      user?.id,
-      user?.profile_image,
-      user?.username,
-      user?.website,
-    ]
+    [user?.about, user?.website, user?.id, user?.avatar, user?.username]
   );
 
   return (
