@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
@@ -21,6 +21,26 @@ export default function CreatePost({ onClose }) {
   const [error, setError] = useState(null);
   const [resetToggle, setResetToggle] = useState(false);
 
+  useEffect(() => {
+    const handleOnKeyDown = (event) => {
+      if (event.key === "Escape") {
+        onClose?.();
+      }
+    };
+
+    document.addEventListener("keydown", handleOnKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleOnKeyDown);
+    };
+  }, [onClose]);
+
+  const handleOnBackdropClick = (event) => {
+    if (event.target === event.currentTarget) {
+      onClose?.();
+    }
+  };
+
   const handleOnSubmit = async (values) => {
     setError(null);
     setMessage(null);
@@ -42,12 +62,7 @@ export default function CreatePost({ onClose }) {
   };
 
   return (
-    <div
-      className={styles.createPostModal}
-      onClick={(event) => {
-        event.stopPropagation();
-      }}
-    >
+    <div className={styles.createPostModal} onClick={handleOnBackdropClick}>
       <form
         onSubmit={handleSubmit(handleOnSubmit)}
         className={styles.form}
