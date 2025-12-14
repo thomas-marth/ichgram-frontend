@@ -114,6 +114,7 @@
   height: 80px;
   font-weight: 400;
   padding-bottom: 28px;
+  overflow-y: hidden;
 }
 
 .charCount {
