@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 
 import Avatar from "../../shared/components/Avatar/Avatar";
 import Button from "../../shared/components/Button/Button";
+import WebsiteLinkIcon from "../../assets/icons/WebsiteLinkIcon";
 import LoadingErrorOutput from "../../shared/components/LoadingErrorOutput/LoadingErrorOutput";
 import { mockProfiles } from "../../shared/mocks/mockProfiles";
 
@@ -19,6 +20,12 @@ const buildAvatar = (avatar) => {
   if (avatar.startsWith("http") || avatar.startsWith("/")) return avatar;
   if (baseURL) return `${baseURL}/${avatar}`;
   return avatar;
+};
+
+const buildExternalLink = (url) => {
+  if (!url) return "";
+  if (url.startsWith("http://") || url.startsWith("https://")) return url;
+  return `https://${url}`;
 };
 
 const Profile = ({ user }) => {
@@ -57,6 +64,11 @@ const Profile = ({ user }) => {
     return `${aboutText.slice(0, 108)}...`;
   }, [aboutText, isAboutExpanded, shouldTruncateAbout]);
 
+  const websiteUrl = useMemo(
+    () => buildExternalLink(profileData?.website),
+    [profileData?.website]
+  );
+
   const handleFollow = async () => {
     if (!profileData) return;
 
@@ -90,13 +102,7 @@ const Profile = ({ user }) => {
         </div>
         <div className={styles.contentArea}>
           <div className={styles.headline}>
-            <Link
-              to={profileData?.website}
-              target="_blank"
-              className={styles.handle}
-            >
-              {profileData?.username}
-            </Link>
+            <h1 className={styles.handle}>{profileData?.username}</h1>
             {!isOwner && !profileData?.isFollowed && (
               <Button
                 variant="contained"
@@ -160,14 +166,16 @@ const Profile = ({ user }) => {
               )}
             </p>
           </div>
-          <div>
-            <Link
-              to={profileData?.website}
+          <div className={styles.websiteLinkWrapp}>
+            <WebsiteLinkIcon />
+            <a
+              href={websiteUrl || undefined}
               target="_blank"
+              rel="noreferrer"
               className={styles.websiteLink}
             >
               {profileData?.website}
-            </Link>
+            </a>
           </div>
         </div>
       </div>
