@@ -6,10 +6,11 @@ import Button from "../../shared/components/Button/Button";
 import instance from "../../shared/api/instance";
 import { setCredentials } from "../../redux/auth/authSlice";
 import noPhoto from "../../assets/images/noPhoto.png";
+import WebsiteLinkIcon from "../../assets/icons/WebsiteLinkIcon";
 
 import styles from "./EditProfileForm.module.css";
 
-const EditProfileFormFields = ({ user, onCredentialsUpdate }) => {
+const EditProfileFormFields = ({ user, accessToken, onCredentialsUpdate }) => {
   const [username, setUsername] = useState(user?.username ?? "");
   const [website, setWebsite] = useState(user?.website ?? "");
   const [about, setAbout] = useState(user?.about ?? "");
@@ -35,8 +36,9 @@ const EditProfileFormFields = ({ user, onCredentialsUpdate }) => {
         formData.append("avatar", profileImageFile);
       }
 
-      const { data } = await instance.put("/user/current", formData, {
+      const { data } = await instance.put("/users/current", formData, {
         headers: {
+          Authorization: accessToken ? `Bearer ${accessToken}` : undefined,
           "Content-Type": "multipart/form-data",
         },
       });
@@ -68,16 +70,22 @@ const EditProfileFormFields = ({ user, onCredentialsUpdate }) => {
     setCharCount(updatedAbout.length);
   };
 
+  const displayedAbout = about
+    ? about.length > 59
+      ? about.slice(0, 59)
+      : about
+    : "Add a short about";
+
   return (
     <form className={styles.editProfileForm} onSubmit={handleSubmit}>
-      <h4>Edit profile</h4>
+      <h1>Edit profile</h1>
 
       <div className={styles.imageRow}>
         <Avatar size="m" src={previewImage} alt={username} />
 
         <div className={styles.userInfo}>
           <p className={styles.username}>{username || "Username"}</p>
-          <p className={styles.userAbout}>{about || "Add a short about"}</p>
+          <p className={styles.userAbout}>{displayedAbout}</p>
         </div>
 
         <label className={styles.uploadButton}>
@@ -103,12 +111,15 @@ const EditProfileFormFields = ({ user, onCredentialsUpdate }) => {
 
       <label className={styles.fieldLabel}>
         Website
-        <input
-          type="text"
-          value={website}
-          onChange={(event) => setWebsite(event.target.value)}
-          className={styles.inputField}
-        />
+        <div className={styles.inputWithIcon}>
+          <WebsiteLinkIcon className={styles.inputIcon} />
+          <input
+            type="text"
+            value={website}
+            onChange={(event) => setWebsite(event.target.value)}
+            className={`${styles.inputField} ${styles.websiteInput}`}
+          />
+        </div>
       </label>
 
       <label className={styles.fieldLabel}>
@@ -161,6 +172,7 @@ const EditProfileForm = () => {
     <EditProfileFormFields
       key={formKey}
       user={user}
+      accessToken={accessToken}
       onCredentialsUpdate={handleCredentialsUpdate}
     />
   );
