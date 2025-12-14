@@ -1,10 +1,13 @@
-export const followUserApi = ({ targetUserId }) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        data: { message: `You are now following user ${targetUserId}.` },
-        error: null,
-      });
-    }, 600);
-  });
+import instance from "./instance";
+
+const wrapRequest = async (promise) => {
+  try {
+    const { data } = await promise;
+    return { data, error: null };
+  } catch (error) {
+    return { data: null, error };
+  }
 };
+
+export const followUserApi = ({ targetUserId }) =>
+  wrapRequest(instance.post(`/follows/${targetUserId}`));

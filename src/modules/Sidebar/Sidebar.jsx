@@ -1,4 +1,6 @@
 import { Link, NavLink } from "react-router-dom";
+import { useMemo } from "react";
+import { useSelector } from "react-redux";
 
 import HomeIcon from "../../assets/icons/HomeIcon";
 import HomeIconActive from "../../assets/icons/HomeIconActive";
@@ -14,36 +16,7 @@ import UserIcon from "../../assets/icons/UserIcon";
 import styles from "./Sidebar.module.css";
 import Logo from "./../../shared/components/Logo/Logo";
 import SearchIconActive from "../../assets/icons/SearchIconActive";
-
-const navItems = [
-  { to: "/", label: "Home", icon: HomeIcon, activeIcon: HomeIconActive },
-  {
-    label: "Search",
-    icon: SearchIcon,
-    activeIcon: SearchIconActive,
-    isModal: true,
-  },
-  {
-    to: "/explore",
-    label: "Explore",
-    icon: ExploreIcon,
-    activeIcon: ExploreIconActive,
-  },
-  {
-    to: "/direct",
-    label: "Messages",
-    icon: MessagesIcon,
-    activeIcon: MessagesIconActive,
-  },
-  {
-    label: "Notifications",
-    icon: NotificationsIcon,
-    activeIcon: NotificationsIconActive,
-    isModal: true,
-  },
-  { label: "Create", icon: CreateIcon, isModal: true },
-  { to: "/profile/1", label: "Profile", icon: UserIcon },
-];
+import { selectUser } from "../../redux/auth/authSelectors";
 
 const Sidebar = ({
   onOpenSideModal,
@@ -51,6 +24,44 @@ const Sidebar = ({
   onSetActiveNavItem,
   activeNavItem,
 }) => {
+  const currentUser = useSelector(selectUser);
+
+  const navItems = useMemo(() => {
+    const profilePath = currentUser?.id
+      ? `/profile/${currentUser.id}`
+      : "/profile";
+
+    return [
+      { to: "/", label: "Home", icon: HomeIcon, activeIcon: HomeIconActive },
+      {
+        label: "Search",
+        icon: SearchIcon,
+        activeIcon: SearchIconActive,
+        isModal: true,
+      },
+      {
+        to: "/explore",
+        label: "Explore",
+        icon: ExploreIcon,
+        activeIcon: ExploreIconActive,
+      },
+      {
+        to: "/direct",
+        label: "Messages",
+        icon: MessagesIcon,
+        activeIcon: MessagesIconActive,
+      },
+      {
+        label: "Notifications",
+        icon: NotificationsIcon,
+        activeIcon: NotificationsIconActive,
+        isModal: true,
+      },
+      { label: "Create", icon: CreateIcon, isModal: true },
+      { to: profilePath, label: "Profile", icon: UserIcon },
+    ];
+  }, [currentUser?.id]);
+
   return (
     <aside className={styles.sidebar}>
       <Link to="/" className={styles.navLogo} onClick={onCloseSideModal}>

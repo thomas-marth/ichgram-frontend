@@ -1,13 +1,11 @@
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import Avatar from "../../shared/components/Avatar/Avatar";
 import Button from "../../shared/components/Button/Button";
 import WebsiteLinkIcon from "../../assets/icons/WebsiteLinkIcon";
 import LoadingErrorOutput from "../../shared/components/LoadingErrorOutput/LoadingErrorOutput";
-import { mockProfiles } from "../../shared/mocks/mockProfiles";
-
 import { selectUser } from "../../redux/auth/authSelectors";
 import { followUserApi } from "../../shared/api/follow-api";
 
@@ -29,10 +27,7 @@ const buildExternalLink = (url) => {
 };
 
 const Profile = ({ user }) => {
-  const reduxUser = useSelector(selectUser);
-  const testCurrentUser = mockProfiles[1];
-  const authorizedUser =
-    reduxUser && reduxUser.id ? reduxUser : testCurrentUser;
+  const authorizedUser = useSelector(selectUser);
 
   const [profileData, setProfileData] = useState(user);
   const [loading, setLoading] = useState(false);
@@ -40,8 +35,11 @@ const Profile = ({ user }) => {
   const [message, setMessage] = useState(null);
   const [isAboutExpanded, setIsAboutExpanded] = useState(false);
 
+  useEffect(() => {
+    setProfileData(user);
+  }, [user]);
+
   const isOwner =
-    String(profileData?.id ?? "") === String(testCurrentUser?.id ?? "") ||
     String(authorizedUser?.id ?? "") === String(profileData?.id ?? "");
 
   const avatarUrl = useMemo(
@@ -132,19 +130,19 @@ const Profile = ({ user }) => {
           <div className={styles.stats}>
             <div className={styles.statsItem}>
               <span className={styles.statsNumber}>
-                {profileData?.totalPosts}{" "}
+                {profileData?.totalPosts ?? 0}{" "}
               </span>
               <span>posts</span>
             </div>
             <div className={styles.statsItem}>
               <span className={styles.statsNumber}>
-                {profileData?.totalFollowers}{" "}
+                {profileData?.followers ?? 0}{" "}
               </span>
               <span>followers</span>
             </div>
             <div className={styles.statsItem}>
               <span className={styles.statsNumber}>
-                {profileData?.totalFollows}{" "}
+                {profileData?.following ?? 0}{" "}
               </span>
               <span>following</span>
             </div>

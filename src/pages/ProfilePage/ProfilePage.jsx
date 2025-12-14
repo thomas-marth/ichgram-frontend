@@ -1,45 +1,80 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-// import { Link } from "react-router-dom";
 
 import Profile from "../../modules/Profile/Profile";
 import Explore from "../../modules/Explore/Explore";
-import { mockProfiles } from "../../shared/mocks/mockProfiles";
-import postImage1 from "../../assets/images/post-image1.jpg";
-import postImage2 from "../../assets/images/post-image2.jpg";
-import postImage3 from "../../assets/images/post-image3.jpg";
-import postImage4 from "../../assets/images/post-image4.jpg";
-import postImage5 from "../../assets/images/post-image5.jpg";
-import postImage6 from "../../assets/images/post-image6.jpg";
+import LoadingErrorOutput from "../../shared/components/LoadingErrorOutput/LoadingErrorOutput";
+import { getUserPostsApi } from "../../shared/api/post-api";
+import { getUserById } from "../../shared/api/user-api";
+import { selectUser } from "../../redux/auth/authSelectors";
 
-// import Button from "./../../shared/components/Button/Button";
 import styles from "./ProfilePage.module.css";
+
+const normalizePosts = (posts = []) =>
+  posts.map((post) => ({
+    id: post._id || post.id,
+    image: post.image,
+    alt: post.description || "Post image",
+  }));
 
 const ProfilePage = () => {
   const { id } = useParams();
-  const activeProfileId = id ?? "1";
+  const currentUser = useSelector(selectUser);
 
-  const profileData = useMemo(
-    () => mockProfiles[activeProfileId] ?? mockProfiles[2],
-    [activeProfileId]
+  const activeProfileId = useMemo(
+    () => id ?? currentUser?.id ?? null,
+    [currentUser?.id, id]
   );
 
-  const explorePosts = useMemo(
-    () => [
-      { id: 1, image: postImage1, alt: "Post 1" },
-      { id: 2, image: postImage2, alt: "Post 2" },
-      { id: 3, image: postImage3, alt: "Post 3" },
-      { id: 4, image: postImage4, alt: "Post 4" },
-      { id: 5, image: postImage5, alt: "Post 5" },
-      { id: 6, image: postImage6, alt: "Post 6" },
-    ],
-    []
-  );
+  const [profileData, setProfileData] = useState(null);
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!activeProfileId) return undefined;
+
+    let isMounted = true;
+
+    const fetchProfileData = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const [userInfo, userPosts] = await Promise.all([
+          getUserById(activeProfileId),
+          getUserPostsApi(activeProfileId),
+        ]);
+
+        if (!isMounted) return;
+
+        setProfileData({ ...userInfo, id: userInfo.id || userInfo._id });
+        setPosts(normalizePosts(userPosts));
+      } catch (err) {
+        if (!isMounted) return;
+
+        const message = err?.response?.data?.message || err.message;
+        setError(message);
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchProfileData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [activeProfileId]);
 
   return (
     <div className={styles.profilePage}>
-      <Profile key={profileData?.id ?? "profile"} user={profileData} />
-      <Explore posts={explorePosts} variant="profile" />
+      <Profile key={profileData?.id ?? activeProfileId} user={profileData} />
+      <Explore posts={posts} variant="profile" />
+      <LoadingErrorOutput loading={loading} error={error} />
     </div>
   );
 };

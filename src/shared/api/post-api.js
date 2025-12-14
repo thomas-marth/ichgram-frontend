@@ -64,3 +64,8 @@ export const getPostsApi = async () => {
 
   return { posts: explorePosts };
 };
+
+export const getUserPostsApi = async (userId) => {
+  const { data } = await instance.get(`/posts/user/${userId}`);
+  return data;
+};
