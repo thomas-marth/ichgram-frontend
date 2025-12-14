@@ -124,13 +124,15 @@ const EditProfileFormFields = ({ user, accessToken, onCredentialsUpdate }) => {
 
       <label className={styles.fieldLabel}>
         About you
-        <textarea
-          value={about}
-          onChange={handleAboutChange}
-          className={styles.textareaField}
-          maxLength={150}
-        />
-        <div className={styles.charCount}>{charCount} / 150</div>
+        <div className={styles.textareaWrapper}>
+          <textarea
+            value={about}
+            onChange={handleAboutChange}
+            className={styles.textareaField}
+            maxLength={150}
+          />
+          <div className={styles.charCount}>{charCount} / 150</div>
+        </div>
       </label>
 
       <Button type="submit" className={styles.saveButton}>
