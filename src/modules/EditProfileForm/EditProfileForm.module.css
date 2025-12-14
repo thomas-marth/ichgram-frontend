@@ -89,6 +89,7 @@
   top: 25px;
   left: 17px;
   pointer-events: none;
+  z-index: 1;
 }
 
 .websiteInput {
