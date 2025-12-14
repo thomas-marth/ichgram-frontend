@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import Avatar from "../../shared/components/Avatar/Avatar";
 import Button from "../../shared/components/Button/Button";
+import TextField from "../../shared/components/TextField/TextField";
 import instance from "../../shared/api/instance";
 import { setCredentials } from "../../redux/auth/authSlice";
 import noPhoto from "../../assets/images/noPhoto.png";
@@ -101,7 +102,7 @@ const EditProfileFormFields = ({ user, accessToken, onCredentialsUpdate }) => {
 
       <label className={styles.fieldLabel}>
         Username
-        <input
+        <TextField
           type="text"
           value={username}
           onChange={(event) => setUsername(event.target.value)}
@@ -113,7 +114,7 @@ const EditProfileFormFields = ({ user, accessToken, onCredentialsUpdate }) => {
         Website
         <div className={styles.inputWithIcon}>
           <WebsiteLinkIcon className={styles.inputIcon} />
-          <input
+          <TextField
             type="text"
             value={website}
             onChange={(event) => setWebsite(event.target.value)}
