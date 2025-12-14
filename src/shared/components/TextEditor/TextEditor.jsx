@@ -49,7 +49,10 @@ export default function TextEditor({
     }
   };
 
-  const handleEmojiClick = ({ emoji }) => {
+  const handleEmojiClick = (emojiData) => {
+    const emoji = emojiData?.emoji || "";
+    if (!emoji) return;
+
     setValue((prev) => {
       const valueArr = prev.split("");
       valueArr.splice(cursorPosition.current, 0, emoji);
@@ -109,8 +112,9 @@ export default function TextEditor({
           <EmojiPicker
             className={styles.emojiPicker}
             reactionsDefaultOpen
+            onEmojiClick={handleEmojiClick}
             onReactionClick={handleEmojiClick}
-            allowExpandReactions={false}
+            allowExpandReactions={true}
             lazyLoadEmojis
           />
         </div>
