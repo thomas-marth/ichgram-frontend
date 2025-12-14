@@ -1,0 +1,53 @@
+.upload {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.modal {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--background-input-color);
+  transition: background-color 0.5s;
+}
+
+.modal:hover {
+  background-color: #f1f1f1;
+}
+
+.preview {
+  position: absolute;
+  inset: 0;
+  max-width: 100%;
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+}
+
+.icon {
+  z-index: 100;
+  width: 6rem;
+  height: 6rem;
+}
+
+.input {
+  position: absolute;
+  z-index: 200;
+  color: transparent;
+  font-size: 0;
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+}
+
+.input::file-selector-button {
+  border: none;
+  background-color: transparent;
+}

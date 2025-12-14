@@ -1,0 +1,90 @@
+.createPostModal {
+  position: fixed;
+  inset: 0;
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.form {
+  width: min(1100px, 100%);
+  height: min(564px, calc(100vh - 3rem));
+  border-radius: 0.75rem;
+  background-color: #fff;
+
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    "header header"
+    "fileUpload textEditor"
+    "message textEditor";
+}
+
+.header {
+  grid-area: header;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.title {
+  flex: 1 1 auto;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.submit {
+  flex: 0 0 auto;
+  border: none;
+  color: var(--accent-color);
+  background-color: #fff;
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.3;
+  cursor: pointer;
+  outline: none;
+}
+.submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.uploadWrapper {
+  grid-area: fileUpload;
+  border-right: 1px solid var(--border-color);
+  padding: 1.5rem;
+}
+
+.textEditorWrapper {
+  grid-area: textEditor;
+  border-bottom: 1px solid var(--color-border);
+}
+.messageWrapper {
+  grid-area: message;
+  padding: 1rem;
+}
+
+@media (max-width: 1024px) {
+  .form {
+    aspect-ratio: auto;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto auto;
+    grid-template-areas:
+      "header"
+      "fileUpload"
+      "textEditor"
+      "message";
+  }
+
+  .uploadWrapper {
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+  }
+}

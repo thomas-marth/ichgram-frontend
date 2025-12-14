@@ -8,6 +8,7 @@ import newYorkImg from "../../assets/images/explore/new-york.jpg";
 import roadImg from "../../assets/images/explore/road.jpg";
 import streetImg from "../../assets/images/explore/street.jpg";
 import workImg from "../../assets/images/explore/work.jpg";
+import instance from "./instance";
 
 const explorePosts = [
   { id: 1, image: autoImg, alt: "Vintage car interior" },
@@ -22,6 +23,44 @@ const explorePosts = [
   { id: 10, image: mountainsImg, alt: "Misty mountain landscape" },
 ];
 
+const wrapRequest = async (promise) => {
+  try {
+    const { data } = await promise;
+    return { data, error: null };
+  } catch (error) {
+    return { data: null, error };
+  }
+};
+
+export const createPostApi = (payload) => {
+  const formData = new FormData();
+
+  if (payload.image) {
+    formData.append("image", payload.image);
+  }
+
+  if (payload.comment) {
+    formData.append("comment", payload.comment);
+  }
+
+  return wrapRequest(
+    instance.post("/posts", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+  );
+};
+
 export const getPostsApi = async () => {
+  try {
+    const { data } = await instance.get("/posts");
+    const posts = data?.posts ?? data;
+
+    if (Array.isArray(posts) && posts.length > 0) {
+      return { posts };
+    }
+  } catch (error) {
+    console.error("Error fetching posts, fallback to explore set", error);
+  }
+
   return { posts: explorePosts };
 };

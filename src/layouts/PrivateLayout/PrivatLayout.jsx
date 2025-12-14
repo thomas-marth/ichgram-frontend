@@ -6,6 +6,7 @@ import Footer from "./../../modules/Footer/Footer";
 import Notifications from "../../modules/Notifications/Notifications";
 import SideModal from "../../modules/SideModal/SideModal";
 import Search from "../../modules/Search/Search";
+import CreatePost from "../../modules/CreatePost/CreatePost";
 
 import styles from "./PrivatLayout.module.css";
 
@@ -152,7 +153,7 @@ const PrivateLayout = () => {
   const handleOpenSideModal = (label) => {
     setActiveNavItem(label);
 
-    if (label === "Notifications" || label === "Search") {
+    if (label === "Notifications" || label === "Search" || label === "Create") {
       setActiveSideModal(label);
     } else {
       setActiveSideModal(null);
@@ -202,7 +203,10 @@ const PrivateLayout = () => {
         activeSideModal={activeSideModal}
         activeNavItem={currentActiveNavItem}
       />
-      {activeSideModal ? (
+      {activeSideModal === "Create" ? (
+        <CreatePost onClose={handleCloseSideModal} />
+      ) : null}
+      {activeSideModal && activeSideModal !== "Create" ? (
         <SideModal title={activeSideModal} isFooterVisible={isFooterVisible}>
           {activeSideModal === "Notifications" ? <Notifications /> : null}
           {activeSideModal === "Search" ? <Search /> : null}
