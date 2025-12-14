@@ -3,9 +3,10 @@
   inset: 0;
   z-index: 15;
   display: flex;
-  align-items: center;
+  align-items: anchor-center;
   justify-content: center;
   padding: 24px;
+  bottom: 85px;
 }
 
 .form {
