@@ -2,7 +2,7 @@ import * as yup from "yup";
 
 export const defaultValues = {
   image: null,
-  comment: "",
+  description: "",
 };
 
 export const fields = {
@@ -11,10 +11,10 @@ export const fields = {
     type: "file",
     accept: "image/*",
   },
-  comment: {
-    name: "comment",
+  description: {
+    name: "description",
     type: "text",
-    placeholder: "Input comment text there...",
+    placeholder: "Input description text there...",
   },
 };
 
@@ -33,5 +33,5 @@ export const createPostSchema = yup.object().shape({
       if (!value) return false;
       return SUPPORTED_FORMATS.includes(value.type);
     }),
-  comment: yup.string().max(2200, "Comment is too long"),
+  description: yup.string().max(2200, "Description is too long"),
 });

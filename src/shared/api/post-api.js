@@ -39,8 +39,8 @@ export const createPostApi = (payload) => {
     formData.append("image", payload.image);
   }
 
-  if (payload.comment) {
-    formData.append("comment", payload.comment);
+  if (payload.description) {
+    formData.append("description", payload.description);
   }
 
   return wrapRequest(

@@ -18,6 +18,7 @@ export default function Upload({
   useEffect(() => {
     if (imageRef.current) {
       imageRef.current.src = "";
+      imageRef.current.classList.remove(styles.previewVisible);
     }
   }, [reset]);
 
@@ -26,11 +27,13 @@ export default function Upload({
 
     if (!file) {
       setValue(name, null);
+      imageRef.current?.classList.remove(styles.previewVisible);
       return;
     }
 
     if (imageRef.current) {
       imageRef.current.src = URL.createObjectURL(file);
+      imageRef.current.classList.add(styles.previewVisible);
     }
 
     setValue(name, file);

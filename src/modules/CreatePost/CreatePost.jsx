@@ -68,11 +68,14 @@ export default function CreatePost({ onClose }) {
           />
         </div>
         <div className={styles.textEditorWrapper}>
-          <TextEditor
-            key={resetToggle}
-            register={register}
-            {...fields.comment}
-          />
+          <div className={styles.textEditorTop}>
+            <TextEditor
+              key={resetToggle}
+              register={register}
+              {...fields.description}
+            />
+          </div>
+          <div className={styles.textEditorBottom} />
         </div>
         <div className={styles.messageWrapper}>
           <LoadingErrorOutput
