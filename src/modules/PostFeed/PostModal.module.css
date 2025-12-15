@@ -46,7 +46,7 @@
   display: flex;
   align-items: center;
   justify-content: start;
-  padding: 1rem;
+  padding: 8px 10px;
   border-bottom: 0.06rem solid #efefef;
 }
 
@@ -128,7 +128,7 @@
 .description {
   display: flex;
   gap: 0.75rem;
-  padding: 10px 12px 21px;
+  padding: 10px 12px 21px 10px;
 }
 
 .descriptionContent {
