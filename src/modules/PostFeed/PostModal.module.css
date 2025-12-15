@@ -12,7 +12,7 @@
 .modal {
   display: flex;
   background: #ffffff;
-  border-radius: 0.75rem;
+  border-radius: 0.21rem;
   overflow: hidden;
   width: min(68.75rem, 100%);
   height: min(722px, 75vh);
