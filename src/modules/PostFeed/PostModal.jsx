@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import Avatar from "../../shared/components/Avatar/Avatar";
 import LikeIcon from "../../assets/icons/LikeIcon";
 import LikeIconActive from "../../assets/icons/LikeIconActive";
@@ -43,6 +43,7 @@ const PostModal = ({
   );
   const [followError, setFollowError] = useState(null);
   const [isFollowLoading, setIsFollowLoading] = useState(false);
+  const commentInputRef = useRef(null);
 
   const descriptionBody = useMemo(
     () => post.descriptionBody || post.description || post.captionBody || "",
@@ -75,6 +76,10 @@ const PostModal = ({
 
   const handleCommentLike = (commentId) => {
     onToggleCommentLike(commentId);
+  };
+
+  const handleCommentIconClick = () => {
+    commentInputRef.current?.focus();
   };
 
   const handleFollowToggle = async () => {
@@ -253,6 +258,7 @@ const PostModal = ({
                 type="button"
                 className={styles.iconButton}
                 aria-label="Comments"
+                onClick={handleCommentIconClick}
               >
                 <CommentsIcon className={styles.commentIcon} />
               </button>
@@ -300,6 +306,7 @@ const PostModal = ({
                 placeholder="Add a comment..."
                 value={newComment}
                 onChange={(event) => setNewComment(event.target.value)}
+                ref={commentInputRef}
               />
               <button
                 type="button"
