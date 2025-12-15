@@ -156,6 +156,24 @@ const PostFeed = () => {
     );
   };
 
+  const handleFollowStatusChange = (postId, isFollowed) => {
+    setPosts((prevPosts) =>
+      prevPosts.map((post) => {
+        if (post.id !== postId) return post;
+
+        const updatedProfile = post.profile
+          ? { ...post.profile, isFollowed }
+          : post.profile;
+
+        return {
+          ...post,
+          isFollowed,
+          profile: updatedProfile,
+        };
+      })
+    );
+  };
+
   const selectedPost = posts.find((post) => post.id === selectedPostId) || null;
 
   return (
@@ -166,7 +184,9 @@ const PostFeed = () => {
             <Post
               post={post}
               onOpen={() => setSelectedPostId(post.id)}
-              onToggleLike={() => handleToggleLike(post.id)}
+              onFollowStatusChange={(isFollowed) =>
+                handleFollowStatusChange(selectedPost.id, isFollowed)
+              }
             />
           </div>
         ))}
@@ -190,6 +210,9 @@ const PostFeed = () => {
             handleToggleCommentLike(selectedPost.id, commentId)
           }
           currentUser={currentUser}
+          onFollowStatusChange={(isFollowed) =>
+            handleFollowStatusChange(selectedPost.id, isFollowed)
+          }
         />
       )}
     </section>

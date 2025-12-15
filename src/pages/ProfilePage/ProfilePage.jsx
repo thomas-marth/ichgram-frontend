@@ -69,6 +69,28 @@ const ProfilePage = () => {
   );
 
   useEffect(() => {
+    if (!profileData?.id) return;
+
+    setPosts((prevPosts) =>
+      prevPosts.map((post) => {
+        const ownerId = post.profile?.id || post.profile?._id;
+        if (!ownerId || String(ownerId) !== String(profileData.id)) return post;
+
+        const nextFollowed = Boolean(profileData.isFollowed);
+        const nextProfile = post.profile
+          ? { ...post.profile, isFollowed: nextFollowed }
+          : post.profile;
+
+        return {
+          ...post,
+          isFollowed: nextFollowed,
+          profile: nextProfile,
+        };
+      })
+    );
+  }, [profileData?.id, profileData?.isFollowed]);
+
+  useEffect(() => {
     if (!activeProfileId) return undefined;
 
     let isMounted = true;
@@ -166,9 +188,54 @@ const ProfilePage = () => {
 
   const selectedPost = posts.find((post) => post.id === selectedPostId) || null;
 
+  const syncPostsFollowState = (nextIsFollowed) =>
+    setPosts((prevPosts) =>
+      prevPosts.map((post) => {
+        const ownerId = post.profile?.id || post.profile?._id;
+        if (!ownerId || String(ownerId) !== String(activeProfileId))
+          return post;
+
+        const nextProfile = post.profile
+          ? { ...post.profile, isFollowed: nextIsFollowed }
+          : post.profile;
+
+        return { ...post, isFollowed: nextIsFollowed, profile: nextProfile };
+      })
+    );
+
+  const handleProfileFollowChange = (nextProfile) => {
+    if (!nextProfile) return;
+
+    const nextIsFollowed = Boolean(nextProfile.isFollowed);
+    setProfileData(nextProfile);
+    syncPostsFollowState(nextIsFollowed);
+  };
+
+  const handleModalFollowChange = (nextIsFollowed) => {
+    syncPostsFollowState(nextIsFollowed);
+
+    setProfileData((prevProfile) => {
+      if (!prevProfile) return prevProfile;
+
+      const isCurrentlyFollowed = Boolean(prevProfile.isFollowed);
+      if (isCurrentlyFollowed === nextIsFollowed) return prevProfile;
+
+      const followersDelta = nextIsFollowed ? 1 : -1;
+      return {
+        ...prevProfile,
+        isFollowed: nextIsFollowed,
+        followers: Math.max(0, (prevProfile.followers ?? 0) + followersDelta),
+      };
+    });
+  };
+
   return (
     <div className={styles.profilePage}>
-      <Profile key={profileData?.id ?? activeProfileId} user={profileData} />
+      <Profile
+        key={profileData?.id ?? activeProfileId}
+        user={profileData}
+        onFollowChange={handleProfileFollowChange}
+      />
       <Explore
         posts={posts}
         variant="profile"
@@ -184,6 +251,7 @@ const ProfilePage = () => {
             handleToggleCommentLike(selectedPost.id, commentId)
           }
           currentUser={currentUserProfile}
+          onFollowStatusChange={handleModalFollowChange}
         />
       )}
       <LoadingErrorOutput loading={loading} error={error} />

@@ -34,17 +34,20 @@ const PostModal = ({
   onAddComment,
   onToggleCommentLike,
   currentUser,
+  onFollowStatusChange,
 }) => {
   const [newComment, setNewComment] = useState("");
   const [showEmojis, setShowEmojis] = useState(false);
   const [isManageModalOpen, setIsManageModalOpen] = useState(false);
-  const [isFollowed, setIsFollowed] = useState(
-    Boolean(post.isFollowed ?? post.profile?.isFollowed)
-  );
   const [followError, setFollowError] = useState(null);
   const [isFollowLoading, setIsFollowLoading] = useState(false);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const commentInputRef = useRef(null);
+
+  const isFollowed = useMemo(
+    () => Boolean(post.isFollowed ?? post.profile?.isFollowed),
+    [post.isFollowed, post.profile?.isFollowed]
+  );
 
   const descriptionBody = useMemo(
     () => post.descriptionBody || post.description || post.captionBody || "",
@@ -126,7 +129,9 @@ const PostModal = ({
       return;
     }
 
-    setIsFollowed((prev) => !prev);
+    if (typeof onFollowStatusChange === "function") {
+      onFollowStatusChange(!isFollowed);
+    }
   };
 
   const toggleDescription = () => {

@@ -26,7 +26,7 @@ const buildExternalLink = (url) => {
   return `https://${url}`;
 };
 
-const Profile = ({ user }) => {
+const Profile = ({ user, onFollowChange }) => {
   const authorizedUser = useSelector(selectUser);
 
   const [profileData, setProfileData] = useState(user);
@@ -92,11 +92,19 @@ const Profile = ({ user }) => {
     const followersDelta = isCurrentlyFollowed ? -1 : 1;
 
     setMessage(data?.message);
-    setProfileData((prev) => ({
-      ...prev,
-      isFollowed: !isCurrentlyFollowed,
-      followers: Math.max(0, (prev?.followers ?? 0) + followersDelta),
-    }));
+    setProfileData((prev) => {
+      const nextProfile = {
+        ...prev,
+        isFollowed: !isCurrentlyFollowed,
+        followers: Math.max(0, (prev?.followers ?? 0) + followersDelta),
+      };
+
+      if (typeof onFollowChange === "function") {
+        onFollowChange(nextProfile);
+      }
+
+      return nextProfile;
+    });
 
     setTimeout(() => setMessage(null), 5000);
   };
@@ -119,7 +127,7 @@ const Profile = ({ user }) => {
                   onClick={handleFollowToggle}
                   disabled={loading}
                 >
-                  unfollow
+                  Unfollow
                 </button>
               ) : (
                 <Button
