@@ -113,6 +113,8 @@ const EditProfileFormFields = ({ user, accessToken, onCredentialsUpdate }) => {
       : about
     : "Add a short about";
 
+  const isSaveDisabled = !hasChanges || loading;
+
   return (
     <form className={styles.editProfileForm} onSubmit={handleSubmit}>
       <h1>Edit profile</h1>
@@ -175,7 +177,8 @@ const EditProfileFormFields = ({ user, accessToken, onCredentialsUpdate }) => {
       <Button
         type="submit"
         className={styles.saveButton}
-        disabled={!hasChanges || loading}
+        variant={isSaveDisabled ? "gray" : "primary"}
+        disabled={isSaveDisabled}
       >
         Save
       </Button>
