@@ -16,7 +16,6 @@ export default function CreatePost({ onClose }) {
     resolver: yupResolver(createPostSchema),
     defaultValues,
   });
-  const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [resetToggle, setResetToggle] = useState(false);
@@ -43,10 +42,9 @@ export default function CreatePost({ onClose }) {
 
   const handleOnSubmit = async (values) => {
     setError(null);
-    setMessage(null);
     setLoading(true);
 
-    const { data, error: requestError } = await createPostApi(values);
+    const { error: requestError } = await createPostApi(values);
 
     setLoading(false);
 
@@ -55,7 +53,6 @@ export default function CreatePost({ onClose }) {
       return;
     }
 
-    setMessage(data?.message || "Post created successfully.");
     setResetToggle((prev) => !prev);
     reset(defaultValues);
     onClose?.();
@@ -93,11 +90,7 @@ export default function CreatePost({ onClose }) {
           <div className={styles.textEditorBottom} />
         </div>
         <div className={styles.messageWrapper}>
-          <LoadingErrorOutput
-            loading={loading}
-            error={error}
-            message={message}
-          />
+          <LoadingErrorOutput loading={loading} error={error} />
         </div>
       </form>
     </div>

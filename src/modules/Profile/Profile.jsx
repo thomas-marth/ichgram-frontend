@@ -32,7 +32,6 @@ const Profile = ({ user, onFollowChange }) => {
   const [profileData, setProfileData] = useState(user);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [message, setMessage] = useState(null);
   const [isAboutExpanded, setIsAboutExpanded] = useState(false);
 
   useEffect(() => {
@@ -75,7 +74,7 @@ const Profile = ({ user, onFollowChange }) => {
 
     const isCurrentlyFollowed = Boolean(profileData?.isFollowed);
 
-    const { data, error: apiError } = await (isCurrentlyFollowed
+    const { error: apiError } = await (isCurrentlyFollowed
       ? unfollowUserApi
       : followUserApi)({
       targetUserId: profileData.id,
@@ -91,7 +90,6 @@ const Profile = ({ user, onFollowChange }) => {
 
     const followersDelta = isCurrentlyFollowed ? -1 : 1;
 
-    setMessage(data?.message);
     setProfileData((prev) => {
       const nextProfile = {
         ...prev,
@@ -105,13 +103,11 @@ const Profile = ({ user, onFollowChange }) => {
 
       return nextProfile;
     });
-
-    setTimeout(() => setMessage(null), 5000);
   };
 
   return (
     <div className={styles.profileSection}>
-      <LoadingErrorOutput loading={loading} error={error} message={message} />
+      <LoadingErrorOutput loading={loading} error={error} />
       <div className={styles.profileTop}>
         <div className={styles.avatarWrapper}>
           <Avatar size="xl" src={avatarUrl} alt="User avatar" withGradient />

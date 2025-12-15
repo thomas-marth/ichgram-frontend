@@ -115,20 +115,33 @@
 }
 
 .progressBar {
+  position: fixed;
+  inset: 0 0 auto;
   height: 3px;
-  margin-top: 0.65rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 149, 246, 0.15);
   overflow: hidden;
-  position: relative;
+  z-index: 1100;
+  pointer-events: none;
 }
 
 .progressBar::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.05), #fff);
-  animation: progress 5.2s linear forwards;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 149, 246, 0.35),
+    var(--accent-color)
+  );
+  transform: translateX(-100%);
+}
+
+.progressBarCountdown::after {
+  animation: progressCountdown 5.2s linear forwards;
+}
+
+.progressBarIndeterminate::after {
+  animation: progressIndeterminate 1.15s ease-in-out infinite;
 }
 
 @keyframes toast-in {
@@ -142,12 +155,24 @@
   }
 }
 
-@keyframes progress {
+@keyframes progressCountdown {
   from {
     transform: translateX(-100%);
   }
   to {
     transform: translateX(0);
+  }
+}
+
+@keyframes progressIndeterminate {
+  0% {
+    transform: translateX(-60%);
+  }
+  50% {
+    transform: translateX(-10%);
+  }
+  100% {
+    transform: translateX(100%);
   }
 }
 
