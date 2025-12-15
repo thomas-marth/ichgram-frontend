@@ -51,19 +51,33 @@ const PostModal = ({
     [post.captionBody, post.description, post.descriptionBody]
   );
 
+  const descriptionText = descriptionBody.trim();
+
   const DESCRIPTION_LIMIT = 290;
 
-  const isLongDescription = descriptionBody.length > DESCRIPTION_LIMIT;
+  const isLongDescription = descriptionText.length > DESCRIPTION_LIMIT;
+  const hasDescription = Boolean(descriptionText);
+  const comments = post.comments || [];
+  const hasComments = comments.length > 0;
 
   const visibleDescription = useMemo(() => {
-    if (!isLongDescription || isDescriptionExpanded) {
-      return descriptionBody;
+    if (!hasDescription) {
+      return "";
     }
 
-    return `${descriptionBody.slice(0, DESCRIPTION_LIMIT)}...`;
-  }, [descriptionBody, isDescriptionExpanded, isLongDescription]);
+    if (!isLongDescription || hasComments || isDescriptionExpanded) {
+      return descriptionText;
+    }
 
-  const comments = post.comments || [];
+    return `${descriptionText.slice(0, DESCRIPTION_LIMIT)}...`;
+  }, [
+    hasDescription,
+    hasComments,
+    isDescriptionExpanded,
+    isLongDescription,
+    descriptionText,
+  ]);
+
   const likesCount = post.likesCount ?? 0;
 
   const currentUserId = currentUser?._id || currentUser?.id || "";
@@ -116,7 +130,7 @@ const PostModal = ({
   };
 
   const toggleDescription = () => {
-    if (!isLongDescription) return;
+    if (!isLongDescription || hasComments) return;
     setIsDescriptionExpanded((prev) => !prev);
   };
 
@@ -180,23 +194,23 @@ const PostModal = ({
           </header>
 
           <div className={styles.contentArea}>
-            <div className={styles.description}>
-              <Avatar
-                size="xs"
-                src={post.profile?.avatar}
-                alt={post.profile?.username}
-                withGradient={shouldShowGradient(postOwnerId)}
-              />
-              <div className={styles.descriptionContent}>
-                <div className={styles.descriptionHeader}>
-                  {descriptionBody && (
+            {hasDescription && (
+              <div className={styles.description}>
+                <Avatar
+                  size="xs"
+                  src={post.profile?.avatar}
+                  alt={post.profile?.username}
+                  withGradient={shouldShowGradient(postOwnerId)}
+                />
+                <div className={styles.descriptionContent}>
+                  <div className={styles.descriptionHeader}>
                     <p className={styles.descriptionBody}>
                       <span className={styles.username}>
                         {post.profile?.username}
                       </span>
                       {visibleDescription}
-                      {isLongDescription && " "}
-                      {isLongDescription && (
+                      {isLongDescription && !hasComments && " "}
+                      {isLongDescription && !hasComments && (
                         <button
                           type="button"
                           className={styles.toggleDescriptionButton}
@@ -206,69 +220,76 @@ const PostModal = ({
                         </button>
                       )}
                     </p>
+                  </div>
+                  {post.createdAt && (
+                    <span className={styles.descriptionDate}>
+                      {formatTimeAgo(post.createdAt)}
+                    </span>
                   )}
                 </div>
-                {post.createdAt && (
-                  <span className={styles.descriptionDate}>
-                    {formatTimeAgo(post.createdAt)}
-                  </span>
-                )}
               </div>
-            </div>
+            )}
 
             {followError && <p className={styles.errorText}>{followError}</p>}
 
-            <div className={styles.commentsSection}>
-              {comments.length === 0 && (
+            {hasComments && (
+              <div className={styles.commentsSection}>
+                {comments.map((comment) => {
+                  const isLiked = comment.likes?.includes(currentUserId);
+                  const commentUserId = comment.user?._id || comment.user?.id;
+                  return (
+                    <div key={comment.id} className={styles.comment}>
+                      <Avatar
+                        size="xs"
+                        src={comment.user?.avatar}
+                        alt={comment.user?.username}
+                        withGradient={shouldShowGradient(commentUserId)}
+                      />
+                      <div className={styles.commentMain}>
+                        <div className={styles.commentHeader}>
+                          <span className={styles.username}>
+                            {comment.user?.username}
+                          </span>
+                          <p className={styles.commentText}>{comment.text}</p>
+                        </div>
+                        <div className={styles.commentFooter}>
+                          <span className={styles.timeAgo}>
+                            {formatTimeAgo(comment.createdAt)}
+                          </span>
+                          <span className={styles.commentLikes}>
+                            Likes:{" "}
+                            {(comment.likes?.length || 0).toLocaleString()}
+                          </span>
+                        </div>
+                      </div>
+                      <div className={styles.commentActions}>
+                        <button
+                          type="button"
+                          className={styles.commentLikeButton}
+                          onClick={() => handleCommentLike(comment.id)}
+                        >
+                          <img
+                            src={
+                              isLiked ? likedCommentIcon : unlikedCommentIcon
+                            }
+                            alt={isLiked ? "Unlike comment" : "Like comment"}
+                            className={styles.commentLikeIcon}
+                          />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {!hasComments && !hasDescription && (
+              <div className={styles.emptyStateWrapper}>
                 <p className={styles.emptyState}>
                   No comments yet. Start the conversation.
                 </p>
-              )}
-
-              {comments.map((comment) => {
-                const isLiked = comment.likes?.includes(currentUserId);
-                const commentUserId = comment.user?._id || comment.user?.id;
-                return (
-                  <div key={comment.id} className={styles.comment}>
-                    <Avatar
-                      size="xs"
-                      src={comment.user?.avatar}
-                      alt={comment.user?.username}
-                      withGradient={shouldShowGradient(commentUserId)}
-                    />
-                    <div className={styles.commentMain}>
-                      <div className={styles.commentHeader}>
-                        <span className={styles.username}>
-                          {comment.user?.username}
-                        </span>
-                        <p className={styles.commentText}>{comment.text}</p>
-                      </div>
-                      <div className={styles.commentFooter}>
-                        <span className={styles.timeAgo}>
-                          {formatTimeAgo(comment.createdAt)}
-                        </span>
-                        <span className={styles.commentLikes}>
-                          Likes: {(comment.likes?.length || 0).toLocaleString()}
-                        </span>
-                      </div>
-                    </div>
-                    <div className={styles.commentActions}>
-                      <button
-                        type="button"
-                        className={styles.commentLikeButton}
-                        onClick={() => handleCommentLike(comment.id)}
-                      >
-                        <img
-                          src={isLiked ? likedCommentIcon : unlikedCommentIcon}
-                          alt={isLiked ? "Unlike comment" : "Like comment"}
-                          className={styles.commentLikeIcon}
-                        />
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+              </div>
+            )}
           </div>
 
           <footer className={styles.footer}>

@@ -7,7 +7,7 @@ export default function LoadingErrorOutput({ loading, error, message }) {
 
   return (
     <div className={styles.wrapper} role="status" aria-live="polite">
-      {loading && <p className={styles.message}>Loading recommendations...</p>}
+      {loading && <p className={styles.message}>Loading...</p>}
       {message && !loading && !error && (
         <p className={styles.message}>{message}</p>
       )}

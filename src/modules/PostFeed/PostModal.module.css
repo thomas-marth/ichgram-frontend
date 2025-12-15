@@ -192,6 +192,14 @@
   min-height: 0;
 }
 
+.emptyStateWrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
 .comment {
   display: flex;
   gap: 0.75rem;
