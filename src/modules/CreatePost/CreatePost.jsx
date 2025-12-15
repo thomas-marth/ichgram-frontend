@@ -1,11 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useSelector } from "react-redux";
 
 import Upload from "../../shared/components/Upload/Upload";
 import TextEditor from "../../shared/components/TextEditor/TextEditor";
 import LoadingErrorOutput from "../../shared/components/LoadingErrorOutput/LoadingErrorOutput";
 import { createPostApi } from "../../shared/api/post-api";
+import { emitPostCreated } from "../../shared/utils/postEvents";
+import { selectUser } from "../../redux/auth/authSelectors";
 
 import { fields, createPostSchema, defaultValues } from "./fields";
 
@@ -16,6 +19,22 @@ export default function CreatePost({ onClose }) {
     resolver: yupResolver(createPostSchema),
     defaultValues,
   });
+  const currentUser = useSelector(selectUser);
+  const currentUserProfile = useMemo(
+    () => ({
+      id: currentUser?._id || currentUser?.id,
+      username: currentUser?.username || currentUser?.name || "",
+      avatar: currentUser?.avatar || currentUser?.profile_image || "",
+    }),
+    [
+      currentUser?._id,
+      currentUser?.avatar,
+      currentUser?.id,
+      currentUser?.name,
+      currentUser?.profile_image,
+      currentUser?.username,
+    ]
+  );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [resetToggle, setResetToggle] = useState(false);
@@ -44,7 +63,9 @@ export default function CreatePost({ onClose }) {
     setError(null);
     setLoading(true);
 
-    const { error: requestError } = await createPostApi(values);
+    const { data: createdPost, error: requestError } = await createPostApi(
+      values
+    );
 
     setLoading(false);
 
@@ -52,6 +73,31 @@ export default function CreatePost({ onClose }) {
       setError(requestError.response?.data?.message || requestError.message);
       return;
     }
+
+    const ownerId =
+      createdPost?.author?._id ||
+      createdPost?.author?.id ||
+      createdPost?.author ||
+      currentUserProfile.id;
+
+    emitPostCreated({
+      comments: [],
+      totalLikes: createdPost?.totalLikes ?? 0,
+      ...createdPost,
+      author: {
+        _id: ownerId,
+        id: ownerId,
+        username:
+          createdPost?.author?.username || currentUserProfile.username || "",
+        avatar: createdPost?.author?.avatar || currentUserProfile.avatar || "",
+        isFollowed: currentUserProfile.isFollowed,
+      },
+      createdAt: createdPost?.createdAt || new Date().toISOString(),
+      updatedAt:
+        createdPost?.updatedAt ||
+        createdPost?.createdAt ||
+        new Date().toISOString(),
+    });
 
     setResetToggle((prev) => !prev);
     reset(defaultValues);

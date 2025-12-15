@@ -9,6 +9,7 @@ import PostModal from "../../modules/PostFeed/PostModal";
 import { getUserPostsApi } from "../../shared/api/post-api";
 import { getUserById } from "../../shared/api/user-api";
 import { selectUser } from "../../redux/auth/authSelectors";
+import { subscribeToPostCreated } from "../../shared/utils/postEvents";
 
 import styles from "./ProfilePage.module.css";
 
@@ -125,6 +126,44 @@ const ProfilePage = () => {
 
     return () => {
       isMounted = false;
+    };
+  }, [activeProfileId]);
+
+  useEffect(() => {
+    const unsubscribe = subscribeToPostCreated((newPost) => {
+      const ownerId =
+        newPost?.profile?.id ||
+        newPost?.profile?._id ||
+        newPost?.author?._id ||
+        newPost?.author?.id ||
+        newPost?.author;
+
+      if (!ownerId || String(ownerId) !== String(activeProfileId)) return;
+
+      const normalizedPost = normalizePosts([newPost])[0];
+      if (!normalizedPost) return;
+
+      setPosts((prevPosts) => {
+        const alreadyExists = prevPosts.some(
+          (post) => String(post.id) === String(normalizedPost.id)
+        );
+        if (alreadyExists) return prevPosts;
+
+        return [normalizedPost, ...prevPosts];
+      });
+
+      setProfileData((prevProfile) => {
+        if (!prevProfile) return prevProfile;
+
+        return {
+          ...prevProfile,
+          totalPosts: Math.max(0, (prevProfile.totalPosts ?? 0) + 1),
+        };
+      });
+    });
+
+    return () => {
+      unsubscribe?.();
     };
   }, [activeProfileId]);
 
