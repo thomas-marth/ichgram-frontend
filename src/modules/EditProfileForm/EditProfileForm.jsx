@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Avatar from "../../shared/components/Avatar/Avatar";
 import Button from "../../shared/components/Button/Button";
 import TextField from "../../shared/components/TextField/TextField";
+import LoadingErrorOutput from "../../shared/components/LoadingErrorOutput/LoadingErrorOutput";
 import instance from "../../shared/api/instance";
 import { setCredentials } from "../../redux/auth/authSlice";
 import noPhoto from "../../assets/images/noPhoto.png";
@@ -12,20 +13,52 @@ import WebsiteLinkIcon from "../../assets/icons/WebsiteLinkIcon";
 import styles from "./EditProfileForm.module.css";
 
 const EditProfileFormFields = ({ user, accessToken, onCredentialsUpdate }) => {
-  const [username, setUsername] = useState(user?.username ?? "");
-  const [website, setWebsite] = useState(user?.website ?? "");
-  const [about, setAbout] = useState(user?.about ?? "");
-  const [profileImage, setProfileImage] = useState(user?.avatar ?? "");
+  const initialValues = useMemo(
+    () => ({
+      username: user?.username ?? "",
+      website: user?.website ?? "",
+      about: user?.about ?? "",
+      avatar: user?.avatar ?? "",
+    }),
+    [user?.about, user?.avatar, user?.username, user?.website]
+  );
+
+  const [username, setUsername] = useState(initialValues.username);
+  const [website, setWebsite] = useState(initialValues.website);
+  const [about, setAbout] = useState(initialValues.about);
+  const [profileImage, setProfileImage] = useState(initialValues.avatar);
   const [profileImageFile, setProfileImageFile] = useState(null);
-  const [charCount, setCharCount] = useState((user?.about ?? "").length);
+  const [charCount, setCharCount] = useState(initialValues.about.length);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const previewImage = useMemo(
     () => profileImage || user?.avatar || noPhoto,
     [profileImage, user?.avatar]
   );
 
+  const hasChanges = useMemo(
+    () =>
+      username !== initialValues.username ||
+      website !== initialValues.website ||
+      about !== initialValues.about ||
+      Boolean(profileImageFile),
+    [
+      about,
+      initialValues.about,
+      initialValues.username,
+      initialValues.website,
+      profileImageFile,
+      username,
+      website,
+    ]
+  );
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    setError(null);
+    setLoading(true);
 
     try {
       const formData = new FormData();
@@ -49,6 +82,9 @@ const EditProfileFormFields = ({ user, accessToken, onCredentialsUpdate }) => {
       onCredentialsUpdate(updatedUser);
     } catch (error) {
       console.error("Error updating user profile:", error);
+      setError(error.response?.data?.message || error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -136,9 +172,15 @@ const EditProfileFormFields = ({ user, accessToken, onCredentialsUpdate }) => {
         </div>
       </label>
 
-      <Button type="submit" className={styles.saveButton}>
+      <Button
+        type="submit"
+        className={styles.saveButton}
+        disabled={!hasChanges || loading}
+      >
         Save
       </Button>
+
+      <LoadingErrorOutput loading={loading} error={error} />
     </form>
   );
 };
