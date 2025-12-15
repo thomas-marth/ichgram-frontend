@@ -98,7 +98,7 @@ const Profile = ({ user, onFollowChange }) => {
       };
 
       if (typeof onFollowChange === "function") {
-        onFollowChange(nextProfile);
+        setTimeout(() => onFollowChange(nextProfile), 0);
       }
 
       return nextProfile;

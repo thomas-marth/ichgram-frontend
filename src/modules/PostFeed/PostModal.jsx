@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Avatar from "../../shared/components/Avatar/Avatar";
 import LikeIcon from "../../assets/icons/LikeIcon";
 import LikeIconActive from "../../assets/icons/LikeIconActive";
@@ -43,6 +43,10 @@ const PostModal = ({
   const [isFollowLoading, setIsFollowLoading] = useState(false);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const commentInputRef = useRef(null);
+  const contentAreaRef = useRef(null);
+  const lastCommentRef = useRef(null);
+  const previousCommentsLength = useRef(post.comments?.length || 0);
+  const shouldScrollToNewComment = useRef(false);
 
   const isFollowed = useMemo(
     () => Boolean(post.isFollowed ?? post.profile?.isFollowed),
@@ -68,14 +72,13 @@ const PostModal = ({
       return "";
     }
 
-    if (!isLongDescription || hasComments || isDescriptionExpanded) {
+    if (!isLongDescription || isDescriptionExpanded) {
       return descriptionText;
     }
 
     return `${descriptionText.slice(0, DESCRIPTION_LIMIT)}...`;
   }, [
     hasDescription,
-    hasComments,
     isDescriptionExpanded,
     isLongDescription,
     descriptionText,
@@ -99,6 +102,7 @@ const PostModal = ({
   const handleAddComment = () => {
     const trimmed = newComment.trim();
     if (!trimmed) return;
+    shouldScrollToNewComment.current = true;
     onAddComment(trimmed);
     setNewComment("");
     setShowEmojis(false);
@@ -135,9 +139,39 @@ const PostModal = ({
   };
 
   const toggleDescription = () => {
-    if (!isLongDescription || hasComments) return;
+    if (!isLongDescription) return;
     setIsDescriptionExpanded((prev) => !prev);
   };
+
+  useEffect(() => {
+    const contentArea = contentAreaRef.current;
+    const lastComment = lastCommentRef.current;
+    const wasLength = previousCommentsLength.current;
+
+    if (comments.length <= wasLength) {
+      previousCommentsLength.current = comments.length;
+      return;
+    }
+
+    previousCommentsLength.current = comments.length;
+
+    if (!contentArea || !lastComment || !shouldScrollToNewComment.current) {
+      shouldScrollToNewComment.current = false;
+      return;
+    }
+
+    const containerRect = contentArea.getBoundingClientRect();
+    const commentRect = lastComment.getBoundingClientRect();
+    const isFullyVisible =
+      commentRect.top >= containerRect.top &&
+      commentRect.bottom <= containerRect.bottom;
+
+    if (!isFullyVisible) {
+      lastComment.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    shouldScrollToNewComment.current = false;
+  }, [comments.length]);
 
   const lastLikeDateLabel = useMemo(() => {
     if (!post.lastLikedAt && !post.updatedAt && !post.createdAt) return "";
@@ -198,7 +232,7 @@ const PostModal = ({
             </div>
           </header>
 
-          <div className={styles.contentArea}>
+          <div className={styles.contentArea} ref={contentAreaRef}>
             {hasDescription && (
               <div className={styles.description}>
                 <Avatar
@@ -214,8 +248,8 @@ const PostModal = ({
                         {post.profile?.username}
                       </span>
                       {visibleDescription}
-                      {isLongDescription && !hasComments && " "}
-                      {isLongDescription && !hasComments && (
+                      {isLongDescription && " "}
+                      {isLongDescription && (
                         <button
                           type="button"
                           className={styles.toggleDescriptionButton}
@@ -239,11 +273,16 @@ const PostModal = ({
 
             {hasComments && (
               <div className={styles.commentsSection}>
-                {comments.map((comment) => {
+                {comments.map((comment, index) => {
                   const isLiked = comment.likes?.includes(currentUserId);
                   const commentUserId = comment.user?._id || comment.user?.id;
+                  const isLastComment = index === comments.length - 1;
                   return (
-                    <div key={comment.id} className={styles.comment}>
+                    <div
+                      key={comment.id}
+                      className={styles.comment}
+                      ref={isLastComment ? lastCommentRef : null}
+                    >
                       <Avatar
                         size="xs"
                         src={comment.user?.avatar}
