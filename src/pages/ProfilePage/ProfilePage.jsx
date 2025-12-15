@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import Profile from "../../modules/Profile/Profile";
 import Explore from "../../modules/Explore/Explore";
 import LoadingErrorOutput from "../../shared/components/LoadingErrorOutput/LoadingErrorOutput";
+import PostModal from "../../modules/PostFeed/PostModal";
 import { getUserPostsApi } from "../../shared/api/post-api";
 import { getUserById } from "../../shared/api/user-api";
 import { selectUser } from "../../redux/auth/authSelectors";
@@ -12,11 +13,29 @@ import { selectUser } from "../../redux/auth/authSelectors";
 import styles from "./ProfilePage.module.css";
 
 const normalizePosts = (posts = []) =>
-  posts.map((post) => ({
-    id: post._id || post.id,
-    image: post.image,
-    alt: post.description || "Post image",
-  }));
+  posts.map((post) => {
+    const author = post.author || post.profile || {};
+    const authorId = author._id || author.id || author;
+
+    return {
+      id: post._id || post.id,
+      image: post.image,
+      alt: post.description || "Post image",
+      descriptionBody: post.description || "",
+      likesCount: post.totalLikes ?? post.likesCount ?? 0,
+      comments: post.comments ?? [],
+      isLiked: Boolean(post.isLiked),
+      createdAt: post.createdAt,
+      updatedAt: post.updatedAt,
+      profile: {
+        id: authorId,
+        username: author.username,
+        avatar: author.avatar,
+        isFollowed: author.isFollowed,
+      },
+      isFollowed: post.isFollowed,
+    };
+  });
 
 const ProfilePage = () => {
   const { id } = useParams();
@@ -29,8 +48,25 @@ const ProfilePage = () => {
 
   const [profileData, setProfileData] = useState(null);
   const [posts, setPosts] = useState([]);
+  const [selectedPostId, setSelectedPostId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const currentUserProfile = useMemo(
+    () => ({
+      id: currentUser?._id || currentUser?.id,
+      username: currentUser?.username || currentUser?.name || "You",
+      avatar: currentUser?.avatar || currentUser?.profile_image,
+    }),
+    [
+      currentUser?._id,
+      currentUser?.avatar,
+      currentUser?.id,
+      currentUser?.name,
+      currentUser?.profile_image,
+      currentUser?.username,
+    ]
+  );
 
   useEffect(() => {
     if (!activeProfileId) return undefined;
@@ -70,10 +106,86 @@ const ProfilePage = () => {
     };
   }, [activeProfileId]);
 
+  const handleToggleLike = (postId) => {
+    setPosts((prevPosts) =>
+      prevPosts.map((post) => {
+        if (post.id !== postId) return post;
+
+        const nextLiked = !post.isLiked;
+        const nextLikesCount = (post.likesCount ?? 0) + (nextLiked ? 1 : -1);
+
+        return {
+          ...post,
+          isLiked: nextLiked,
+          likesCount: Math.max(0, nextLikesCount),
+        };
+      })
+    );
+  };
+
+  const handleAddComment = (postId, text) => {
+    const newComment = {
+      id: `c-${postId}-${Date.now()}`,
+      user: currentUserProfile,
+      text,
+      createdAt: new Date().toISOString(),
+      likes: [],
+    };
+
+    setPosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.id === postId
+          ? { ...post, comments: [...(post.comments || []), newComment] }
+          : post
+      )
+    );
+  };
+
+  const handleToggleCommentLike = (postId, commentId) => {
+    if (!currentUserProfile?.id) return;
+
+    setPosts((prevPosts) =>
+      prevPosts.map((post) => {
+        if (post.id !== postId) return post;
+
+        const updatedComments = (post.comments || []).map((comment) => {
+          if (comment.id !== commentId) return comment;
+
+          const hasLiked = comment.likes?.includes(currentUserProfile.id);
+          const nextLikes = hasLiked
+            ? comment.likes.filter((id) => id !== currentUserProfile.id)
+            : [...(comment.likes || []), currentUserProfile.id];
+
+          return { ...comment, likes: nextLikes };
+        });
+
+        return { ...post, comments: updatedComments };
+      })
+    );
+  };
+
+  const selectedPost = posts.find((post) => post.id === selectedPostId) || null;
+
   return (
     <div className={styles.profilePage}>
       <Profile key={profileData?.id ?? activeProfileId} user={profileData} />
-      <Explore posts={posts} variant="profile" />
+      <Explore
+        posts={posts}
+        variant="profile"
+        onPostSelect={(postId) => setSelectedPostId(postId)}
+      />
+      {selectedPost && (
+        <PostModal
+          post={selectedPost}
+          onClose={() => setSelectedPostId(null)}
+          onToggleLike={() => handleToggleLike(selectedPost.id)}
+          onAddComment={(text) => handleAddComment(selectedPost.id, text)}
+          onToggleCommentLike={(commentId) =>
+            handleToggleCommentLike(selectedPost.id, commentId)
+          }
+          currentUser={currentUserProfile}
+        />
+      )}
       <LoadingErrorOutput loading={loading} error={error} />
     </div>
   );

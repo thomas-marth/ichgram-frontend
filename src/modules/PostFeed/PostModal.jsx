@@ -43,12 +43,25 @@ const PostModal = ({
   );
   const [followError, setFollowError] = useState(null);
   const [isFollowLoading, setIsFollowLoading] = useState(false);
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const commentInputRef = useRef(null);
 
   const descriptionBody = useMemo(
     () => post.descriptionBody || post.description || post.captionBody || "",
     [post.captionBody, post.description, post.descriptionBody]
   );
+
+  const DESCRIPTION_LIMIT = 290;
+
+  const isLongDescription = descriptionBody.length > DESCRIPTION_LIMIT;
+
+  const visibleDescription = useMemo(() => {
+    if (!isLongDescription || isDescriptionExpanded) {
+      return descriptionBody;
+    }
+
+    return `${descriptionBody.slice(0, DESCRIPTION_LIMIT)}...`;
+  }, [descriptionBody, isDescriptionExpanded, isLongDescription]);
 
   const comments = post.comments || [];
   const likesCount = post.likesCount ?? 0;
@@ -100,6 +113,11 @@ const PostModal = ({
     }
 
     setIsFollowed((prev) => !prev);
+  };
+
+  const toggleDescription = () => {
+    if (!isLongDescription) return;
+    setIsDescriptionExpanded((prev) => !prev);
   };
 
   const lastLikeDateLabel = useMemo(() => {
@@ -161,87 +179,96 @@ const PostModal = ({
             </div>
           </header>
 
-          <div className={styles.description}>
-            <Avatar
-              size="xs"
-              src={post.profile?.avatar}
-              alt={post.profile?.username}
-              withGradient={shouldShowGradient(postOwnerId)}
-            />
-            <div className={styles.descriptionContent}>
-              <div className={styles.descriptionHeader}>
-                {/* <span className={styles.username}>
-                  {post.profile?.username}
-                </span> */}
-                {descriptionBody && (
-                  <p className={styles.descriptionBody}>
-                    <span className={styles.username}>
-                      {post.profile?.username}
-                    </span>
-                    {descriptionBody}
-                  </p>
+          <div className={styles.contentArea}>
+            <div className={styles.description}>
+              <Avatar
+                size="xs"
+                src={post.profile?.avatar}
+                alt={post.profile?.username}
+                withGradient={shouldShowGradient(postOwnerId)}
+              />
+              <div className={styles.descriptionContent}>
+                <div className={styles.descriptionHeader}>
+                  {descriptionBody && (
+                    <p className={styles.descriptionBody}>
+                      <span className={styles.username}>
+                        {post.profile?.username}
+                      </span>
+                      {visibleDescription}
+                      {isLongDescription && " "}
+                      {isLongDescription && (
+                        <button
+                          type="button"
+                          className={styles.toggleDescriptionButton}
+                          onClick={toggleDescription}
+                        >
+                          {isDescriptionExpanded ? "less" : "more"}
+                        </button>
+                      )}
+                    </p>
+                  )}
+                </div>
+                {post.createdAt && (
+                  <span className={styles.descriptionDate}>
+                    {formatTimeAgo(post.createdAt)}
+                  </span>
                 )}
               </div>
-              {post.createdAt && (
-                <span className={styles.descriptionDate}>
-                  {formatTimeAgo(post.createdAt)}
-                </span>
-              )}
             </div>
-          </div>
 
-          {followError && <p className={styles.errorText}>{followError}</p>}
+            {followError && <p className={styles.errorText}>{followError}</p>}
 
-          <div className={styles.commentsSection}>
-            {comments.length === 0 && (
-              <p className={styles.emptyState}>
-                No comments yet. Start the conversation.
-              </p>
-            )}
+            <div className={styles.commentsSection}>
+              {comments.length === 0 && (
+                <p className={styles.emptyState}>
+                  No comments yet. Start the conversation.
+                </p>
+              )}
 
-            {comments.map((comment) => {
-              const isLiked = comment.likes?.includes(currentUserId);
-              const commentUserId = comment.user?._id || comment.user?.id;
-              return (
-                <div key={comment.id} className={styles.comment}>
-                  <Avatar
-                    size="xs"
-                    src={comment.user?.avatar}
-                    alt={comment.user?.username}
-                    withGradient={shouldShowGradient(commentUserId)}
-                  />
-                  <div className={styles.commentMain}>
-                    <div className={styles.commentHeader}>
-                      <span className={styles.username}>
-                        {comment.user?.username}
-                      </span>
-                      <p className={styles.commentText}>{comment.text}</p>
+              {comments.map((comment) => {
+                const isLiked = comment.likes?.includes(currentUserId);
+                const commentUserId = comment.user?._id || comment.user?.id;
+                return (
+                  <div key={comment.id} className={styles.comment}>
+                    <Avatar
+                      size="xs"
+                      src={comment.user?.avatar}
+                      alt={comment.user?.username}
+                      withGradient={shouldShowGradient(commentUserId)}
+                    />
+                    <div className={styles.commentMain}>
+                      <div className={styles.commentHeader}>
+                        <span className={styles.username}>
+                          {comment.user?.username}
+                        </span>
+                        <p className={styles.commentText}>{comment.text}</p>
+                      </div>
+                      <div className={styles.commentFooter}>
+                        <span className={styles.timeAgo}>
+                          {formatTimeAgo(comment.createdAt)}
+                        </span>
+                        <span className={styles.commentLikes}>
+                          Likes: {(comment.likes?.length || 0).toLocaleString()}
+                        </span>
+                      </div>
                     </div>
-                    <div className={styles.commentFooter}>
-                      <span className={styles.timeAgo}>
-                        {formatTimeAgo(comment.createdAt)}
-                      </span>
-                      <span className={styles.commentLikes}>
-                        Likes: {(comment.likes?.length || 0).toLocaleString()}
-                      </span>
+                    <div className={styles.commentActions}>
+                      <button
+                        type="button"
+                        className={styles.commentLikeButton}
+                        onClick={() => handleCommentLike(comment.id)}
+                      >
+                        <img
+                          src={isLiked ? likedCommentIcon : unlikedCommentIcon}
+                          alt={isLiked ? "Unlike comment" : "Like comment"}
+                          className={styles.commentLikeIcon}
+                        />
+                      </button>
                     </div>
                   </div>
-                  <div className={styles.commentActions}>
-                    <button
-                      type="button"
-                      className={styles.commentLikeButton}
-                      onClick={() => handleCommentLike(comment.id)}
-                    >
-                      <img
-                        src={isLiked ? likedCommentIcon : unlikedCommentIcon}
-                        alt={isLiked ? "Unlike comment" : "Like comment"}
-                        className={styles.commentLikeIcon}
-                      />
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
 
           <footer className={styles.footer}>
