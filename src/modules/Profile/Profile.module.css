@@ -51,6 +51,18 @@
   margin-right: 0.5rem;
 }
 
+.unfollowButton {
+  border: none;
+  background: none;
+  color: var(--secondary-color);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 30px;
+  margin-left: 15px;
+  padding: 0;
+}
+
 .actionButton {
   width: auto;
   padding: 0.5rem 3.13rem;

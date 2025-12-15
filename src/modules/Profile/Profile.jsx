@@ -7,7 +7,7 @@ import Button from "../../shared/components/Button/Button";
 import WebsiteLinkIcon from "../../assets/icons/WebsiteLinkIcon";
 import LoadingErrorOutput from "../../shared/components/LoadingErrorOutput/LoadingErrorOutput";
 import { selectUser } from "../../redux/auth/authSelectors";
-import { followUserApi } from "../../shared/api/follow-api";
+import { followUserApi, unfollowUserApi } from "../../shared/api/follow-api";
 
 import styles from "./Profile.module.css";
 
@@ -67,13 +67,17 @@ const Profile = ({ user }) => {
     [profileData?.website]
   );
 
-  const handleFollow = async () => {
+  const handleFollowToggle = async () => {
     if (!profileData) return;
 
     setLoading(true);
     setError(null);
 
-    const { data, error: apiError } = await followUserApi({
+    const isCurrentlyFollowed = Boolean(profileData?.isFollowed);
+
+    const { data, error: apiError } = await (isCurrentlyFollowed
+      ? unfollowUserApi
+      : followUserApi)({
       targetUserId: profileData.id,
     });
 
@@ -85,8 +89,14 @@ const Profile = ({ user }) => {
       return;
     }
 
-    setMessage(data.message);
-    setProfileData((prev) => ({ ...prev, isFollowed: true }));
+    const followersDelta = isCurrentlyFollowed ? -1 : 1;
+
+    setMessage(data?.message);
+    setProfileData((prev) => ({
+      ...prev,
+      isFollowed: !isCurrentlyFollowed,
+      followers: Math.max(0, (prev?.followers ?? 0) + followersDelta),
+    }));
 
     setTimeout(() => setMessage(null), 5000);
   };
@@ -101,15 +111,26 @@ const Profile = ({ user }) => {
         <div className={styles.contentArea}>
           <div className={styles.headline}>
             <h1 className={styles.handle}>{profileData?.username}</h1>
-            {!isOwner && !profileData?.isFollowed && (
-              <Button
-                variant="contained"
-                className={styles.followButton}
-                onClick={handleFollow}
-              >
-                Follow
-              </Button>
-            )}
+            {!isOwner &&
+              (profileData?.isFollowed ? (
+                <button
+                  type="button"
+                  className={styles.unfollowButton}
+                  onClick={handleFollowToggle}
+                  disabled={loading}
+                >
+                  unfollow
+                </button>
+              ) : (
+                <Button
+                  variant="contained"
+                  className={styles.followButton}
+                  onClick={handleFollowToggle}
+                  disabled={loading}
+                >
+                  Follow
+                </Button>
+              ))}
             {!isOwner ? (
               <Link to={`/messages/${profileData?.id}`}>
                 <Button variant="gray" className={styles.actionButton}>
