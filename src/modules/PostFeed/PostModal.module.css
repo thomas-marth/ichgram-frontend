@@ -1,0 +1,395 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: start;
+  justify-content: center;
+  z-index: 20;
+  padding: 47px 12px 12px 12px;
+}
+
+.modal {
+  display: flex;
+  background: #ffffff;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  width: min(68.75rem, 100%);
+  height: min(722px, 75vh);
+  box-shadow: 0 0.75rem 1.88rem rgba(0, 0, 0, 0.25);
+}
+
+.mediaWrapper {
+  flex: 1 1 55%;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.media {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sidebar {
+  flex: 1 1 45%;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+}
+
+.header {
+  font-family: "Roboto", sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  padding: 1rem;
+  border-bottom: 0.06rem solid #efefef;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.profileInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.profileActions {
+  display: flex;
+  align-items: center;
+}
+
+.username {
+  font-weight: 600;
+  color: #262626;
+}
+
+.separator {
+  margin-left: 0.63rem;
+}
+
+.timeAgo {
+  color: #8e8e8e;
+  font-size: 0.75rem;
+}
+
+.closeButton {
+  border: none;
+  background: transparent;
+  font-size: 1.25rem;
+  cursor: pointer;
+  color: #8e8e8e;
+  line-height: 1;
+}
+
+.closeButton:hover {
+  color: #262626;
+}
+
+.optionsButton {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.optionsButton img {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.followButton {
+  font-family: "Roboto", sans-serif;
+  font-size: 14px;
+  line-height: 1.3;
+  background: transparent;
+  border: none;
+  color: var(--accent-color);
+  padding: 0.5rem 0.63rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.followButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.description {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 0.06rem solid #f0f0f0;
+}
+
+.descriptionContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.38rem;
+}
+
+.descriptionHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.descriptionBody {
+  margin: 0;
+  color: #262626;
+  white-space: pre-wrap;
+  line-height: 1.4;
+}
+
+.descriptionBody > .username {
+  margin-right: 6px;
+}
+
+.descriptionDate {
+  font-size: 0.75rem;
+  color: #8e8e8e;
+}
+
+.errorText {
+  color: #e53935;
+  margin: 0 1rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+.commentsSection {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.comment {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.commentMain {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.38rem;
+}
+
+.commentHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.commentText {
+  margin: 0;
+  color: #262626;
+  line-height: 1.5;
+  display: inline;
+}
+
+.commentFooter {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  color: #8e8e8e;
+  font-size: 0.75rem;
+}
+
+.commentLikes {
+  white-space: nowrap;
+}
+
+.commentActions {
+  display: flex;
+  align-items: flex-start;
+  margin-left: auto;
+}
+
+.commentLikeButton {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0.25rem;
+}
+
+.commentLikeIcon {
+  width: 0.88rem;
+  height: 0.88rem;
+}
+
+.emptyState {
+  color: #8e8e8e;
+  text-align: center;
+  margin: 0;
+  padding: 1.5rem 0;
+}
+
+.footer {
+  border-top: 0.06rem solid #efefef;
+  display: flex;
+  flex-direction: column;
+  gap: 0.63rem;
+  padding: 0.75rem 1rem;
+}
+
+.actionRow {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.iconButton {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0.38rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconButton:hover {
+  transform: scale(1.04);
+}
+
+.commentIcon {
+  margin-top: 0.13rem;
+}
+
+.likesSummary {
+  font-weight: 600;
+  color: #262626;
+}
+
+.lastLikeDate {
+  font-size: 0.75rem;
+  color: #8e8e8e;
+}
+
+.addComment {
+  display: flex;
+  align-items: center;
+  gap: 0.63rem;
+  border-top: 0.06rem solid #efefef;
+  padding-top: 0.5rem;
+}
+
+.emojiPicker {
+  position: relative;
+}
+
+.emojiList {
+  position: absolute;
+  bottom: 2.25rem;
+  left: 0;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.38rem;
+  padding: 0.5rem;
+  background: #ffffff;
+  border: 0.06rem solid #efefef;
+  border-radius: 0.63rem;
+  box-shadow: 0 0.75rem 1.88rem rgba(0, 0, 0, 0.15);
+  width: 13.13rem;
+  z-index: 10;
+}
+
+.emojiButton {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1.13rem;
+  line-height: 1;
+}
+
+.commentInput {
+  flex: 1;
+  border: none;
+  border-radius: 0;
+  padding: 0.38rem 0;
+  font-size: 0.88rem;
+  outline: none;
+}
+
+.submitButton {
+  background: transparent;
+  color: #0095f6;
+  border: none;
+  padding: 0.38rem 0.5rem;
+  border-radius: 0.25rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.submitButton:disabled {
+  color: #b2dffc;
+  cursor: not-allowed;
+}
+
+.manageOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 30;
+}
+
+.manageModal {
+  background: #ffffff;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  width: min(22.5rem, 90%);
+  box-shadow: 0 0.75rem 1.88rem rgba(0, 0, 0, 0.25);
+  text-align: center;
+}
+
+.manageTitle {
+  margin: 0 0 0.5rem;
+  font-size: 1.13rem;
+}
+
+.manageHint {
+  margin: 0 0 1rem;
+  color: #4f4f4f;
+  font-size: 0.88rem;
+}
+
+.closeManageButton {
+  background: #0095f6;
+  border: none;
+  color: #ffffff;
+  padding: 0.63rem 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+@media (max-width: 62rem) {
+  .modal {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .mediaWrapper {
+    max-height: 18.75rem;
+  }
+
+  .sidebar {
+    width: 100%;
+  }
+}

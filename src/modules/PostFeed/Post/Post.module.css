@@ -9,7 +9,7 @@
 .header {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   font-size: 13px;
   line-height: 16px;
   gap: 27px;
@@ -41,6 +41,18 @@
   color: #0095f6;
   font-weight: 600;
   text-decoration: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.imageButton {
+  border: none;
+  padding: 0;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
 }
 
 .imageWrapper {
@@ -61,6 +73,23 @@
   display: flex;
   gap: 14px;
   margin-top: 4px;
+}
+
+.iconButton {
+  background: transparent;
+  border: none;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.iconButton:focus-visible,
+.follow:focus-visible,
+.imageButton:focus-visible,
+.moreButton:focus-visible {
+  outline: 2px solid #0095f6;
+  outline-offset: 2px;
 }
 
 .commentIcon {
@@ -104,11 +133,16 @@
 
 .comments {
   color: #8e8e8e;
-  text-decoration: none;
   font-size: 14px;
   display: block;
   width: 100%;
   padding-bottom: 14px;
   margin-top: auto;
   border-bottom: 0.861px solid #dbdbdb;
+  text-align: left;
+  background: transparent;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  cursor: pointer;
 }

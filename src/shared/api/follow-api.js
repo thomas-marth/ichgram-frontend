@@ -11,3 +11,6 @@ const wrapRequest = async (promise) => {
 
 export const followUserApi = ({ targetUserId }) =>
   wrapRequest(instance.post(`/follows/${targetUserId}`));
+
+export const unfollowUserApi = ({ targetUserId }) =>
+  wrapRequest(instance.delete(`/follows/${targetUserId}`));

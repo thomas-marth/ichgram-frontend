@@ -1,0 +1,347 @@
+import { useMemo, useState } from "react";
+import Avatar from "../../shared/components/Avatar/Avatar";
+import LikeIcon from "../../assets/icons/LikeIcon";
+import LikeIconActive from "../../assets/icons/LikeIconActive";
+import CommentsIcon from "../../assets/icons/CommentsIcon";
+import unlikedCommentIcon from "../../assets/icons/like-comment-icon.svg";
+import likedCommentIcon from "../../assets/icons/like-comment-icon-active.svg";
+import smileIcon from "../../assets/icons/smile.svg";
+import formatTimeAgo from "../../shared/utils/formatTimeAgo";
+import { followUserApi, unfollowUserApi } from "../../shared/api/follow-api";
+import optionsIcon from "../../assets/icons/options.svg";
+
+import styles from "./PostModal.module.css";
+
+const emojiPalette = [
+  "😀",
+  "😎",
+  "😍",
+  "🎉",
+  "🔥",
+  "👏",
+  "🥳",
+  "🤩",
+  "🤔",
+  "😅",
+  "😇",
+  "🙌",
+];
+
+const PostModal = ({
+  post,
+  onClose,
+  onToggleLike,
+  onAddComment,
+  onToggleCommentLike,
+  currentUser,
+}) => {
+  const [newComment, setNewComment] = useState("");
+  const [showEmojis, setShowEmojis] = useState(false);
+  const [isManageModalOpen, setIsManageModalOpen] = useState(false);
+  const [isFollowed, setIsFollowed] = useState(
+    Boolean(post.isFollowed ?? post.profile?.isFollowed)
+  );
+  const [followError, setFollowError] = useState(null);
+  const [isFollowLoading, setIsFollowLoading] = useState(false);
+
+  const descriptionBody = useMemo(
+    () => post.descriptionBody || post.description || post.captionBody || "",
+    [post.captionBody, post.description, post.descriptionBody]
+  );
+
+  const comments = post.comments || [];
+  const likesCount = post.likesCount ?? 0;
+
+  const currentUserId = currentUser?._id || currentUser?.id || "";
+  const postOwnerId = post.profile?._id || post.profile?.id;
+  const isPostOwner = Boolean(
+    postOwnerId &&
+      currentUserId &&
+      String(postOwnerId) === String(currentUserId)
+  );
+
+  const shouldShowGradient = (userId) =>
+    Boolean(
+      userId && currentUserId && String(userId) === String(currentUserId)
+    );
+
+  const handleAddComment = () => {
+    const trimmed = newComment.trim();
+    if (!trimmed) return;
+    onAddComment(trimmed);
+    setNewComment("");
+    setShowEmojis(false);
+  };
+
+  const handleCommentLike = (commentId) => {
+    onToggleCommentLike(commentId);
+  };
+
+  const handleFollowToggle = async () => {
+    if (!postOwnerId) return;
+
+    setFollowError(null);
+    setIsFollowLoading(true);
+
+    const apiMethod = isFollowed ? unfollowUserApi : followUserApi;
+    const { error } = await apiMethod({ targetUserId: postOwnerId });
+
+    setIsFollowLoading(false);
+
+    if (error) {
+      const apiMessage = error.response?.data?.message || error.message;
+      setFollowError(apiMessage);
+      return;
+    }
+
+    setIsFollowed((prev) => !prev);
+  };
+
+  const lastLikeDateLabel = useMemo(() => {
+    if (!post.lastLikedAt && !post.updatedAt && !post.createdAt) return "";
+    const date = post.lastLikedAt || post.updatedAt || post.createdAt;
+    return formatTimeAgo(date);
+  }, [post.createdAt, post.lastLikedAt, post.updatedAt]);
+
+  return (
+    <div className={styles.overlay} onClick={onClose}>
+      <div
+        className={styles.modal}
+        onClick={(event) => event.stopPropagation()}
+      >
+        <div className={styles.mediaWrapper}>
+          <img className={styles.media} src={post.image} alt="Post" />
+        </div>
+
+        <div className={styles.sidebar}>
+          <header className={styles.header}>
+            <div className={styles.profile}>
+              <Avatar
+                size="xs"
+                src={post.profile?.avatar}
+                alt={post.profile?.username}
+                withGradient={shouldShowGradient(postOwnerId)}
+              />
+              <div className={styles.profileInfo}>
+                <span className={styles.username}>
+                  {post.profile?.username}
+                </span>
+              </div>
+            </div>
+            <div className={styles.profileActions}>
+              {!isPostOwner && (
+                <>
+                  <span className={styles.separator}>•</span>
+                  <button
+                    type="button"
+                    className={styles.followButton}
+                    onClick={handleFollowToggle}
+                    disabled={isFollowLoading}
+                  >
+                    {isFollowed ? "unfollow" : "follow"}
+                  </button>
+                </>
+              )}
+
+              {isPostOwner && (
+                <button
+                  type="button"
+                  className={styles.optionsButton}
+                  onClick={() => setIsManageModalOpen(true)}
+                  aria-label="Post options"
+                >
+                  <img src={optionsIcon} alt="Options" />
+                </button>
+              )}
+            </div>
+          </header>
+
+          <div className={styles.description}>
+            <Avatar
+              size="xs"
+              src={post.profile?.avatar}
+              alt={post.profile?.username}
+              withGradient={shouldShowGradient(postOwnerId)}
+            />
+            <div className={styles.descriptionContent}>
+              <div className={styles.descriptionHeader}>
+                {/* <span className={styles.username}>
+                  {post.profile?.username}
+                </span> */}
+                {descriptionBody && (
+                  <p className={styles.descriptionBody}>
+                    <span className={styles.username}>
+                      {post.profile?.username}
+                    </span>
+                    {descriptionBody}
+                  </p>
+                )}
+              </div>
+              {post.createdAt && (
+                <span className={styles.descriptionDate}>
+                  {formatTimeAgo(post.createdAt)}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {followError && <p className={styles.errorText}>{followError}</p>}
+
+          <div className={styles.commentsSection}>
+            {comments.length === 0 && (
+              <p className={styles.emptyState}>
+                No comments yet. Start the conversation.
+              </p>
+            )}
+
+            {comments.map((comment) => {
+              const isLiked = comment.likes?.includes(currentUserId);
+              const commentUserId = comment.user?._id || comment.user?.id;
+              return (
+                <div key={comment.id} className={styles.comment}>
+                  <Avatar
+                    size="xs"
+                    src={comment.user?.avatar}
+                    alt={comment.user?.username}
+                    withGradient={shouldShowGradient(commentUserId)}
+                  />
+                  <div className={styles.commentMain}>
+                    <div className={styles.commentHeader}>
+                      <span className={styles.username}>
+                        {comment.user?.username}
+                      </span>
+                      <p className={styles.commentText}>{comment.text}</p>
+                    </div>
+                    <div className={styles.commentFooter}>
+                      <span className={styles.timeAgo}>
+                        {formatTimeAgo(comment.createdAt)}
+                      </span>
+                      <span className={styles.commentLikes}>
+                        Likes: {(comment.likes?.length || 0).toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+                  <div className={styles.commentActions}>
+                    <button
+                      type="button"
+                      className={styles.commentLikeButton}
+                      onClick={() => handleCommentLike(comment.id)}
+                    >
+                      <img
+                        src={isLiked ? likedCommentIcon : unlikedCommentIcon}
+                        alt={isLiked ? "Unlike comment" : "Like comment"}
+                        className={styles.commentLikeIcon}
+                      />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <footer className={styles.footer}>
+            <div className={styles.actionRow}>
+              <button
+                type="button"
+                className={styles.iconButton}
+                onClick={onToggleLike}
+                aria-label={post.isLiked ? "Unlike post" : "Like post"}
+              >
+                {post.isLiked ? <LikeIconActive /> : <LikeIcon />}
+              </button>
+              <button
+                type="button"
+                className={styles.iconButton}
+                aria-label="Comments"
+              >
+                <CommentsIcon className={styles.commentIcon} />
+              </button>
+            </div>
+
+            <div className={styles.likesSummary}>
+              {likesCount.toLocaleString()}{" "}
+              {likesCount === 1 ? "like" : "likes"}
+            </div>
+
+            {lastLikeDateLabel && (
+              <div className={styles.lastLikeDate}>{lastLikeDateLabel}</div>
+            )}
+
+            <div className={styles.addComment}>
+              <div className={styles.emojiPicker}>
+                <button
+                  type="button"
+                  className={styles.iconButton}
+                  onClick={() => setShowEmojis((state) => !state)}
+                  aria-label="Toggle emojis"
+                >
+                  <img src={smileIcon} alt="Add emoji" width={20} height={20} />
+                </button>
+                {showEmojis && (
+                  <div className={styles.emojiList}>
+                    {emojiPalette.map((emoji) => (
+                      <button
+                        key={emoji}
+                        type="button"
+                        className={styles.emojiButton}
+                        onClick={() =>
+                          setNewComment((value) => `${value}${emoji}`)
+                        }
+                      >
+                        {emoji}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <input
+                className={styles.commentInput}
+                type="text"
+                placeholder="Add a comment..."
+                value={newComment}
+                onChange={(event) => setNewComment(event.target.value)}
+              />
+              <button
+                type="button"
+                className={styles.submitButton}
+                onClick={handleAddComment}
+                disabled={!newComment.trim()}
+              >
+                Send
+              </button>
+            </div>
+          </footer>
+        </div>
+      </div>
+
+      {isManageModalOpen && (
+        <div
+          className={styles.manageOverlay}
+          onClick={(event) => {
+            event.stopPropagation();
+            setIsManageModalOpen(false);
+          }}
+        >
+          <div
+            className={styles.manageModal}
+            onClick={(event) => event.stopPropagation()}
+          >
+            <h3 className={styles.manageTitle}>Параметры поста</h3>
+            <p className={styles.manageHint}>
+              Здесь появится управление публикацией.
+            </p>
+            <button
+              type="button"
+              className={styles.closeManageButton}
+              onClick={() => setIsManageModalOpen(false)}
+            >
+              Закрыть
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default PostModal;
