@@ -253,6 +253,24 @@
   display: inline;
 }
 
+.highlightedComment {
+  background-color: rgba(128, 128, 128, 0.2);
+  border-radius: 0.25rem;
+  animation: highlightPulse 0.6s ease-in-out 3;
+}
+
+@keyframes highlightPulse {
+  0% {
+    background-color: rgba(128, 128, 128, 0.05);
+  }
+  50% {
+    background-color: rgba(128, 128, 128, 0.3);
+  }
+  100% {
+    background-color: rgba(128, 128, 128, 0.05);
+  }
+}
+
 .commentFooter {
   display: flex;
   align-items: center;

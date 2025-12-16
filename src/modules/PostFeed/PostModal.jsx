@@ -36,6 +36,7 @@ const PostModal = ({
   onFollowStatusChange,
   onToggleFollow,
   onNavigateProfile,
+  highlightedCommentId = null,
 }) => {
   const [newComment, setNewComment] = useState("");
   const [showEmojis, setShowEmojis] = useState(false);
@@ -48,6 +49,7 @@ const PostModal = ({
   const lastCommentRef = useRef(null);
   const previousCommentsLength = useRef(post.comments?.length || 0);
   const shouldScrollToNewComment = useRef(false);
+  const commentRefs = useRef({});
 
   const isFollowed = useMemo(
     () => Boolean(post.isFollowed ?? post.profile?.isFollowed),
@@ -179,6 +181,38 @@ const PostModal = ({
 
     shouldScrollToNewComment.current = false;
   }, [comments.length]);
+
+  useEffect(() => {
+    if (!highlightedCommentId) return undefined;
+
+    const targetComment = commentRefs.current[highlightedCommentId];
+    if (!targetComment) return undefined;
+
+    const contentArea = contentAreaRef.current;
+
+    if (contentArea) {
+      const containerRect = contentArea.getBoundingClientRect();
+      const commentRect = targetComment.getBoundingClientRect();
+      const isVisible =
+        commentRect.top >= containerRect.top &&
+        commentRect.bottom <= containerRect.bottom;
+
+      if (!isVisible) {
+        targetComment.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
+
+    targetComment.classList.add(styles.highlightedComment);
+
+    const timeoutId = setTimeout(() => {
+      targetComment.classList.remove(styles.highlightedComment);
+    }, 1800);
+
+    return () => {
+      clearTimeout(timeoutId);
+      targetComment.classList.remove(styles.highlightedComment);
+    };
+  }, [comments.length, highlightedCommentId]);
 
   const lastLikeDateLabel = useMemo(() => {
     if (!post.lastLikedAt && !post.updatedAt && !post.createdAt) return "";
@@ -330,7 +364,19 @@ const PostModal = ({
                           >
                             {comment.user?.username}
                           </button>
-                          <p className={styles.commentText}>{comment.text}</p>
+                          <p
+                            ref={(node) => {
+                              if (!node) {
+                                delete commentRefs.current?.[comment.id];
+                                return;
+                              }
+
+                              commentRefs.current[comment.id] = node;
+                            }}
+                            className={styles.commentText}
+                          >
+                            {comment.text}
+                          </p>
                         </div>
                         <div className={styles.commentFooter}>
                           <span className={styles.timeAgo}>
