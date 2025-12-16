@@ -15,9 +15,10 @@ export default function TextField({
 }) {
   const id = useId();
 
-  const { className, ...restProps } = props;
+  const { className, autoComplete, ...restProps } = props;
   const registration = register ? register(name, rules) : {};
-  const autoCompleteValue = type === "password" ? "new-password" : "on";
+  const defaultAutoComplete = type === "password" ? "new-password" : "on";
+  const resolvedAutoComplete = autoComplete ?? defaultAutoComplete;
 
   return (
     <>
@@ -30,7 +31,7 @@ export default function TextField({
         <input
           id={id}
           type={type}
-          autoComplete={autoCompleteValue}
+          autoComplete={resolvedAutoComplete}
           {...restProps}
           {...registration}
           className={`${styles.input} ${className || ""}`.trim()}
