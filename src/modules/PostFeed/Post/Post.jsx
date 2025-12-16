@@ -7,7 +7,13 @@ import formatTimeAgo from "../../../shared/utils/formatTimeAgo";
 
 import styles from "./Post.module.css";
 
-const Post = ({ post, onOpen, onToggleLike, onToggleFollow }) => {
+const Post = ({
+  post,
+  onOpen,
+  onToggleLike,
+  onToggleFollow,
+  onNavigateProfile,
+}) => {
   const {
     profile,
     timeAgo,
@@ -44,6 +50,7 @@ const Post = ({ post, onOpen, onToggleLike, onToggleFollow }) => {
   const timeAgoLabel = createdAt ? formatTimeAgo(createdAt) : timeAgo;
   const isFollowedState = isFollowed ?? profile?.isFollowed;
   const followLabel = isFollowedState ? "unfollow" : "follow";
+  const profileId = profile?._id || profile?.id;
 
   const handleFollowClick = () => {
     if (onToggleFollow) {
@@ -51,10 +58,20 @@ const Post = ({ post, onOpen, onToggleLike, onToggleFollow }) => {
     }
   };
 
+  const handleProfileNavigation = () => {
+    if (onNavigateProfile && profileId) {
+      onNavigateProfile(profileId);
+    }
+  };
+
   return (
     <article className={styles.post}>
       <header className={styles.header}>
-        <div className={styles.profile}>
+        <button
+          type="button"
+          className={`${styles.profileButton} ${styles.profile}`}
+          onClick={handleProfileNavigation}
+        >
           <Avatar
             size="xs"
             src={profile.avatar}
@@ -65,7 +82,7 @@ const Post = ({ post, onOpen, onToggleLike, onToggleFollow }) => {
             <span className={styles.username}>{profile.username}</span>
             <span className={styles.timeAgo}> • {timeAgoLabel} • </span>
           </div>
-        </div>
+        </button>
         {!isOwnedByCurrentUser && (
           <button
             type="button"
@@ -107,7 +124,13 @@ const Post = ({ post, onOpen, onToggleLike, onToggleFollow }) => {
       {descriptionText && (
         <div className={styles.description}>
           <p className={styles.descriptionBody}>
-            <span className={styles.username}>{profile.username}</span>
+            <button
+              type="button"
+              className={`${styles.username} ${styles.usernameButton}`}
+              onClick={handleProfileNavigation}
+            >
+              {profile.username}
+            </button>
             {visibleDescription}
             {isLongDescription && " "}
             {isLongDescription && (

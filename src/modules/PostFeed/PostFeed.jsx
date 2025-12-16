@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Post from "./Post/Post";
 import PostModal from "./PostModal";
@@ -68,6 +69,7 @@ const normalizeLikedPostIds = (likes = []) =>
     .map(String);
 
 const PostFeed = () => {
+  const navigate = useNavigate();
   const authUser = useSelector((state) => state.auth.user);
   const authUserId = authUser?._id || authUser?.id || null;
   const currentUser = useMemo(
@@ -173,6 +175,11 @@ const PostFeed = () => {
       isMounted = false;
     };
   }, [currentUser, selectedPostId, updatePostById]);
+
+  const handleNavigateToProfile = (userId) => {
+    if (!userId) return;
+    navigate(`/profile/${userId}`);
+  };
 
   const handleToggleLike = async (postId) => {
     const targetPost = posts.find((post) => String(post.id) === String(postId));
@@ -406,6 +413,7 @@ const PostFeed = () => {
               onOpen={() => setSelectedPostId(post.id)}
               onToggleLike={() => handleToggleLike(post.id)}
               onToggleFollow={() => handleToggleFollow(post)}
+              onNavigateProfile={handleNavigateToProfile}
             />
           </div>
         ))}
@@ -436,6 +444,7 @@ const PostFeed = () => {
             handleFollowStatusChange(authorId, isFollowed)
           }
           onToggleFollow={() => handleToggleFollow(selectedPost)}
+          onNavigateProfile={handleNavigateToProfile}
         />
       )}
     </section>

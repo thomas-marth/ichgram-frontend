@@ -21,6 +21,14 @@
   gap: 10px;
 }
 
+.profileButton {
+  padding: 0;
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+}
+
 .profileInfo {
   display: flex;
   align-items: center;
@@ -31,6 +39,15 @@
 .username {
   font-weight: 600;
   color: #262626;
+}
+
+.usernameButton {
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: none;
+  font: inherit;
+  cursor: pointer;
 }
 
 .timeAgo {
@@ -91,7 +108,9 @@
 .iconButton:focus-visible,
 .follow:focus-visible,
 .imageButton:focus-visible,
-.toggleDescriptionButton:focus-visible {
+.toggleDescriptionButton:focus-visible,
+.profileButton:focus-visible,
+.usernameButton:focus-visible {
   outline: 2px solid #0095f6;
   outline-offset: 2px;
 }

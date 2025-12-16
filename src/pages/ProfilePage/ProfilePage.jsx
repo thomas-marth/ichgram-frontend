@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import Profile from "../../modules/Profile/Profile";
 import Explore from "../../modules/Explore/Explore";
@@ -93,6 +93,7 @@ const normalizeLikedPostIds = (likes = []) =>
 const ProfilePage = () => {
   const { id } = useParams();
   const currentUser = useSelector(selectUser);
+  const navigate = useNavigate();
 
   const activeProfileId = useMemo(
     () => id ?? currentUser?.id ?? null,
@@ -104,6 +105,11 @@ const ProfilePage = () => {
   const [selectedPostId, setSelectedPostId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const handleNavigateToProfile = (userId) => {
+    if (!userId) return;
+    navigate(`/profile/${userId}`);
+  };
 
   const currentUserProfile = useMemo(
     () => ({
@@ -534,6 +540,7 @@ const ProfilePage = () => {
           }
           currentUser={currentUserProfile}
           onFollowStatusChange={handleModalFollowChange}
+          onNavigateProfile={handleNavigateToProfile}
         />
       )}
       <LoadingErrorOutput loading={loading} error={error} />

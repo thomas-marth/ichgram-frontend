@@ -35,6 +35,7 @@ const PostModal = ({
   currentUser,
   onFollowStatusChange,
   onToggleFollow,
+  onNavigateProfile,
 }) => {
   const [newComment, setNewComment] = useState("");
   const [showEmojis, setShowEmojis] = useState(false);
@@ -144,6 +145,11 @@ const PostModal = ({
     setIsDescriptionExpanded((prev) => !prev);
   };
 
+  const handleNavigateToProfile = (userId) => {
+    if (!userId || typeof onNavigateProfile !== "function") return;
+    onNavigateProfile(userId);
+  };
+
   useEffect(() => {
     const contentArea = contentAreaRef.current;
     const lastComment = lastCommentRef.current;
@@ -192,7 +198,11 @@ const PostModal = ({
 
         <div className={styles.sidebar}>
           <header className={styles.header}>
-            <div className={styles.profile}>
+            <button
+              type="button"
+              className={`${styles.profileButton} ${styles.profile}`}
+              onClick={() => handleNavigateToProfile(postOwnerId)}
+            >
               <Avatar
                 size="xs"
                 src={post.profile?.avatar}
@@ -204,7 +214,7 @@ const PostModal = ({
                   {post.profile?.username}
                 </span>
               </div>
-            </div>
+            </button>
             <div className={styles.profileActions}>
               {!isPostOwner && (
                 <>
@@ -236,18 +246,28 @@ const PostModal = ({
           <div className={styles.contentArea} ref={contentAreaRef}>
             {hasDescription && (
               <div className={styles.description}>
-                <Avatar
-                  size="xs"
-                  src={post.profile?.avatar}
-                  alt={post.profile?.username}
-                  withGradient={shouldShowGradient(postOwnerId)}
-                />
+                <button
+                  type="button"
+                  className={`${styles.profileButton} ${styles.avatarButton}`}
+                  onClick={() => handleNavigateToProfile(postOwnerId)}
+                >
+                  <Avatar
+                    size="xs"
+                    src={post.profile?.avatar}
+                    alt={post.profile?.username}
+                    withGradient={shouldShowGradient(postOwnerId)}
+                  />
+                </button>
                 <div className={styles.descriptionContent}>
                   <div className={styles.descriptionHeader}>
                     <p className={styles.descriptionBody}>
-                      <span className={styles.username}>
+                      <button
+                        type="button"
+                        className={`${styles.username} ${styles.usernameButton}`}
+                        onClick={() => handleNavigateToProfile(postOwnerId)}
+                      >
                         {post.profile?.username}
-                      </span>
+                      </button>
                       {visibleDescription}
                       {isLongDescription && " "}
                       {isLongDescription && (
@@ -287,17 +307,29 @@ const PostModal = ({
                       className={styles.comment}
                       ref={isLastComment ? lastCommentRef : null}
                     >
-                      <Avatar
-                        size="xs"
-                        src={comment.user?.avatar}
-                        alt={comment.user?.username}
-                        withGradient={shouldShowGradient(commentUserId)}
-                      />
+                      <button
+                        type="button"
+                        className={`${styles.profileButton} ${styles.commentAvatarButton}`}
+                        onClick={() => handleNavigateToProfile(commentUserId)}
+                      >
+                        <Avatar
+                          size="xs"
+                          src={comment.user?.avatar}
+                          alt={comment.user?.username}
+                          withGradient={shouldShowGradient(commentUserId)}
+                        />
+                      </button>
                       <div className={styles.commentMain}>
                         <div className={styles.commentHeader}>
-                          <span className={styles.username}>
+                          <button
+                            type="button"
+                            className={`${styles.username} ${styles.usernameButton}`}
+                            onClick={() =>
+                              handleNavigateToProfile(commentUserId)
+                            }
+                          >
                             {comment.user?.username}
-                          </span>
+                          </button>
                           <p className={styles.commentText}>{comment.text}</p>
                         </div>
                         <div className={styles.commentFooter}>

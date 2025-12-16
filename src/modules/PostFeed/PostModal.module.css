@@ -56,6 +56,14 @@
   gap: 0.75rem;
 }
 
+.profileButton {
+  padding: 0;
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+}
+
 .profileInfo {
   display: flex;
   flex-direction: column;
@@ -69,6 +77,15 @@
 .username {
   font-weight: 600;
   color: #262626;
+}
+
+.usernameButton {
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: none;
+  font: inherit;
+  cursor: pointer;
 }
 
 .separator {
@@ -129,6 +146,15 @@
   display: flex;
   gap: 0.75rem;
   padding: 10px 12px 21px 10px;
+}
+
+.avatarButton,
+.commentAvatarButton {
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
 }
 
 .descriptionContent {
@@ -359,6 +385,21 @@
   border-radius: 0.25rem;
   font-weight: 600;
   cursor: pointer;
+}
+
+.iconButton:focus-visible,
+.closeButton:focus-visible,
+.optionsButton:focus-visible,
+.toggleDescriptionButton:focus-visible,
+.profileButton:focus-visible,
+.usernameButton:focus-visible,
+.avatarButton:focus-visible,
+.commentAvatarButton:focus-visible,
+.commentLikeButton:focus-visible,
+.emojiButton:focus-visible,
+.submitButton:focus-visible {
+  outline: 2px solid #0095f6;
+  outline-offset: 2px;
 }
 
 .submitButton:disabled {
