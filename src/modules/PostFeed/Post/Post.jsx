@@ -7,7 +7,7 @@ import formatTimeAgo from "../../../shared/utils/formatTimeAgo";
 
 import styles from "./Post.module.css";
 
-const Post = ({ post, onOpen, onToggleLike }) => {
+const Post = ({ post, onOpen, onToggleLike, onToggleFollow }) => {
   const {
     profile,
     timeAgo,
@@ -42,7 +42,17 @@ const Post = ({ post, onOpen, onToggleLike }) => {
 
   const totalComments = comments.length || commentsCount || 0;
   const timeAgoLabel = createdAt ? formatTimeAgo(createdAt) : timeAgo;
-  const followLabel = isFollowed ?? profile?.isFollowed ? "unfollow" : "follow";
+  const isFollowedState = isFollowed ?? profile?.isFollowed;
+  const followLabel = isFollowedState ? "unfollow" : "follow";
+
+  const handleFollowClick = () => {
+    if (isFollowedState && onToggleFollow) {
+      onToggleFollow();
+      return;
+    }
+
+    onOpen();
+  };
 
   return (
     <article className={styles.post}>
@@ -60,7 +70,11 @@ const Post = ({ post, onOpen, onToggleLike }) => {
           </div>
         </div>
         {!isOwnedByCurrentUser && (
-          <button type="button" className={styles.follow} onClick={onOpen}>
+          <button
+            type="button"
+            className={styles.follow}
+            onClick={handleFollowClick}
+          >
             {followLabel}
           </button>
         )}

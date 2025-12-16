@@ -16,6 +16,7 @@ import {
   getPostCommentsApi,
   toggleCommentLikeApi,
 } from "../../shared/api/comment-api";
+import { followUserApi, unfollowUserApi } from "../../shared/api/follow-api";
 import { mapPostsWithUserRelations } from "../../shared/utils/postRelations";
 
 import styles from "./PostFeed.module.css";
@@ -341,10 +342,13 @@ const PostFeed = () => {
     });
   };
 
-  const handleFollowStatusChange = (postId, isFollowed) => {
+  const handleFollowStatusChange = (authorId, isFollowed) => {
+    if (!authorId) return;
+
     setPosts((prevPosts) =>
       prevPosts.map((post) => {
-        if (post.id !== postId) return post;
+        const postAuthorId = post.profile?._id || post.profile?.id;
+        if (String(postAuthorId) !== String(authorId)) return post;
 
         const updatedProfile = post.profile
           ? { ...post.profile, isFollowed }
@@ -357,6 +361,35 @@ const PostFeed = () => {
         };
       })
     );
+  };
+
+  const handleToggleFollow = async (post) => {
+    const authorId = post?.profile?._id || post?.profile?.id;
+    if (!authorId) return { error: null };
+
+    const isFollowed = post.isFollowed ?? post.profile?.isFollowed ?? false;
+    const nextFollowed = !isFollowed;
+
+    handleFollowStatusChange(authorId, nextFollowed);
+
+    const apiMethod = isFollowed ? unfollowUserApi : followUserApi;
+    const { error: followError } = await apiMethod({ targetUserId: authorId });
+
+    if (followError) {
+      handleFollowStatusChange(authorId, isFollowed);
+      const apiMessage =
+        followError.response?.data?.message || followError.message;
+      setError(apiMessage || followError);
+      return {
+        error:
+          apiMessage ||
+          followError?.message ||
+          "Unable to update follow status",
+      };
+    }
+
+    setError(null);
+    return { error: null };
   };
 
   const selectedPost = posts.find((post) => post.id === selectedPostId) || null;
@@ -372,6 +405,7 @@ const PostFeed = () => {
               post={post}
               onOpen={() => setSelectedPostId(post.id)}
               onToggleLike={() => handleToggleLike(post.id)}
+              onToggleFollow={() => handleToggleFollow(post)}
             />
           </div>
         ))}
@@ -398,9 +432,10 @@ const PostFeed = () => {
             handleToggleCommentLike(selectedPost.id, commentId)
           }
           currentUser={currentUser}
-          onFollowStatusChange={(isFollowed) =>
-            handleFollowStatusChange(selectedPost.id, isFollowed)
+          onFollowStatusChange={(authorId, isFollowed) =>
+            handleFollowStatusChange(authorId, isFollowed)
           }
+          onToggleFollow={() => handleToggleFollow(selectedPost)}
         />
       )}
     </section>

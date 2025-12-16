@@ -7,7 +7,6 @@ import unlikedCommentIcon from "../../assets/icons/like-comment-icon.svg";
 import likedCommentIcon from "../../assets/icons/like-comment-icon-active.svg";
 import smileIcon from "../../assets/icons/smile.svg";
 import formatTimeAgo from "../../shared/utils/formatTimeAgo";
-import { followUserApi, unfollowUserApi } from "../../shared/api/follow-api";
 import optionsIcon from "../../assets/icons/options.svg";
 
 import styles from "./PostModal.module.css";
@@ -35,6 +34,7 @@ const PostModal = ({
   onToggleCommentLike,
   currentUser,
   onFollowStatusChange,
+  onToggleFollow,
 }) => {
   const [newComment, setNewComment] = useState("");
   const [showEmojis, setShowEmojis] = useState(false);
@@ -117,24 +117,25 @@ const PostModal = ({
   };
 
   const handleFollowToggle = async () => {
-    if (!postOwnerId) return;
+    if (!postOwnerId || !onToggleFollow) return;
 
     setFollowError(null);
     setIsFollowLoading(true);
-
-    const apiMethod = isFollowed ? unfollowUserApi : followUserApi;
-    const { error } = await apiMethod({ targetUserId: postOwnerId });
+    const { error } = await onToggleFollow();
 
     setIsFollowLoading(false);
 
     if (error) {
-      const apiMessage = error.response?.data?.message || error.message;
+      const apiMessage =
+        typeof error === "string"
+          ? error
+          : error?.message || "Unable to update follow status";
       setFollowError(apiMessage);
       return;
     }
 
     if (typeof onFollowStatusChange === "function") {
-      onFollowStatusChange(!isFollowed);
+      onFollowStatusChange(postOwnerId, !isFollowed);
     }
   };
 
