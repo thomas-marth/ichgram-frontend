@@ -82,6 +82,14 @@ const normalizePosts = (posts = [], likedPostIds = [], currentUserId) =>
     };
   });
 
+const normalizeLikedPostIds = (likes = []) =>
+  (likes || [])
+    .map((like) =>
+      typeof like === "object" && like !== null ? like.post || like.id : like
+    )
+    .filter(Boolean)
+    .map(String);
+
 const ProfilePage = () => {
   const { id } = useParams();
   const currentUser = useSelector(selectUser);
@@ -156,9 +164,7 @@ const ProfilePage = () => {
         if (!isMounted) return;
 
         setProfileData({ ...userInfo, id: userInfo.id || userInfo._id });
-        const likedPostIds = (likedPostsResult.data || []).map((id) =>
-          String(id)
-        );
+        const likedPostIds = normalizeLikedPostIds(likedPostsResult.data);
         setPosts(
           normalizePosts(userPosts, likedPostIds, currentUserProfile.id)
         );

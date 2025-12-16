@@ -58,6 +58,14 @@ const adaptComment = (comment, fallbackUser) => {
   };
 };
 
+const normalizeLikedPostIds = (likes = []) =>
+  (likes || [])
+    .map((like) =>
+      typeof like === "object" && like !== null ? like.post || like.id : like
+    )
+    .filter(Boolean)
+    .map(String);
+
 const PostFeed = () => {
   const authUser = useSelector((state) => state.auth.user);
   const authUserId = authUser?._id || authUser?.id || null;
@@ -96,9 +104,7 @@ const PostFeed = () => {
 
         if (!isMounted) return;
 
-        const likedPostIds = (likedPostsResponse.data || []).map((id) =>
-          String(id)
-        );
+        const likedPostIds = normalizeLikedPostIds(likedPostsResponse.data);
 
         const mappedPosts = mapPostsWithUserRelations(
           (feedResponse.posts || [])
@@ -168,11 +174,12 @@ const PostFeed = () => {
   }, [currentUser, selectedPostId, updatePostById]);
 
   const handleToggleLike = async (postId) => {
-    let isLikedNext = false;
+    const targetPost = posts.find((post) => String(post.id) === String(postId));
+    const isLikedNext = targetPost ? !targetPost.isLiked : true;
+
+    const likesDelta = isLikedNext ? 1 : -1;
 
     updatePostById(postId, (post) => {
-      isLikedNext = !post.isLiked;
-      const likesDelta = isLikedNext ? 1 : -1;
       const likesCount = Math.max(0, (post.likesCount || 0) + likesDelta);
 
       return {
@@ -186,6 +193,17 @@ const PostFeed = () => {
     const { error: likeError } = await apiMethod(postId);
 
     if (likeError) {
+      const status = likeError?.response?.status;
+      const apiMessage = likeError?.response?.data?.message;
+
+      const isAlreadyLiked = isLikedNext && status === 409;
+      const isAlreadyUnliked = !isLikedNext && status === 404;
+
+      if (isAlreadyLiked || isAlreadyUnliked) {
+        setError(null);
+        return;
+      }
+
       updatePostById(postId, (post) => {
         const likesDelta = isLikedNext ? -1 : 1;
         const likesCount = Math.max(0, (post.likesCount || 0) + likesDelta);
@@ -196,7 +214,8 @@ const PostFeed = () => {
           likesCount,
         };
       });
-      setError(likeError);
+
+      setError(apiMessage || likeError);
     }
   };
 
