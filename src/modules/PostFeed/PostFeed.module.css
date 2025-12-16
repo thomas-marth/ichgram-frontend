@@ -27,6 +27,13 @@
   align-items: stretch;
 }
 
+.emptyState {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #8e8e8e;
+  margin: 8px 0;
+}
+
 .doneWrapper {
   display: flex;
   flex-direction: column;

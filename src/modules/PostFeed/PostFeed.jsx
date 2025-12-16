@@ -1,94 +1,38 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import Post from "./Post/Post";
 import PostModal from "./PostModal";
-import postImage from "../../assets/images/test-post-large.jpg";
 import testUserAvatar from "../../assets/images/test-user.jpg";
 import doneIcon from "../../assets/icons/done.svg";
+import LoadingErrorOutput from "../../shared/components/LoadingErrorOutput/LoadingErrorOutput";
+import { getFeedPostsApi } from "../../shared/api/post-api";
 
 import styles from "./PostFeed.module.css";
 
-const buildInitialPosts = () => [
-  {
-    id: 1,
-    profile: { username: "sashaa", avatar: testUserAvatar },
-    timeAgo: "2 week",
-    createdAt: "2024-12-10T08:30:00Z",
-    image: postImage,
-    likesCount: 101824,
-    captionBody:
-      "It’s golden, Ponyboy! | heyyyyy \n| Morning view is just amazing!",
-    comments: [
-      {
-        id: "c-1",
-        user: { username: "olivia", avatar: testUserAvatar },
-        text: "Love this view!",
-        createdAt: "2024-12-11T12:00:00Z",
-        likes: ["friend-1"],
-      },
-      {
-        id: "c-2",
-        user: { username: "mike", avatar: testUserAvatar },
-        text: "Looks amazing 🤩",
-        createdAt: "2024-12-12T15:40:00Z",
-        likes: [],
-      },
-    ],
-    isLiked: true,
-  },
-  {
-    id: 2,
-    profile: { username: "sashaa", avatar: testUserAvatar },
-    timeAgo: "1 week",
-    createdAt: "2024-12-15T10:00:00Z",
-    image: postImage,
-    likesCount: 21824,
-    captionBody:
-      "It’s golden, Ponyboy! | heyyyyy  \n| Morning view is just amazing!",
-    comments: [
-      {
-        id: "c-3",
-        user: { username: "lisa", avatar: testUserAvatar },
-        text: "So much color in this shot!",
-        createdAt: "2024-12-16T08:15:00Z",
-        likes: [],
-      },
-    ],
-    isLiked: false,
-  },
-  {
-    id: 3,
-    profile: { username: "sashaa", avatar: testUserAvatar },
-    timeAgo: "5 days",
-    createdAt: "2024-12-18T09:00:00Z",
-    image: postImage,
-    likesCount: 91824,
-    captionBody:
-      "It’s golden, Ponyboy! | heyyyyy \n| Morning view is just amazing!",
-    comments: [],
-    isLiked: false,
-  },
-  {
-    id: 4,
-    profile: { username: "sashaa", avatar: testUserAvatar },
-    timeAgo: "2 days",
-    createdAt: "2024-12-20T14:20:00Z",
-    image: postImage,
-    likesCount: 45824,
-    captionBody:
-      "It’s golden, Ponyboy! | heyyyyy \n| Morning view is just amazing!",
-    comments: [
-      {
-        id: "c-4",
-        user: { username: "katya", avatar: testUserAvatar },
-        text: "Bring me there, please!",
-        createdAt: "2024-12-21T07:50:00Z",
-        likes: ["friend-2", "friend-3"],
-      },
-    ],
-    isLiked: true,
-  },
-];
+const adaptFeedPost = (post) => {
+  const author = post.author || {};
+
+  const descriptionBody =
+    post.description || post.captionBody || post.descriptionBody || "";
+
+  return {
+    id: post._id || post.id,
+    profile: {
+      id: author._id || author.id,
+      username: author.username || "Unknown",
+      avatar: author.avatar || testUserAvatar,
+      isFollowed: post.isFollowed ?? author.isFollowed,
+    },
+    createdAt: post.createdAt,
+    image: post.image,
+    likesCount: post.totalLikes ?? post.likesCount ?? 0,
+    comments: Array.isArray(post.comments) ? post.comments : [],
+    commentsCount: post.totalComments ?? post.commentsCount ?? 0,
+    descriptionBody,
+    captionBody: descriptionBody,
+    isLiked: Boolean(post.isLiked),
+  };
+};
 
 const PostFeed = () => {
   const authUser = useSelector((state) => state.auth.user);
@@ -101,8 +45,43 @@ const PostFeed = () => {
     [authUser]
   );
 
-  const [posts, setPosts] = useState(buildInitialPosts);
+  const [posts, setPosts] = useState([]);
   const [selectedPostId, setSelectedPostId] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchFeed = async () => {
+      setLoading(true);
+      try {
+        const { posts: feedPosts } = await getFeedPostsApi();
+        if (!isMounted) return;
+
+        const mappedPosts = (feedPosts || [])
+          .map((post) => adaptFeedPost(post))
+          .filter((post) => post?.id);
+
+        setPosts(mappedPosts);
+        setError(null);
+      } catch (fetchError) {
+        if (isMounted) {
+          setError(fetchError);
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchFeed();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleToggleLike = (postId) => {
     setPosts((prevPosts) =>
@@ -178,18 +157,21 @@ const PostFeed = () => {
 
   return (
     <section className={styles.feed}>
+      <LoadingErrorOutput loading={loading} error={error} />
+
       <div className={styles.grid}>
         {posts.map((post) => (
           <div className={styles.card} key={post.id}>
             <Post
               post={post}
               onOpen={() => setSelectedPostId(post.id)}
-              onFollowStatusChange={(isFollowed) =>
-                handleFollowStatusChange(selectedPost.id, isFollowed)
-              }
+              onToggleLike={() => handleToggleLike(post.id)}
             />
           </div>
         ))}
+        {!loading && !error && posts.length === 0 && (
+          <p className={styles.emptyState}>Your feed is empty for now.</p>
+        )}
       </div>
 
       <div className={styles.doneWrapper}>

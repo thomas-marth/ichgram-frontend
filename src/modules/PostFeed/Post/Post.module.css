@@ -57,14 +57,18 @@
 
 .imageWrapper {
   width: 100%;
+  max-width: 403.097px;
+  max-height: 403.097px;
+  aspect-ratio: 1 / 1;
   line-height: 0;
+  overflow: hidden;
 }
 
 .postImage {
   width: 100%;
+  height: 100%;
   max-width: 403.097px;
-  height: auto;
-  max-height: 503.871px;
+  max-height: 403.097px;
   object-fit: cover;
   border-radius: 4px;
 }
@@ -87,7 +91,7 @@
 .iconButton:focus-visible,
 .follow:focus-visible,
 .imageButton:focus-visible,
-.moreButton:focus-visible {
+.toggleDescriptionButton:focus-visible {
   outline: 2px solid #0095f6;
   outline-offset: 2px;
 }
@@ -102,30 +106,27 @@
   font-size: 14px;
 }
 
-.caption {
+.description {
   display: flex;
   gap: 4px;
   align-items: baseline;
 }
 
-.captionTitle {
-  font-weight: 400;
+.descriptionBody {
+  margin: 0;
   color: #262626;
   white-space: pre-wrap;
+  line-height: 1.4;
 }
 
-.captionBody {
-  display: flex;
-  gap: 6px;
-  color: #262626;
-  font-size: 14px;
-  white-space: pre-wrap;
+.descriptionBody > .username {
+  margin-right: 6px;
 }
 
-.moreButton {
+.toggleDescriptionButton {
   border: none;
   background: transparent;
-  color: #8e8e8e;
+  color: var(--accent-color);
   font-weight: 600;
   cursor: pointer;
   padding: 0;

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import Avatar from "../../../shared/components/Avatar/Avatar";
 import LikeIcon from "../../../assets/icons/LikeIcon";
 import LikeIconActive from "../../../assets/icons/LikeIconActive";
@@ -13,36 +13,31 @@ const Post = ({ post, onOpen, onToggleLike }) => {
     timeAgo,
     image,
     likesCount,
-    captionBody,
+    descriptionBody,
     comments = [],
     commentsCount,
     isLiked,
     createdAt,
   } = post;
 
-  const [expanded, setExpanded] = useState(false);
-
-  const captionLines = useMemo(
+  const descriptionText = useMemo(
     () =>
-      captionBody
+      (descriptionBody || "")
         .split("|")
         .map((line) => line.trim())
-        .filter(Boolean),
-    [captionBody]
+        .filter(Boolean)
+        .join(" | "),
+    [descriptionBody]
   );
 
-  const firstCaptionLine = captionLines[0] ?? "";
-  const remainingCaption = captionLines.slice(1).join(" | ");
+  const DESCRIPTION_LIMIT = 120;
+  const isLongDescription = descriptionText.length > DESCRIPTION_LIMIT;
 
-  const truncatedCaption = useMemo(() => {
-    if (expanded || remainingCaption.length <= 15) {
-      return remainingCaption;
-    }
+  const visibleDescription = useMemo(() => {
+    if (!isLongDescription) return descriptionText;
+    return `${descriptionText.slice(0, DESCRIPTION_LIMIT)}...`;
+  }, [descriptionText, isLongDescription]);
 
-    return `${remainingCaption.slice(0, 15)}...`;
-  }, [expanded, remainingCaption]);
-
-  const shouldShowMore = remainingCaption.length > 15 && !expanded;
   const totalComments = comments.length || commentsCount || 0;
   const timeAgoLabel = createdAt ? formatTimeAgo(createdAt) : timeAgo;
 
@@ -93,29 +88,24 @@ const Post = ({ post, onOpen, onToggleLike }) => {
 
       <div className={styles.likes}>{likesCount.toLocaleString()} likes</div>
 
-      <div className={styles.caption}>
-        <span className={styles.username}>{profile.username}</span>
-        {firstCaptionLine && (
-          <span className={styles.captionTitle}> {firstCaptionLine}</span>
-        )}
-      </div>
-
-      <div className={styles.captionBody}>
-        {remainingCaption && (
-          <>
-            <span>{truncatedCaption}</span>
-            {shouldShowMore && (
+      {descriptionText && (
+        <div className={styles.description}>
+          <p className={styles.descriptionBody}>
+            <span className={styles.username}>{profile.username}</span>
+            {visibleDescription}
+            {isLongDescription && " "}
+            {isLongDescription && (
               <button
                 type="button"
-                className={styles.moreButton}
-                onClick={() => setExpanded(true)}
+                className={styles.toggleDescriptionButton}
+                onClick={onOpen}
               >
                 more
               </button>
             )}
-          </>
-        )}
-      </div>
+          </p>
+        </div>
+      )}
 
       <button
         type="button"

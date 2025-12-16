@@ -50,6 +50,11 @@ export const createPostApi = (payload) => {
   );
 };
 
+export const getFeedPostsApi = async () => {
+  const { data } = await instance.get("/posts/feed");
+  return { posts: data || [] };
+};
+
 export const getPostsApi = async () => {
   try {
     const { data } = await instance.get("/posts");
