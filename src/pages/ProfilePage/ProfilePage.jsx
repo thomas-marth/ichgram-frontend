@@ -157,6 +157,8 @@ const ProfilePage = () => {
     const fetchProfileData = async () => {
       setLoading(true);
       setError(null);
+      setProfileData(null);
+      setPosts([]);
 
       try {
         const [userInfo, userPosts, likedPostsResult] = await Promise.all([
@@ -516,6 +518,14 @@ const ProfilePage = () => {
       };
     });
   };
+
+  if (!profileData) {
+    return (
+      <div className={styles.profilePage}>
+        <LoadingErrorOutput loading={loading} error={error} />
+      </div>
+    );
+  }
 
   return (
     <div className={styles.profilePage}>
