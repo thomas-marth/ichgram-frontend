@@ -85,6 +85,7 @@ const PostFeed = () => {
   const [selectedPostId, setSelectedPostId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [hasFetchedFeed, setHasFetchedFeed] = useState(false);
 
   const updatePostById = useCallback((postId, updater) => {
     setPosts((prevPosts) =>
@@ -97,6 +98,8 @@ const PostFeed = () => {
 
     const fetchFeed = async () => {
       setLoading(true);
+      setError(null);
+      setHasFetchedFeed(false);
       try {
         const [feedResponse, likedPostsResponse] = await Promise.all([
           getFeedPostsApi(),
@@ -121,7 +124,7 @@ const PostFeed = () => {
         );
 
         setPosts(mappedPosts);
-        setError(null);
+        setHasFetchedFeed(true);
       } catch (fetchError) {
         if (isMounted) {
           setError(fetchError);
@@ -401,26 +404,33 @@ const PostFeed = () => {
 
   const selectedPost = posts.find((post) => post.id === selectedPostId) || null;
 
+  if (!hasFetchedFeed) {
+    return (
+      <section className={styles.feed}>
+        <LoadingErrorOutput loading={loading} error={error} />
+      </section>
+    );
+  }
+
   return (
     <section className={styles.feed}>
       <LoadingErrorOutput loading={loading} error={error} />
 
-      <div className={styles.grid}>
-        {posts.map((post) => (
-          <div className={styles.card} key={post.id}>
-            <Post
-              post={post}
-              onOpen={() => setSelectedPostId(post.id)}
-              onToggleLike={() => handleToggleLike(post.id)}
-              onToggleFollow={() => handleToggleFollow(post)}
-              onNavigateProfile={handleNavigateToProfile}
-            />
-          </div>
-        ))}
-        {!loading && !error && posts.length === 0 && (
-          <p className={styles.emptyState}>Your feed is empty for now.</p>
-        )}
-      </div>
+      {posts.length > 0 && (
+        <div className={styles.grid}>
+          {posts.map((post) => (
+            <div className={styles.card} key={post.id}>
+              <Post
+                post={post}
+                onOpen={() => setSelectedPostId(post.id)}
+                onToggleLike={() => handleToggleLike(post.id)}
+                onToggleFollow={() => handleToggleFollow(post)}
+                onNavigateProfile={handleNavigateToProfile}
+              />
+            </div>
+          ))}
+        </div>
+      )}
 
       <div className={styles.doneWrapper}>
         <img src={doneIcon} alt="All updates viewed" width={83} height={83} />
