@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -6,7 +6,6 @@ import Avatar from "../../shared/components/Avatar/Avatar";
 import PostModal from "../PostFeed/PostModal";
 import formatTimeAgo from "../../shared/utils/formatTimeAgo";
 import LoadingErrorOutput from "../../shared/components/LoadingErrorOutput/LoadingErrorOutput";
-import { getNotificationsApi } from "../../shared/api/notification-api";
 import { getPostByIdApi } from "../../shared/api/post-api";
 import {
   getPostCommentsApi,
@@ -24,36 +23,6 @@ const notificationTextMap = {
   comment_post: "commented your photo",
   follow: "started following",
   like_comment: "liked your comment",
-};
-
-const adaptNotification = (notification) => {
-  const actor = notification.actor || {};
-  const comment = notification.comment || {};
-  const post = notification.post || comment.post;
-
-  return {
-    id: notification._id || notification.id,
-    type: notification.type,
-    createdAt: notification.createdAt,
-    actor: {
-      id: actor._id || actor.id,
-      username: actor.username || "Unknown",
-      avatar: actor.avatar || "",
-    },
-    post: post
-      ? {
-          id: post._id || post.id,
-          image: post.image,
-        }
-      : null,
-    comment: notification.comment
-      ? {
-          id: notification.comment._id || notification.comment.id,
-          text: notification.comment.text,
-          postId: comment.post?._id || comment.post || post?._id || post?.id,
-        }
-      : null,
-  };
 };
 
 const adaptPost = (post = {}) => {
@@ -88,7 +57,11 @@ const adaptComment = (comment) => {
   };
 };
 
-const Notifications = () => {
+const Notifications = ({
+  notifications = [],
+  loading = false,
+  error = null,
+}) => {
   const navigate = useNavigate();
   const authUser = useSelector((state) => state.auth.user);
   const authUserId = authUser?._id || authUser?.id;
@@ -102,40 +75,12 @@ const Notifications = () => {
     [authUserId, authUser?.avatar, authUser?.name, authUser?.username]
   );
 
-  const [notifications, setNotifications] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [actionError, setActionError] = useState(null);
   const [selectedPost, setSelectedPost] = useState(null);
   const [highlightedCommentId, setHighlightedCommentId] = useState(null);
   const [isPostLoading, setIsPostLoading] = useState(false);
 
-  useEffect(() => {
-    let isMounted = true;
-
-    const fetchNotifications = async () => {
-      setLoading(true);
-      const { data, error: notificationsError } = await getNotificationsApi();
-
-      if (!isMounted) return;
-
-      if (notificationsError) {
-        setError(notificationsError);
-        setLoading(false);
-        return;
-      }
-
-      const mapped = (data || []).map(adaptNotification);
-      setNotifications(mapped);
-      setLoading(false);
-      setError(null);
-    };
-
-    fetchNotifications();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const displayError = actionError || error;
 
   const updateSelectedPost = (updater) => {
     setSelectedPost((prev) => (prev ? updater(prev) : prev));
@@ -171,11 +116,11 @@ const Notifications = () => {
     const postId = notification.comment?.postId || notification.post?.id;
     if (!postId) return;
 
-    setError(null);
+    setActionError(null);
     try {
       await loadPostWithComments(postId, notification.comment?.id);
     } catch (fetchError) {
-      setError(fetchError);
+      setActionError(fetchError);
       setIsPostLoading(false);
     }
   };
@@ -203,14 +148,14 @@ const Notifications = () => {
           (post.likesCount || 0) + (post.isLiked ? 1 : -1)
         ),
       }));
-      setError(likeError);
+      setActionError(likeError);
     }
   };
 
   const handleAddComment = async (postId, text) => {
     const { data, error: commentError } = await createCommentApi(postId, text);
     if (commentError) {
-      setError(commentError);
+      setActionError(commentError);
       return;
     }
 
@@ -226,7 +171,7 @@ const Notifications = () => {
   const handleToggleCommentLike = async (commentId) => {
     const { data, error: likeError } = await toggleCommentLikeApi(commentId);
     if (likeError) {
-      setError(likeError);
+      setActionError(likeError);
       return;
     }
 
@@ -281,8 +226,12 @@ const Notifications = () => {
       <span className={styles.sectionLabel}>New</span>
 
       {loading && <p className={styles.infoText}>Loading notifications...</p>}
-      {error && !loading && (
-        <LoadingErrorOutput error={error} layout="stacked" spacing="sm" />
+      {displayError && !loading && (
+        <LoadingErrorOutput
+          error={displayError}
+          layout="stacked"
+          spacing="sm"
+        />
       )}
 
       <ul className={styles.notificationList}>

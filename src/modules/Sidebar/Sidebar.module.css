@@ -51,6 +51,19 @@
   height: 24px;
 }
 
+.labelWrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.badge {
+  font-size: 11px;
+  line-height: 1.1;
+  color: var(--primary-color);
+  transform: translateY(-4px);
+}
+
 .active {
   color: var(--primary-color);
   font-weight: 600;

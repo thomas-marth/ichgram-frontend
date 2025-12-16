@@ -7,6 +7,7 @@ import Notifications from "../../modules/Notifications/Notifications";
 import SideModal from "../../modules/SideModal/SideModal";
 import Search from "../../modules/Search/Search";
 import CreatePost from "../../modules/CreatePost/CreatePost";
+import useNotificationsFeed from "../../shared/hooks/useNotificationsFeed";
 
 import styles from "./PrivatLayout.module.css";
 
@@ -18,6 +19,13 @@ const PrivateLayout = () => {
   const footerRef = useRef(null);
   const mainRef = useRef(null);
   const location = useLocation();
+  const isNotificationsOpen = activeSideModal === "Notifications";
+  const {
+    notifications,
+    loading: notificationsLoading,
+    error: notificationsError,
+    unseenCount: unseenNotificationsCount,
+  } = useNotificationsFeed({ isOpen: isNotificationsOpen });
 
   const getActiveNavItemFromPath = (pathname) => {
     if (pathname === "/") {
@@ -181,6 +189,7 @@ const PrivateLayout = () => {
               onCloseSideModal={handleCloseSideModal}
               onSetActiveNavItem={setActiveNavItem}
               activeNavItem={currentActiveNavItem}
+              unseenNotificationsCount={unseenNotificationsCount}
             />
           </div>
         </div>
@@ -208,7 +217,13 @@ const PrivateLayout = () => {
       ) : null}
       {activeSideModal && activeSideModal !== "Create" ? (
         <SideModal title={activeSideModal} isFooterVisible={isFooterVisible}>
-          {activeSideModal === "Notifications" ? <Notifications /> : null}
+          {activeSideModal === "Notifications" ? (
+            <Notifications
+              notifications={notifications}
+              loading={notificationsLoading}
+              error={notificationsError}
+            />
+          ) : null}
           {activeSideModal === "Search" ? <Search /> : null}
         </SideModal>
       ) : null}

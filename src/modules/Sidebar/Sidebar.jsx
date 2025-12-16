@@ -23,6 +23,7 @@ const Sidebar = ({
   onCloseSideModal,
   onSetActiveNavItem,
   activeNavItem,
+  unseenNotificationsCount = 0,
 }) => {
   const currentUser = useSelector(selectUser);
   const userAvatar = currentUser?.avatar || currentUser?.profile_image;
@@ -62,6 +63,7 @@ const Sidebar = ({
         icon: NotificationsIcon,
         activeIcon: NotificationsIconActive,
         isModal: true,
+        badge: unseenNotificationsCount,
       },
       { label: "Create", icon: CreateIcon, isModal: true },
       {
@@ -71,7 +73,7 @@ const Sidebar = ({
         activeIcon: ProfileIcon,
       },
     ];
-  }, [currentUser?.id, profileAlt, userAvatar]);
+  }, [currentUser?.id, profileAlt, unseenNotificationsCount, userAvatar]);
 
   return (
     <aside className={styles.sidebar}>
@@ -80,7 +82,14 @@ const Sidebar = ({
       </Link>
       <nav className={styles.nav}>
         {navItems.map(
-          ({ to, label, icon: Icon, activeIcon: ActiveIcon, isModal }) => {
+          ({
+            to,
+            label,
+            icon: Icon,
+            activeIcon: ActiveIcon,
+            isModal,
+            badge,
+          }) => {
             const profileLinkClass =
               label === "Profile" ? styles.profileLink : "";
             if (isModal) {
@@ -97,7 +106,12 @@ const Sidebar = ({
                   onClick={() => onOpenSideModal?.(label)}
                 >
                   <IconComponent className={styles.icon} />
-                  <span>{label}</span>
+                  <span className={styles.labelWrapper}>
+                    <span>{label}</span>
+                    {badge ? (
+                      <span className={styles.badge}>{badge}</span>
+                    ) : null}
+                  </span>
                 </button>
               );
             }
