@@ -28,6 +28,13 @@
   display: flex;
   align-items: center;
   gap: 5rem;
+  cursor: pointer;
+  transition: all 0.1s ease-in;
+}
+
+.notificationItem:hover {
+  background-color: #8888880e;
+  border-radius: 8px;
 }
 
 .content {

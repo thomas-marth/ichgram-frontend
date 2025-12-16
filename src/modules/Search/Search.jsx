@@ -1,14 +1,18 @@
 import { useEffect, useMemo, useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import TextField from "../../shared/components/TextField/TextField";
 import Avatar from "../../shared/components/Avatar/Avatar";
 import { getUsers } from "../../shared/api/user-api";
+import { selectUser } from "../../redux/auth/authSelectors";
 
 import styles from "./Search.module.css";
 
-const STORAGE_KEY = "searchHistory";
+const STORAGE_KEY_PREFIX = "searchHistory";
 const MAX_HISTORY_LENGTH = 10;
+
+const getStorageKey = (userId) => `${STORAGE_KEY_PREFIX}_${userId || "guest"}`;
 
 const normalizeUser = (user = {}) => ({
   id: user.id || user._id,
@@ -17,9 +21,9 @@ const normalizeUser = (user = {}) => ({
   avatar: user.avatar || "",
 });
 
-const getInitialHistory = () => {
+const getInitialHistory = (storageKey) => {
   try {
-    const savedHistory = localStorage.getItem(STORAGE_KEY);
+    const savedHistory = localStorage.getItem(storageKey);
     if (!savedHistory) return [];
 
     const parsedHistory = JSON.parse(savedHistory);
@@ -37,7 +41,14 @@ const getInitialHistory = () => {
 const Search = () => {
   const [query, setQuery] = useState("");
   const [users, setUsers] = useState([]);
-  const [searchHistory, setSearchHistory] = useState(getInitialHistory);
+  const currentUser = useSelector(selectUser);
+  const storageKey = useMemo(
+    () => getStorageKey(currentUser?.id || currentUser?._id),
+    [currentUser?.id, currentUser?._id]
+  );
+  const [searchHistory, setSearchHistory] = useState(() =>
+    getInitialHistory(storageKey)
+  );
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -66,8 +77,12 @@ const Search = () => {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(searchHistory));
-  }, [searchHistory]);
+    setSearchHistory(getInitialHistory(storageKey));
+  }, [storageKey]);
+
+  useEffect(() => {
+    localStorage.setItem(storageKey, JSON.stringify(searchHistory));
+  }, [searchHistory, storageKey]);
 
   const filteredUsers = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
