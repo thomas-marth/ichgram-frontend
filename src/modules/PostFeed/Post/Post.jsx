@@ -18,6 +18,8 @@ const Post = ({ post, onOpen, onToggleLike }) => {
     commentsCount,
     isLiked,
     createdAt,
+    isFollowed,
+    isOwnedByCurrentUser,
   } = post;
 
   const descriptionText = useMemo(
@@ -40,6 +42,7 @@ const Post = ({ post, onOpen, onToggleLike }) => {
 
   const totalComments = comments.length || commentsCount || 0;
   const timeAgoLabel = createdAt ? formatTimeAgo(createdAt) : timeAgo;
+  const followLabel = isFollowed ?? profile?.isFollowed ? "unfollow" : "follow";
 
   return (
     <article className={styles.post}>
@@ -56,9 +59,11 @@ const Post = ({ post, onOpen, onToggleLike }) => {
             <span className={styles.timeAgo}> • {timeAgoLabel} • </span>
           </div>
         </div>
-        <button type="button" className={styles.follow} onClick={onOpen}>
-          follow
-        </button>
+        {!isOwnedByCurrentUser && (
+          <button type="button" className={styles.follow} onClick={onOpen}>
+            {followLabel}
+          </button>
+        )}
       </header>
 
       <button type="button" className={styles.imageButton} onClick={onOpen}>
