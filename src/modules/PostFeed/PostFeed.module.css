@@ -1,7 +1,7 @@
 .feed {
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 2.38rem;
   max-width: 846px;
   /* margin: 0 auto; */
 
@@ -39,14 +39,14 @@
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  color: #8e8e8e;
+  color: var(--secondary-color);
   text-align: center;
 }
 
 .doneTitle {
   font-weight: 600;
   margin: 0;
-  color: #262626;
+  color: var(--primary-color);
 }
 
 .doneSubtitle {
