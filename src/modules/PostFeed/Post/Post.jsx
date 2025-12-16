@@ -46,12 +46,9 @@ const Post = ({ post, onOpen, onToggleLike, onToggleFollow }) => {
   const followLabel = isFollowedState ? "unfollow" : "follow";
 
   const handleFollowClick = () => {
-    if (isFollowedState && onToggleFollow) {
+    if (onToggleFollow) {
       onToggleFollow();
-      return;
     }
-
-    onOpen();
   };
 
   return (
