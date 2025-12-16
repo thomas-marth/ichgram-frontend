@@ -25,11 +25,17 @@ const Sidebar = ({
   activeNavItem,
 }) => {
   const currentUser = useSelector(selectUser);
+  const userAvatar = currentUser?.avatar || currentUser?.profile_image;
+  const profileAlt =
+    currentUser?.username || currentUser?.name || "User profile";
 
   const navItems = useMemo(() => {
     const profilePath = currentUser?.id
       ? `/profile/${currentUser.id}`
       : "/profile";
+    const ProfileIcon = (props) => (
+      <UserIcon {...props} src={userAvatar} alt={`${profileAlt} avatar`} />
+    );
 
     return [
       { to: "/", label: "Home", icon: HomeIcon, activeIcon: HomeIconActive },
@@ -58,9 +64,14 @@ const Sidebar = ({
         isModal: true,
       },
       { label: "Create", icon: CreateIcon, isModal: true },
-      { to: profilePath, label: "Profile", icon: UserIcon },
+      {
+        to: profilePath,
+        label: "Profile",
+        icon: ProfileIcon,
+        activeIcon: ProfileIcon,
+      },
     ];
-  }, [currentUser?.id]);
+  }, [currentUser?.id, profileAlt, userAvatar]);
 
   return (
     <aside className={styles.sidebar}>
