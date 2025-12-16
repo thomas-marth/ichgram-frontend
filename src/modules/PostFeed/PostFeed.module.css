@@ -30,7 +30,7 @@
 .emptyState {
   grid-column: 1 / -1;
   text-align: center;
-  color: #8e8e8e;
+  color: var(--secondary-color);
   margin: 8px 0;
 }
 
