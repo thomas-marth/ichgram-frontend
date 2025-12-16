@@ -274,7 +274,10 @@ const PostModal = ({
             {hasComments && (
               <div className={styles.commentsSection}>
                 {comments.map((comment, index) => {
-                  const isLiked = comment.likes?.includes(currentUserId);
+                  const isLiked =
+                    comment.isLiked ?? comment.likes?.includes(currentUserId);
+                  const likesCount =
+                    comment.likesCount ?? comment.likes?.length ?? 0;
                   const commentUserId = comment.user?._id || comment.user?.id;
                   const isLastComment = index === comments.length - 1;
                   return (
@@ -301,8 +304,7 @@ const PostModal = ({
                             {formatTimeAgo(comment.createdAt)}
                           </span>
                           <span className={styles.commentLikes}>
-                            Likes:{" "}
-                            {(comment.likes?.length || 0).toLocaleString()}
+                            Likes: {likesCount.toLocaleString()}
                           </span>
                         </div>
                       </div>

@@ -8,24 +8,68 @@ import LoadingErrorOutput from "../../shared/components/LoadingErrorOutput/Loadi
 import PostModal from "../../modules/PostFeed/PostModal";
 import { getUserPostsApi } from "../../shared/api/post-api";
 import { getUserById } from "../../shared/api/user-api";
+import {
+  getUserLikedPostsApi,
+  likePostApi,
+  unlikePostApi,
+} from "../../shared/api/like-api";
+import {
+  createCommentApi,
+  getPostCommentsApi,
+  toggleCommentLikeApi,
+} from "../../shared/api/comment-api";
 import { selectUser } from "../../redux/auth/authSelectors";
 import { subscribeToPostCreated } from "../../shared/utils/postEvents";
 
 import styles from "./ProfilePage.module.css";
 
-const normalizePosts = (posts = []) =>
+const normalizeComment = (comment = {}, currentUserId) => {
+  const likesArray = comment.likes || [];
+  const likesCount =
+    comment.likesCount ?? (Array.isArray(likesArray) ? likesArray.length : 0);
+
+  const commentUser = comment.user || comment.author || {};
+
+  const isLiked =
+    comment.isLiked ??
+    likesArray.some((id) => String(id) === String(currentUserId));
+
+  return {
+    id: comment._id || comment.id,
+    text: comment.text,
+    createdAt: comment.createdAt,
+    likes: Array.isArray(likesArray) ? likesArray : [],
+    likesCount,
+    isLiked,
+    user: {
+      id: commentUser._id || commentUser.id,
+      username: commentUser.username,
+      avatar: commentUser.avatar,
+    },
+  };
+};
+
+const normalizePosts = (posts = [], likedPostIds = [], currentUserId) =>
   posts.map((post) => {
     const author = post.author || post.profile || {};
     const authorId = author._id || author.id || author;
+    const postId = post._id || post.id;
+    const postComments = Array.isArray(post.comments) ? post.comments : [];
+    const normalizedComments = postComments.map((comment) =>
+      normalizeComment(comment, currentUserId)
+    );
 
     return {
-      id: post._id || post.id,
+      id: postId,
       image: post.image,
       alt: post.description || "Post image",
       descriptionBody: post.description || "",
       likesCount: post.totalLikes ?? post.likesCount ?? 0,
-      comments: post.comments ?? [],
-      isLiked: Boolean(post.isLiked),
+      comments: normalizedComments,
+      commentsCount:
+        post.totalComments ?? post.commentsCount ?? normalizedComments.length,
+      isLiked:
+        likedPostIds.includes(String(postId)) || Boolean(post.isLiked ?? false),
       createdAt: post.createdAt,
       updatedAt: post.updatedAt,
       profile: {
@@ -101,15 +145,23 @@ const ProfilePage = () => {
       setError(null);
 
       try {
-        const [userInfo, userPosts] = await Promise.all([
+        const [userInfo, userPosts, likedPostsResult] = await Promise.all([
           getUserById(activeProfileId),
           getUserPostsApi(activeProfileId),
+          currentUserProfile.id
+            ? getUserLikedPostsApi(currentUserProfile.id)
+            : Promise.resolve({ data: [] }),
         ]);
 
         if (!isMounted) return;
 
         setProfileData({ ...userInfo, id: userInfo.id || userInfo._id });
-        setPosts(normalizePosts(userPosts));
+        const likedPostIds = (likedPostsResult.data || []).map((id) =>
+          String(id)
+        );
+        setPosts(
+          normalizePosts(userPosts, likedPostIds, currentUserProfile.id)
+        );
       } catch (err) {
         if (!isMounted) return;
 
@@ -127,7 +179,7 @@ const ProfilePage = () => {
     return () => {
       isMounted = false;
     };
-  }, [activeProfileId]);
+  }, [activeProfileId, currentUserProfile.id]);
 
   useEffect(() => {
     const unsubscribe = subscribeToPostCreated((newPost) => {
@@ -140,7 +192,11 @@ const ProfilePage = () => {
 
       if (!ownerId || String(ownerId) !== String(activeProfileId)) return;
 
-      const normalizedPost = normalizePosts([newPost])[0];
+      const normalizedPost = normalizePosts(
+        [newPost],
+        [],
+        currentUserProfile.id
+      )[0];
       if (!normalizedPost) return;
 
       setPosts((prevPosts) => {
@@ -165,45 +221,165 @@ const ProfilePage = () => {
     return () => {
       unsubscribe?.();
     };
-  }, [activeProfileId]);
+  }, [activeProfileId, currentUserProfile.id]);
 
-  const handleToggleLike = (postId) => {
+  useEffect(() => {
+    if (!selectedPostId) return undefined;
+
+    let isMounted = true;
+
+    const loadComments = async () => {
+      const { data, error } = await getPostCommentsApi(selectedPostId);
+      if (error || !isMounted) return;
+
+      const normalized = (data || []).map((comment) =>
+        normalizeComment(comment, currentUserProfile.id)
+      );
+
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post.id === selectedPostId
+            ? {
+                ...post,
+                comments: normalized,
+                commentsCount: normalized.length,
+              }
+            : post
+        )
+      );
+    };
+
+    loadComments();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [currentUserProfile.id, selectedPostId]);
+
+  const handleToggleLike = async (postId) => {
+    const targetPost = posts.find((post) => post.id === postId);
+    if (!targetPost) return;
+
+    const wasLiked = Boolean(targetPost.isLiked);
+    const prevLikesCount = targetPost.likesCount ?? 0;
+    const nextLiked = !wasLiked;
+    const nextLikesCount = Math.max(0, prevLikesCount + (nextLiked ? 1 : -1));
+
     setPosts((prevPosts) =>
-      prevPosts.map((post) => {
-        if (post.id !== postId) return post;
-
-        const nextLiked = !post.isLiked;
-        const nextLikesCount = (post.likesCount ?? 0) + (nextLiked ? 1 : -1);
-
-        return {
-          ...post,
-          isLiked: nextLiked,
-          likesCount: Math.max(0, nextLikesCount),
-        };
-      })
+      prevPosts.map((post) =>
+        post.id === postId
+          ? { ...post, isLiked: nextLiked, likesCount: nextLikesCount }
+          : post
+      )
     );
+
+    const { error } = nextLiked
+      ? await likePostApi(postId)
+      : await unlikePostApi(postId);
+
+    if (error) {
+      const message = error?.response?.data?.message || error.message;
+      setError(message);
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post.id === postId
+            ? { ...post, isLiked: wasLiked, likesCount: prevLikesCount }
+            : post
+        )
+      );
+    }
   };
 
-  const handleAddComment = (postId, text) => {
-    const newComment = {
-      id: `c-${postId}-${Date.now()}`,
-      user: currentUserProfile,
-      text,
+  const handleAddComment = async (postId, text) => {
+    const trimmed = text.trim();
+    if (!trimmed || !currentUserProfile?.id) return;
+
+    const tempCommentId = `temp-${postId}-${Date.now()}`;
+    const optimisticComment = {
+      id: tempCommentId,
+      text: trimmed,
       createdAt: new Date().toISOString(),
       likes: [],
+      likesCount: 0,
+      isLiked: false,
+      user: currentUserProfile,
     };
 
     setPosts((prevPosts) =>
       prevPosts.map((post) =>
         post.id === postId
-          ? { ...post, comments: [...(post.comments || []), newComment] }
+          ? {
+              ...post,
+              comments: [...(post.comments || []), optimisticComment],
+              commentsCount:
+                (post.commentsCount ?? post.comments?.length ?? 0) + 1,
+            }
           : post
       )
     );
+
+    const { data, error } = await createCommentApi(postId, trimmed);
+
+    if (error) {
+      const message = error?.response?.data?.message || error.message;
+      setError(message);
+      setPosts((prevPosts) =>
+        prevPosts.map((post) => {
+          if (post.id !== postId) return post;
+
+          const filteredComments = (post.comments || []).filter(
+            (comment) => comment.id !== tempCommentId
+          );
+
+          return {
+            ...post,
+            comments: filteredComments,
+            commentsCount: Math.max(
+              0,
+              (post.commentsCount ?? filteredComments.length) - 1
+            ),
+          };
+        })
+      );
+      return;
+    }
+
+    const savedComment = normalizeComment(data, currentUserProfile.id);
+
+    setPosts((prevPosts) =>
+      prevPosts.map((post) => {
+        if (post.id !== postId) return post;
+
+        const updatedComments = (post.comments || []).map((comment) =>
+          comment.id === tempCommentId ? savedComment : comment
+        );
+
+        return {
+          ...post,
+          comments: updatedComments,
+          commentsCount: post.commentsCount ?? updatedComments.length,
+        };
+      })
+    );
   };
 
-  const handleToggleCommentLike = (postId, commentId) => {
+  const handleToggleCommentLike = async (postId, commentId) => {
     if (!currentUserProfile?.id) return;
+
+    const targetPost = posts.find((post) => post.id === postId);
+    const targetComment = targetPost?.comments?.find(
+      (comment) => comment.id === commentId
+    );
+
+    if (!targetComment) return;
+
+    const hasLiked = Boolean(
+      targetComment.isLiked ??
+        targetComment.likes?.includes(currentUserProfile.id)
+    );
+    const prevLikesCount =
+      targetComment.likesCount ?? targetComment.likes?.length ?? 0;
+    const nextLikesCount = Math.max(0, prevLikesCount + (hasLiked ? -1 : 1));
 
     setPosts((prevPosts) =>
       prevPosts.map((post) => {
@@ -212,15 +388,76 @@ const ProfilePage = () => {
         const updatedComments = (post.comments || []).map((comment) => {
           if (comment.id !== commentId) return comment;
 
-          const hasLiked = comment.likes?.includes(currentUserProfile.id);
-          const nextLikes = hasLiked
-            ? comment.likes.filter((id) => id !== currentUserProfile.id)
+          const updatedLikes = hasLiked
+            ? (comment.likes || []).filter((id) => id !== currentUserProfile.id)
             : [...(comment.likes || []), currentUserProfile.id];
 
-          return { ...comment, likes: nextLikes };
+          return {
+            ...comment,
+            likes: updatedLikes,
+            likesCount: nextLikesCount,
+            isLiked: !hasLiked,
+          };
         });
 
         return { ...post, comments: updatedComments };
+      })
+    );
+
+    const { data, error } = await toggleCommentLikeApi(commentId);
+    if (error) {
+      const message = error?.response?.data?.message || error.message;
+      setError(message);
+      setPosts((prevPosts) =>
+        prevPosts.map((post) => {
+          if (post.id !== postId) return post;
+
+          const revertedComments = (post.comments || []).map((comment) => {
+            if (comment.id !== commentId) return comment;
+
+            return {
+              ...comment,
+              likes: hasLiked
+                ? [...(comment.likes || []), currentUserProfile.id]
+                : (comment.likes || []).filter(
+                    (id) => id !== currentUserProfile.id
+                  ),
+              likesCount: prevLikesCount,
+              isLiked: hasLiked,
+            };
+          });
+
+          return { ...post, comments: revertedComments };
+        })
+      );
+      return;
+    }
+
+    setPosts((prevPosts) =>
+      prevPosts.map((post) => {
+        if (post.id !== postId) return post;
+
+        const syncedComments = (post.comments || []).map((comment) => {
+          if (comment.id !== commentId) return comment;
+
+          const isLiked = Boolean(data?.isLiked);
+          const likesCount = data?.likesCount ?? comment.likesCount;
+
+          const normalizedLikes = isLiked
+            ? [...new Set([...(comment.likes || []), currentUserProfile.id])]
+            : (comment.likes || []).filter(
+                (id) => id !== currentUserProfile.id
+              );
+
+          return {
+            ...comment,
+            likes: normalizedLikes,
+            likesCount,
+            isLiked,
+          };
+        });
+
+        return { ...post, comments: syncedComments };
       })
     );
   };
