@@ -27,7 +27,7 @@
 .notificationItem {
   display: flex;
   align-items: center;
-  gap: 5rem;
+  gap: 5.4rem;
   cursor: pointer;
   transition: all 0.1s ease-in;
 }
