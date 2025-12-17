@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import Avatar from "../../shared/components/Avatar/Avatar";
 import LikeIcon from "../../assets/icons/LikeIcon";
 import LikeIconActive from "../../assets/icons/LikeIconActive";
@@ -10,8 +9,9 @@ import likedCommentIcon from "../../assets/icons/like-comment-icon-active.svg";
 import smileIcon from "../../assets/icons/smile.svg";
 import formatTimeAgo from "../../shared/utils/formatTimeAgo";
 import optionsIcon from "../../assets/icons/options.svg";
-
 import { deletePostApi } from "../../shared/api/post-api";
+import { emitPostDeleted } from "../../shared/utils/postEvents";
+
 import styles from "./PostModal.module.css";
 
 const emojiPalette = [
@@ -279,6 +279,7 @@ const PostModal = ({
     const { error } = await deletePostApi(targetId);
 
     if (!error) {
+      emitPostDeleted({ ...post, id: targetId, _id: targetId });
       onPostDeleted?.(targetId);
       onClose?.();
     }

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -20,7 +20,10 @@ import {
   toggleCommentLikeApi,
 } from "../../shared/api/comment-api";
 import { selectUser } from "../../redux/auth/authSelectors";
-import { subscribeToPostCreated } from "../../shared/utils/postEvents";
+import {
+  subscribeToPostCreated,
+  subscribeToPostDeleted,
+} from "../../shared/utils/postEvents";
 
 import styles from "./ProfilePage.module.css";
 
@@ -238,6 +241,44 @@ const ProfilePage = () => {
       unsubscribe?.();
     };
   }, [activeProfileId, currentUserProfile.id]);
+
+  const handlePostDeleted = useCallback((postId) => {
+    if (!postId) return;
+
+    setPosts((prevPosts) =>
+      prevPosts.filter((post) => String(post.id) !== String(postId))
+    );
+
+    setProfileData((prevProfile) => {
+      if (!prevProfile) return prevProfile;
+
+      const nextTotalPosts = Math.max(0, (prevProfile.totalPosts ?? 0) - 1);
+
+      return { ...prevProfile, totalPosts: nextTotalPosts };
+    });
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = subscribeToPostDeleted((deletedPost) => {
+      const ownerId =
+        deletedPost?.profile?.id ||
+        deletedPost?.profile?._id ||
+        deletedPost?.author?._id ||
+        deletedPost?.author?.id ||
+        deletedPost?.author;
+
+      const postId = deletedPost?.id || deletedPost?._id;
+
+      if (!postId || !ownerId || String(ownerId) !== String(activeProfileId))
+        return;
+
+      handlePostDeleted(postId);
+    });
+
+    return () => {
+      unsubscribe?.();
+    };
+  }, [activeProfileId, handlePostDeleted]);
 
   useEffect(() => {
     if (!selectedPostId) return undefined;
@@ -608,6 +649,7 @@ const ProfilePage = () => {
           onFollowStatusChange={handleModalFollowChange}
           onNavigateProfile={handleNavigateToProfile}
           onEditPost={handleEditPost}
+          onPostDeleted={handlePostDeleted}
           onViewPost={handleViewPost}
         />
       )}
