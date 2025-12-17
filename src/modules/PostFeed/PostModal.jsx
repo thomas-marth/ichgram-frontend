@@ -338,7 +338,11 @@ const PostModal = ({
         </div>
 
         <div className={styles.sidebar}>
-          <header className={styles.header}>
+          <header
+            className={`${styles.header} ${
+              isPostOwner ? styles.headerOwner : ""
+            }`}
+          >
             <button
               type="button"
               className={`${styles.profileButton} ${styles.profile}`}
