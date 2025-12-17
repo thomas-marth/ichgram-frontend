@@ -61,6 +61,7 @@ const Notifications = ({
   notifications = [],
   loading = false,
   error = null,
+  onRemoveNotification = () => {},
 }) => {
   const navigate = useNavigate();
   const authUser = useSelector((state) => state.auth.user);
@@ -82,6 +83,11 @@ const Notifications = ({
   const [editingPost, setEditingPost] = useState(null);
 
   const displayError = actionError || error;
+
+  const handleRemoveNotification = (event, id) => {
+    event.stopPropagation();
+    onRemoveNotification(id);
+  };
 
   const updateSelectedPost = (updater) => {
     setSelectedPost((prev) => (prev ? updater(prev) : prev));
@@ -317,12 +323,24 @@ const Notifications = ({
             </div>
 
             {notification.post?.image && (
-              <img
-                src={notification.post.image}
-                alt="Post preview"
-                className={styles.postImage}
-              />
+              <div className={styles.postImageWrapper}>
+                <img
+                  src={notification.post.image}
+                  alt="Post preview"
+                  className={styles.postImage}
+                />
+              </div>
             )}
+            <button
+              type="button"
+              aria-label="Remove notification"
+              className={styles.removeButton}
+              onClick={(event) =>
+                handleRemoveNotification(event, notification.id)
+              }
+            >
+              ×
+            </button>
           </li>
         ))}
       </ul>

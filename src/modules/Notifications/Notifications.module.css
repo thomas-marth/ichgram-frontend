@@ -25,11 +25,13 @@
 }
 
 .notificationItem {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 5.4rem;
+  gap: 3.63rem;
   cursor: pointer;
   transition: all 0.1s ease-in;
+  margin-right: 6px;
 }
 
 .notificationItem:hover {
@@ -74,4 +76,36 @@
   object-fit: cover;
   border-radius: 8px;
   flex: none;
+}
+
+.postImageWrapper {
+  display: inline-block;
+}
+
+.removeButton {
+  display: none;
+}
+
+.removeButton:hover {
+  background-color: rgba(0, 0, 0, 0.75);
+}
+
+.notificationItem:hover .removeButton {
+  /* background-color: rgba(0, 0, 0, 0.75); */
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: none;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+  padding: 0;
 }

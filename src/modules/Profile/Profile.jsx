@@ -26,7 +26,7 @@ const buildExternalLink = (url) => {
   return `https://${url}`;
 };
 
-const Profile = ({ user, onFollowChange }) => {
+const Profile = ({ user, postsCount, onFollowChange }) => {
   const authorizedUser = useSelector(selectUser);
 
   const [profileData, setProfileData] = useState(user);
@@ -105,6 +105,8 @@ const Profile = ({ user, onFollowChange }) => {
     });
   };
 
+  const displayedPostsCount = postsCount ?? profileData?.totalPosts ?? 0;
+
   return (
     <div className={styles.profileSection}>
       <LoadingErrorOutput loading={loading} error={error} />
@@ -154,9 +156,7 @@ const Profile = ({ user, onFollowChange }) => {
           </div>
           <div className={styles.stats}>
             <div className={styles.statsItem}>
-              <span className={styles.statsNumber}>
-                {profileData?.totalPosts ?? 0}{" "}
-              </span>
+              <span className={styles.statsNumber}>{displayedPostsCount} </span>
               <span>posts</span>
             </div>
             <div className={styles.statsItem}>

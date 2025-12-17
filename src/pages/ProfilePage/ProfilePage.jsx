@@ -587,6 +587,7 @@ const ProfilePage = () => {
       <Profile
         key={profileData?.id ?? activeProfileId}
         user={profileData}
+        postsCount={posts.length}
         onFollowChange={handleProfileFollowChange}
       />
       <Explore

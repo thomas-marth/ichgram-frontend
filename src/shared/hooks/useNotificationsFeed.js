@@ -94,7 +94,34 @@ const useNotificationsFeed = ({ isOpen = false } = {}) => {
     };
   }, [isOpen]);
 
-  return { notifications, loading, error, unseenCount };
+  const removeNotification = (id) => {
+    setNotifications((prev) => {
+      const filtered = prev.filter((item) => String(item.id) !== String(id));
+
+      const newestId = filtered[0]?.id;
+
+      if (!lastSeenRef.current && newestId) {
+        lastSeenRef.current = newestId;
+      }
+
+      if (isOpen && newestId) {
+        lastSeenRef.current = newestId;
+        setUnseenCount(0);
+      } else if (lastSeenRef.current && filtered.length) {
+        const lastSeenIndex = filtered.findIndex(
+          (item) => String(item.id) === String(lastSeenRef.current)
+        );
+
+        setUnseenCount(lastSeenIndex === -1 ? filtered.length : lastSeenIndex);
+      } else {
+        setUnseenCount(0);
+      }
+
+      return filtered;
+    });
+  };
+
+  return { notifications, loading, error, unseenCount, removeNotification };
 };
 
 export default useNotificationsFeed;

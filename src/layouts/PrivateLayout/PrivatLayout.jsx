@@ -25,6 +25,7 @@ const PrivateLayout = () => {
     loading: notificationsLoading,
     error: notificationsError,
     unseenCount: unseenNotificationsCount,
+    removeNotification,
   } = useNotificationsFeed({ isOpen: isNotificationsOpen });
 
   const getActiveNavItemFromPath = (pathname) => {
@@ -222,6 +223,7 @@ const PrivateLayout = () => {
               notifications={notifications}
               loading={notificationsLoading}
               error={notificationsError}
+              onRemoveNotification={removeNotification}
             />
           ) : null}
           {activeSideModal === "Search" ? <Search /> : null}
