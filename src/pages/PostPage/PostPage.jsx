@@ -3,7 +3,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import PostModal from "../../modules/PostFeed/PostModal";
-import CreatePost from "../../modules/CreatePost/CreatePost";
+import EditPost from "../../modules/EditPost/EditPost";
 import LoadingErrorOutput from "../../shared/components/LoadingErrorOutput/LoadingErrorOutput";
 import { getPostByIdApi, updatePostApi } from "../../shared/api/post-api";
 import {
@@ -325,6 +325,8 @@ const PostPage = () => {
       return {
         ...prev,
         ...updatedPost,
+        image: updatedPost?.image || prev.image,
+        createdAt: prev.createdAt,
         profile: mergedAuthor,
         comments: prev.comments || [],
         commentsCount: prev.commentsCount,
@@ -374,18 +376,15 @@ const PostPage = () => {
         isPageView
         onPostDeleted={handlePostDeleted}
         onEditPost={handleEditPost}
+        onViewPost={(id, postData) =>
+          navigate(`/posts/${id}`, { state: { post: postData || post } })
+        }
       />
 
       {editingPost && (
-        <CreatePost
+        <EditPost
           onClose={() => setEditingPost(null)}
-          mode="edit"
-          initialValues={{
-            description: editingPost.description || "",
-            image: editingPost.image,
-          }}
-          title="Edit post"
-          submitLabel="Edit"
+          initialValues={editingPost}
           onSubmitForm={(values) => updatePostApi(editingPost.id, values)}
           onSuccess={handleEditSuccess}
         />

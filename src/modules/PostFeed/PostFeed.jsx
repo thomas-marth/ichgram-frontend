@@ -3,10 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Post from "./Post/Post";
 import PostModal from "./PostModal";
+import EditPost from "../EditPost/EditPost";
 import testUserAvatar from "../../assets/images/test-user.jpg";
 import doneIcon from "../../assets/icons/done.svg";
 import LoadingErrorOutput from "../../shared/components/LoadingErrorOutput/LoadingErrorOutput";
-import { getFeedPostsApi } from "../../shared/api/post-api";
+import { getFeedPostsApi, updatePostApi } from "../../shared/api/post-api";
 import {
   getUserLikedPostsApi,
   likePostApi,
@@ -19,54 +20,13 @@ import {
 } from "../../shared/api/comment-api";
 import { followUserApi, unfollowUserApi } from "../../shared/api/follow-api";
 import { mapPostsWithUserRelations } from "../../shared/utils/postRelations";
+import {
+  adaptComment,
+  adaptFeedPost,
+  normalizeLikedPostIds,
+} from "../../shared/utils/postAdapter";
 
 import styles from "./PostFeed.module.css";
-
-const adaptFeedPost = (post) => {
-  const author = post.author || {};
-
-  const descriptionBody =
-    post.description || post.captionBody || post.descriptionBody || "";
-
-  return {
-    ...post,
-    id: post._id || post.id,
-    profile: {
-      id: author._id || author.id,
-      username: author.username || "Unknown",
-      avatar: author.avatar || testUserAvatar,
-      isFollowed: post.isFollowed ?? author.isFollowed,
-    },
-    createdAt: post.createdAt,
-    image: post.image,
-    likesCount: post.totalLikes ?? post.likesCount ?? 0,
-    comments: Array.isArray(post.comments) ? post.comments : [],
-    commentsCount: post.totalComments ?? post.commentsCount ?? 0,
-    descriptionBody,
-    captionBody: descriptionBody,
-    isLiked: Boolean(post.isLiked),
-  };
-};
-
-const adaptComment = (comment, fallbackUser) => {
-  const likes = Array.isArray(comment.likes) ? comment.likes : [];
-
-  return {
-    ...comment,
-    id: comment._id || comment.id,
-    user: comment.user || fallbackUser,
-    likes,
-    likesCount: comment.likesCount ?? likes.length ?? 0,
-  };
-};
-
-const normalizeLikedPostIds = (likes = []) =>
-  (likes || [])
-    .map((like) =>
-      typeof like === "object" && like !== null ? like.post || like.id : like
-    )
-    .filter(Boolean)
-    .map(String);
 
 const PostFeed = () => {
   const navigate = useNavigate();
@@ -83,6 +43,7 @@ const PostFeed = () => {
 
   const [posts, setPosts] = useState([]);
   const [selectedPostId, setSelectedPostId] = useState(null);
+  const [editingPost, setEditingPost] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [hasFetchedFeed, setHasFetchedFeed] = useState(false);
@@ -373,6 +334,60 @@ const PostFeed = () => {
     );
   };
 
+  const handleEditPost = (postToEdit) => {
+    if (!postToEdit?.id) return;
+
+    setEditingPost({
+      id: postToEdit.id,
+      image: postToEdit.image,
+      description:
+        postToEdit.descriptionBody ||
+        postToEdit.description ||
+        postToEdit.captionBody ||
+        "",
+    });
+    setSelectedPostId(null);
+  };
+
+  const handleEditSuccess = (updatedPost) => {
+    const updatedId = updatedPost?.id || updatedPost?._id || editingPost?.id;
+    if (!updatedId) return;
+
+    updatePostById(updatedId, (post) => ({
+      ...post,
+      ...updatedPost,
+      image: updatedPost?.image || post.image,
+      createdAt: post.createdAt,
+      comments: post.comments || [],
+      commentsCount: post.commentsCount,
+      likesCount: post.likesCount,
+      isLiked: post.isLiked,
+      profile: updatedPost?.author
+        ? {
+            ...post.profile,
+            id: updatedPost.author._id || updatedPost.author.id,
+            _id: updatedPost.author._id || updatedPost.author.id,
+            username: updatedPost.author.username || post.profile?.username,
+            avatar: updatedPost.author.avatar || post.profile?.avatar,
+          }
+        : post.profile,
+    }));
+
+    setEditingPost(null);
+  };
+
+  const handlePostDeleted = (postId) => {
+    setPosts((prevPosts) =>
+      prevPosts.filter((post) => String(post.id) !== String(postId))
+    );
+    setSelectedPostId(null);
+  };
+
+  const handleViewPost = (postId, postData) => {
+    if (!postId) return;
+    navigate(`/posts/${postId}`, { state: { post: postData } });
+  };
+
   const handleToggleFollow = async (post) => {
     const authorId = post?.profile?._id || post?.profile?.id;
     if (!authorId) return { error: null };
@@ -455,6 +470,18 @@ const PostFeed = () => {
           }
           onToggleFollow={() => handleToggleFollow(selectedPost)}
           onNavigateProfile={handleNavigateToProfile}
+          onEditPost={handleEditPost}
+          onPostDeleted={handlePostDeleted}
+          onViewPost={handleViewPost}
+        />
+      )}
+
+      {editingPost && (
+        <EditPost
+          onClose={() => setEditingPost(null)}
+          initialValues={editingPost}
+          onSubmitForm={(values) => updatePostApi(editingPost.id, values)}
+          onSuccess={handleEditSuccess}
         />
       )}
     </section>

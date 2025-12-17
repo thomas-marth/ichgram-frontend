@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import EmojiPicker from "emoji-picker-react";
 
@@ -18,106 +18,80 @@ const buildAvatarUrl = (avatar) => {
 };
 
 export default function TextEditor({
+  value = "",
+  onChange,
+  placeholder = "",
   className = "",
-  register = () => {},
-  name = "text",
-  ...props
 }) {
-  const fullClassName = `${styles.textEditor} ${className}`.trim();
-
   const user = useSelector(selectUser);
   const username = user?.username || "username";
   const avatarUrl = useMemo(() => buildAvatarUrl(user?.avatar), [user?.avatar]);
 
   const cursorPosition = useRef(0);
-  const [value, setValue] = useState("");
+  const textareaRef = useRef(null);
+
   const [isEmojiOpen, setIsEmojiOpen] = useState(false);
 
-  const registerProps = useMemo(() => register(name), [name, register]);
-
-  const handleOnChange = (event) => {
-    if (event.target.localName === "textarea") {
-      cursorPosition.current = event.target.selectionStart;
-      setValue(event.target.value);
-      registerProps?.onChange?.(event);
-    }
+  const handleChange = (e) => {
+    cursorPosition.current = e.target.selectionStart;
+    onChange(e.target.value);
   };
 
-  const handleOnClick = (event) => {
-    if (event.target.localName === "textarea") {
-      cursorPosition.current = event.target.selectionStart;
-    }
+  const handleClick = (e) => {
+    cursorPosition.current = e.target.selectionStart;
   };
 
   const handleEmojiClick = (emojiData) => {
-    const emoji = emojiData?.emoji || "";
+    const emoji = emojiData?.emoji;
     if (!emoji) return;
 
-    setValue((prev) => {
-      const valueArr = prev.split("");
-      valueArr.splice(cursorPosition.current, 0, emoji);
-      return valueArr.join("");
+    const before = value.slice(0, cursorPosition.current);
+    const after = value.slice(cursorPosition.current);
+
+    const newValue = before + emoji + after;
+    onChange(newValue);
+
+    requestAnimationFrame(() => {
+      const pos = cursorPosition.current + emoji.length;
+      textareaRef.current?.setSelectionRange(pos, pos);
+      cursorPosition.current = pos;
     });
-
-    cursorPosition.current += emoji.length;
   };
-
-  const handleEmojiToggle = () => {
-    setIsEmojiOpen((prev) => !prev);
-  };
-
-  useEffect(() => {
-    registerProps?.onChange?.({
-      target: {
-        name: registerProps?.name,
-        value,
-      },
-      type: "change",
-    });
-  }, [value, registerProps]);
 
   return (
-    <div className={fullClassName}>
+    <div className={`${styles.textEditor} ${className}`}>
       <div className={styles.userInfo}>
         <Avatar size="xs" src={avatarUrl} alt="User avatar" />
         <span className={styles.username}>{username}</span>
       </div>
+
       <textarea
+        ref={textareaRef}
         className={styles.textarea}
-        {...props}
-        name={registerProps?.name}
-        ref={registerProps?.ref}
-        onBlur={registerProps?.onBlur}
-        spellCheck
-        maxLength={2200}
-        onChange={handleOnChange}
-        onClick={handleOnClick}
         value={value}
-      ></textarea>
+        placeholder={placeholder}
+        maxLength={2200}
+        spellCheck
+        onChange={handleChange}
+        onClick={handleClick}
+      />
+
       <p className={styles.length}>{value.length}/2200</p>
+
       <div className={styles.emojiRow}>
         <button
           type="button"
           className={styles.emojiButton}
-          onClick={handleEmojiToggle}
-          aria-label="Add emoji"
+          onClick={() => setIsEmojiOpen((prev) => !prev)}
         >
           <img src={smileIcon} alt="" width={20} height={20} />
         </button>
-        <div
-          className={`${styles.emojiPickerWrapper} ${
-            isEmojiOpen ? styles.open : ""
-          }`}
-        >
-          <EmojiPicker
-            className={styles.emojiPicker}
-            reactionsDefaultOpen
-            onEmojiClick={handleEmojiClick}
-            onReactionClick={handleEmojiClick}
-            allowExpandReactions={true}
-            lazyLoadEmojis
-          />
-        </div>
+
+        {isEmojiOpen && (
+          <div className={styles.emojiPickerWrapper}>
+            <EmojiPicker onEmojiClick={handleEmojiClick} lazyLoadEmojis />
+          </div>
+        )}
       </div>
     </div>
   );

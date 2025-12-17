@@ -6,7 +6,8 @@ import Avatar from "../../shared/components/Avatar/Avatar";
 import PostModal from "../PostFeed/PostModal";
 import formatTimeAgo from "../../shared/utils/formatTimeAgo";
 import LoadingErrorOutput from "../../shared/components/LoadingErrorOutput/LoadingErrorOutput";
-import { getPostByIdApi } from "../../shared/api/post-api";
+import EditPost from "../EditPost/EditPost";
+import { getPostByIdApi, updatePostApi } from "../../shared/api/post-api";
 import {
   getPostCommentsApi,
   createCommentApi,
@@ -15,7 +16,6 @@ import {
 import { likePostApi, unlikePostApi } from "../../shared/api/like-api";
 import { followUserApi, unfollowUserApi } from "../../shared/api/follow-api";
 import { mapPostsWithUserRelations } from "../../shared/utils/postRelations";
-
 import styles from "./Notifications.module.css";
 
 const notificationTextMap = {
@@ -79,6 +79,7 @@ const Notifications = ({
   const [selectedPost, setSelectedPost] = useState(null);
   const [highlightedCommentId, setHighlightedCommentId] = useState(null);
   const [isPostLoading, setIsPostLoading] = useState(false);
+  const [editingPost, setEditingPost] = useState(null);
 
   const displayError = actionError || error;
 
@@ -201,6 +202,62 @@ const Notifications = ({
     });
   };
 
+  const handlePostUpdated = (updatedPost) => {
+    const updatedId = updatedPost?.id || updatedPost?._id;
+    if (!updatedId) return;
+
+    setSelectedPost((prev) => {
+      if (!prev || String(prev.id) !== String(updatedId)) return prev;
+
+      const mergedAuthor = updatedPost?.author
+        ? {
+            ...prev.profile,
+            id: updatedPost.author._id || updatedPost.author.id,
+            _id: updatedPost.author._id || updatedPost.author.id,
+            username: updatedPost.author.username || prev.profile?.username,
+            avatar: updatedPost.author.avatar || prev.profile?.avatar,
+          }
+        : prev.profile;
+
+      return {
+        ...prev,
+        ...updatedPost,
+        image: updatedPost?.image || prev.image,
+        createdAt: prev.createdAt,
+        profile: mergedAuthor,
+        comments: prev.comments || [],
+        commentsCount: prev.commentsCount,
+        likesCount: prev.likesCount,
+        isLiked: prev.isLiked,
+      };
+    });
+  };
+
+  const handleEditPost = (postToEdit) => {
+    if (!postToEdit?.id) return;
+
+    setEditingPost({
+      id: postToEdit.id,
+      image: postToEdit.image,
+      description:
+        postToEdit.descriptionBody ||
+        postToEdit.description ||
+        postToEdit.captionBody ||
+        "",
+    });
+    setSelectedPost(null);
+  };
+
+  const handleEditSuccess = (updatedPost) => {
+    handlePostUpdated(updatedPost);
+    setEditingPost(null);
+  };
+
+  const handleViewPost = (postId, postData) => {
+    if (!postId) return;
+    navigate(`/posts/${postId}`, { state: { post: postData } });
+  };
+
   const handleToggleFollow = async (post) => {
     const authorId = post.profile?.id;
     if (!authorId) return { error: null };
@@ -289,11 +346,22 @@ const Notifications = ({
           onToggleFollow={() => handleToggleFollow(selectedPost)}
           onNavigateProfile={handleNavigateToProfile}
           highlightedCommentId={highlightedCommentId}
+          onEditPost={handleEditPost}
+          onViewPost={handleViewPost}
         />
       )}
 
       {isPostLoading && !selectedPost && (
         <p className={styles.infoText}>Opening post...</p>
+      )}
+
+      {editingPost && (
+        <EditPost
+          onClose={() => setEditingPost(null)}
+          initialValues={editingPost}
+          onSubmitForm={(values) => updatePostApi(editingPost.id, values)}
+          onSuccess={handleEditSuccess}
+        />
       )}
     </div>
   );

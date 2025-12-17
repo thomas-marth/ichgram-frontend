@@ -2,8 +2,6 @@ import { useEffect, useRef, useState } from "react";
 
 import { getNotificationsApi } from "../api/notification-api";
 
-const POLLING_INTERVAL_MS = 5000;
-
 const adaptNotification = (notification) => {
   const actor = notification.actor || {};
   const comment = notification.comment || {};
@@ -90,11 +88,9 @@ const useNotificationsFeed = ({ isOpen = false } = {}) => {
     };
 
     fetchNotifications();
-    const intervalId = setInterval(fetchNotifications, POLLING_INTERVAL_MS);
 
     return () => {
       isMounted = false;
-      clearInterval(intervalId);
     };
   }, [isOpen]);
 
