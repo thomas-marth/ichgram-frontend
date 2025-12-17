@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import EmojiPicker from "emoji-picker-react";
 
@@ -29,8 +29,31 @@ export default function TextEditor({
 
   const cursorPosition = useRef(0);
   const textareaRef = useRef(null);
+  const emojiPickerRef = useRef(null);
+  const emojiButtonRef = useRef(null);
 
   const [isEmojiOpen, setIsEmojiOpen] = useState(false);
+
+  useEffect(() => {
+    if (!isEmojiOpen) return;
+
+    const handleClickOutside = (event) => {
+      const picker = emojiPickerRef.current;
+      const button = emojiButtonRef.current;
+
+      if (
+        picker &&
+        !picker.contains(event.target) &&
+        button &&
+        !button.contains(event.target)
+      ) {
+        setIsEmojiOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isEmojiOpen]);
 
   const handleChange = (e) => {
     cursorPosition.current = e.target.selectionStart;
@@ -82,13 +105,17 @@ export default function TextEditor({
         <button
           type="button"
           className={styles.emojiButton}
+          ref={emojiButtonRef}
           onClick={() => setIsEmojiOpen((prev) => !prev)}
         >
           <img src={smileIcon} alt="" width={20} height={20} />
         </button>
 
         {isEmojiOpen && (
-          <div className={styles.emojiPickerWrapper}>
+          <div
+            className={`${styles.emojiPickerWrapper} ${styles.open}`}
+            ref={emojiPickerRef}
+          >
             <EmojiPicker onEmojiClick={handleEmojiClick} lazyLoadEmojis />
           </div>
         )}

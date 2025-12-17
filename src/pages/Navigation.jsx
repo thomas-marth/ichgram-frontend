@@ -15,6 +15,7 @@ import MessagesPage from "./MessagesPage/MessagesPage";
 import ProfilePage from "./ProfilePage/ProfilePage";
 import PublicRoute from "./../shared/components/PublicRoute/PublicRoute";
 import PrivateRoute from "../shared/components/PrivateRoute/PrivateRoute";
+import PostPage from "./PostPage/PostPage";
 
 import CookiesPolicyPage from "./CookiesPolicyPage/CookiesPolicyPage";
 import PrivacyPolicyPage from "./PrivacyPolicyPage/PrivacyPolicyPage";
@@ -35,22 +36,18 @@ const Navigation = () => {
         <Route path="/privacy" element={<PrivacyPolicyPage />} />
         <Route path="/terms" element={<TermsPage />} />
       </Route>
-      <Route
-        path="/"
-        element={
-          <PrivateRoute>
-            <PrivateLayout />
-          </PrivateRoute>
-        }
-      >
-        <Route index element={<HomePage />} />
-        <Route path="/profile/:id" element={<ProfilePage />} />
-        <Route path="profile/:id/edit" element={<EditProfilePage />} />
-        <Route path="direct" element={<MessagesPage />} />
-        <Route path="direct/:id" element={<MessagesPage />} />
-        <Route path="explore" element={<ExplorePage />} />
-        <Route path="/logout" element={<LogoutPage />} />
-        <Route path="*" element={<NotFoundPage />} />
+      <Route element={<PrivateRoute />}>
+        <Route element={<PrivateLayout />}>
+          <Route index element={<HomePage />} />
+          <Route path="profile/:id" element={<ProfilePage />} />
+          <Route path="profile/:id/edit" element={<EditProfilePage />} />
+          <Route path="direct" element={<MessagesPage />} />
+          <Route path="direct/:id" element={<MessagesPage />} />
+          <Route path="explore" element={<ExplorePage />} />
+          <Route path="posts/:postId" element={<PostPage />} />
+          <Route path="logout" element={<LogoutPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Route>
       </Route>
     </Routes>
   );

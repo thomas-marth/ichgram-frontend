@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import Avatar from "../../shared/components/Avatar/Avatar";
 import LikeIcon from "../../assets/icons/LikeIcon";
 import LikeIconActive from "../../assets/icons/LikeIconActive";
@@ -8,8 +10,8 @@ import likedCommentIcon from "../../assets/icons/like-comment-icon-active.svg";
 import smileIcon from "../../assets/icons/smile.svg";
 import formatTimeAgo from "../../shared/utils/formatTimeAgo";
 import optionsIcon from "../../assets/icons/options.svg";
-import { deletePostApi } from "../../shared/api/post-api";
 
+import { deletePostApi } from "../../shared/api/post-api";
 import styles from "./PostModal.module.css";
 
 const emojiPalette = [
@@ -58,6 +60,7 @@ const PostModal = ({
   onEditPost,
   isPageView = false,
 }) => {
+  const navigate = useNavigate();
   const [newComment, setNewComment] = useState("");
   const [showEmojis, setShowEmojis] = useState(false);
   const [isManageModalOpen, setIsManageModalOpen] = useState(false);
@@ -297,7 +300,12 @@ const PostModal = ({
 
   const handleGoToPost = handleManageAction(() => {
     const targetId = post.id || post._id;
-    onViewPost?.(targetId, post);
+    if (!targetId) return;
+    if (typeof onViewPost === "function") {
+      onViewPost(targetId, post);
+    } else {
+      navigate(`/posts/${targetId}`);
+    }
     if (!isPageView) {
       onClose?.();
     }

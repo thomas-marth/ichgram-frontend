@@ -84,7 +84,7 @@
   z-index: 5;
 }
 
-.emojiPickerWrapper.open {
+.open {
   opacity: 1;
   /* transform: scale(1); */
   pointer-events: auto;
