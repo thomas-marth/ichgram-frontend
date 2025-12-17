@@ -9,7 +9,6 @@ export default function Upload({
   name,
   setValue,
   reset = true,
-  initialImage = "",
   ...props
 }) {
   const fullClassName = `${styles.upload} ${className}`.trim();
@@ -17,17 +16,11 @@ export default function Upload({
   const imageRef = useRef(null);
 
   useEffect(() => {
-    if (!imageRef.current) return;
-
-    if (initialImage) {
-      imageRef.current.src = initialImage;
-      imageRef.current.classList.add(styles.previewVisible);
-      return;
+    if (imageRef.current) {
+      imageRef.current.src = "";
+      imageRef.current.classList.remove(styles.previewVisible);
     }
-
-    imageRef.current.src = "";
-    imageRef.current.classList.remove(styles.previewVisible);
-  }, [initialImage, reset]);
+  }, [reset]);
 
   const handleOnFileUploadChange = (event) => {
     const file = event.target.files?.[0];

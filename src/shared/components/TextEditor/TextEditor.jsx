@@ -21,7 +21,6 @@ export default function TextEditor({
   className = "",
   register = () => {},
   name = "text",
-  initialValue = "",
   ...props
 }) {
   const fullClassName = `${styles.textEditor} ${className}`.trim();
@@ -31,7 +30,7 @@ export default function TextEditor({
   const avatarUrl = useMemo(() => buildAvatarUrl(user?.avatar), [user?.avatar]);
 
   const cursorPosition = useRef(0);
-  const [value, setValue] = useState(initialValue || "");
+  const [value, setValue] = useState("");
   const [isEmojiOpen, setIsEmojiOpen] = useState(false);
 
   const registerProps = useMemo(() => register(name), [name, register]);

@@ -8,7 +8,6 @@ import likedCommentIcon from "../../assets/icons/like-comment-icon-active.svg";
 import smileIcon from "../../assets/icons/smile.svg";
 import formatTimeAgo from "../../shared/utils/formatTimeAgo";
 import optionsIcon from "../../assets/icons/options.svg";
-import { deletePostApi } from "../../shared/api/post-api";
 
 import styles from "./PostModal.module.css";
 
@@ -38,11 +37,6 @@ const PostModal = ({
   onToggleFollow,
   onNavigateProfile,
   highlightedCommentId = null,
-  onPostDeleted,
-  onViewPost,
-  onCopyLink,
-  onEditPost,
-  isPageView = false,
 }) => {
   const [newComment, setNewComment] = useState("");
   const [showEmojis, setShowEmojis] = useState(false);
@@ -50,7 +44,6 @@ const PostModal = ({
   const [followError, setFollowError] = useState(null);
   const [isFollowLoading, setIsFollowLoading] = useState(false);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
-  const [isCopyToastVisible, setIsCopyToastVisible] = useState(false);
   const commentInputRef = useRef(null);
   const contentAreaRef = useRef(null);
   const lastCommentRef = useRef(null);
@@ -227,87 +220,8 @@ const PostModal = ({
     return formatTimeAgo(date);
   }, [post.createdAt, post.lastLikedAt, post.updatedAt]);
 
-  useEffect(() => {
-    const handleEscape = (event) => {
-      if (event.key !== "Escape") return;
-
-      if (isManageModalOpen) {
-        setIsManageModalOpen(false);
-        return;
-      }
-
-      onClose?.();
-    };
-
-    window.addEventListener("keydown", handleEscape);
-
-    return () => window.removeEventListener("keydown", handleEscape);
-  }, [isManageModalOpen, onClose]);
-
-  useEffect(() => {
-    if (!isCopyToastVisible) return undefined;
-
-    const timeoutId = setTimeout(() => setIsCopyToastVisible(false), 1500);
-
-    return () => clearTimeout(timeoutId);
-  }, [isCopyToastVisible]);
-
-  const handleManageAction = (callback) => () => {
-    setIsManageModalOpen(false);
-    callback?.();
-  };
-
-  const handleDeletePost = handleManageAction(async () => {
-    const targetId = post.id || post._id;
-    const { error } = await deletePostApi(targetId);
-
-    if (!error) {
-      onPostDeleted?.(targetId);
-      onClose?.();
-    }
-  });
-
-  const handleOpenEdit = handleManageAction(() => {
-    const targetId = post.id || post._id;
-    const editableDescription =
-      post.descriptionBody || post.description || post.captionBody || "";
-
-    onClose?.();
-    onEditPost?.({
-      id: targetId,
-      image: post.image,
-      description: editableDescription,
-      profile: post.profile,
-    });
-  });
-
-  const handleGoToPost = handleManageAction(() => {
-    const targetId = post.id || post._id;
-    onViewPost?.(targetId);
-    if (!isPageView) {
-      onClose?.();
-    }
-  });
-
-  const handleCopyLink = handleManageAction(async () => {
-    const targetId = post.id || post._id;
-    const fallbackLink = `${window.location.origin}/posts/${targetId}`;
-    const link =
-      typeof onCopyLink === "function"
-        ? await onCopyLink(targetId)
-        : fallbackLink;
-
-    try {
-      await navigator.clipboard.writeText(link || fallbackLink);
-    } catch (copyError) {
-      console.error("Failed to copy link", copyError);
-    }
-
-    setIsCopyToastVisible(true);
-  });
-
-  const modalContent = (
-    <>
+  return (
+    <div className={styles.overlay} onClick={onClose}>
       <div
         className={styles.modal}
         onClick={(event) => event.stopPropagation()}
@@ -579,18 +493,6 @@ const PostModal = ({
           </footer>
         </div>
       </div>
-    </>
-  );
-
-  return (
-    <>
-      {isPageView ? (
-        <div className={styles.pageWrapper}>{modalContent}</div>
-      ) : (
-        <div className={styles.overlay} onClick={onClose}>
-          {modalContent}
-        </div>
-      )}
 
       {isManageModalOpen && (
         <div
@@ -604,63 +506,21 @@ const PostModal = ({
             className={styles.manageModal}
             onClick={(event) => event.stopPropagation()}
           >
-            <ul className={styles.manageList}>
-              <li className={styles.manageItem}>
-                <button
-                  type="button"
-                  className={`${styles.manageButton} ${styles.manageDelete}`}
-                  onClick={handleDeletePost}
-                >
-                  Delete
-                </button>
-              </li>
-              <li className={styles.manageItem}>
-                <button
-                  type="button"
-                  className={styles.manageButton}
-                  onClick={handleOpenEdit}
-                >
-                  Edit
-                </button>
-              </li>
-              <li className={styles.manageItem}>
-                <button
-                  type="button"
-                  className={styles.manageButton}
-                  onClick={handleGoToPost}
-                >
-                  Go to post
-                </button>
-              </li>
-              <li className={styles.manageItem}>
-                <button
-                  type="button"
-                  className={styles.manageButton}
-                  onClick={handleCopyLink}
-                >
-                  Copy link
-                </button>
-              </li>
-              <li className={styles.manageItem}>
-                <button
-                  type="button"
-                  className={`${styles.manageButton} ${styles.manageCancel}`}
-                  onClick={() => setIsManageModalOpen(false)}
-                >
-                  Cancel
-                </button>
-              </li>
-            </ul>
+            <h3 className={styles.manageTitle}>Параметры поста</h3>
+            <p className={styles.manageHint}>
+              Здесь появится управление публикацией.
+            </p>
+            <button
+              type="button"
+              className={styles.closeManageButton}
+              onClick={() => setIsManageModalOpen(false)}
+            >
+              Закрыть
+            </button>
           </div>
         </div>
       )}
-
-      {isCopyToastVisible && (
-        <div className={styles.copyToast}>
-          <div className={styles.copyToastMessage}>link copied</div>
-        </div>
-      )}
-    </>
+    </div>
   );
 };
 
