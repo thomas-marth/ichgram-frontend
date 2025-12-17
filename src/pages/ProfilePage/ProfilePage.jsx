@@ -525,6 +525,26 @@ const ProfilePage = () => {
     const updatedId = updatedPost?.id || updatedPost?._id;
     if (!updatedId) return;
 
+    const buildUpdatedProfile = (post) => {
+      const author = updatedPost?.author;
+      const isAuthorObject = author && typeof author === "object";
+      const authorId = isAuthorObject ? author._id || author.id : null;
+
+      if (!isAuthorObject || !authorId) return post.profile;
+
+      return {
+        ...post.profile,
+        id: authorId,
+        _id: authorId,
+        username: author.username || post.profile?.username,
+        avatar: author.avatar || post.profile?.avatar,
+        isFollowed:
+          author.isFollowed ??
+          post.profile?.isFollowed ??
+          updatedPost.isFollowed,
+      };
+    };
+
     setPosts((prevPosts) =>
       prevPosts.map((post) =>
         post.id === updatedId
@@ -533,16 +553,7 @@ const ProfilePage = () => {
               ...updatedPost,
               image: updatedPost?.image || post.image,
               createdAt: post.createdAt,
-              profile: updatedPost?.author
-                ? {
-                    ...post.profile,
-                    id: updatedPost.author._id || updatedPost.author.id,
-                    _id: updatedPost.author._id || updatedPost.author.id,
-                    username:
-                      updatedPost.author.username || post.profile?.username,
-                    avatar: updatedPost.author.avatar || post.profile?.avatar,
-                  }
-                : post.profile,
+              profile: buildUpdatedProfile(post),
             }
           : post
       )

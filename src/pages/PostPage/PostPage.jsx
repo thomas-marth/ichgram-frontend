@@ -344,18 +344,30 @@ const PostPage = () => {
   const handleEditSuccess = (updatedPost) => {
     if (!updatedPost) return;
 
+    const buildUpdatedProfile = (post) => {
+      const author = updatedPost?.author;
+      const isAuthorObject = author && typeof author === "object";
+      const authorId = isAuthorObject ? author._id || author.id : null;
+
+      if (!isAuthorObject || !authorId) return post.profile;
+
+      return {
+        ...post.profile,
+        id: authorId,
+        _id: authorId,
+        username: author.username || post.profile?.username,
+        avatar: author.avatar || post.profile?.avatar,
+        isFollowed:
+          author.isFollowed ??
+          post.profile?.isFollowed ??
+          updatedPost.isFollowed,
+      };
+    };
+
     setPost((prev) => {
       if (!prev) return prev;
 
-      const mergedAuthor = updatedPost?.author
-        ? {
-            ...prev.profile,
-            id: updatedPost.author._id || updatedPost.author.id,
-            _id: updatedPost.author._id || updatedPost.author.id,
-            username: updatedPost.author.username || prev.profile?.username,
-            avatar: updatedPost.author.avatar || prev.profile?.avatar,
-          }
-        : prev.profile;
+      const mergedAuthor = buildUpdatedProfile(prev);
 
       return {
         ...prev,
