@@ -15,6 +15,7 @@ import MessagesPage from "./MessagesPage/MessagesPage";
 import ProfilePage from "./ProfilePage/ProfilePage";
 import PublicRoute from "./../shared/components/PublicRoute/PublicRoute";
 import PrivateRoute from "../shared/components/PrivateRoute/PrivateRoute";
+import PostPage from "./PostPage/PostPage";
 
 import CookiesPolicyPage from "./CookiesPolicyPage/CookiesPolicyPage";
 import PrivacyPolicyPage from "./PrivacyPolicyPage/PrivacyPolicyPage";
@@ -49,6 +50,7 @@ const Navigation = () => {
         <Route path="direct" element={<MessagesPage />} />
         <Route path="direct/:id" element={<MessagesPage />} />
         <Route path="explore" element={<ExplorePage />} />
+        <Route path="posts/:postId" element={<PostPage />} />
         <Route path="/logout" element={<LogoutPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>

@@ -77,3 +77,24 @@ export const getUserPostsApi = async (userId) => {
 
 export const getPostByIdApi = (postId) =>
   wrapRequest(instance.get(`/posts/${postId}`));
+
+export const updatePostApi = (postId, payload) => {
+  const formData = new FormData();
+
+  if (payload.image) {
+    formData.append("image", payload.image);
+  }
+
+  if (payload.description !== undefined) {
+    formData.append("description", payload.description);
+  }
+
+  return wrapRequest(
+    instance.patch(`/posts/${postId}`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+  );
+};
+
+export const deletePostApi = (postId) =>
+  wrapRequest(instance.delete(`/posts/${postId}`));

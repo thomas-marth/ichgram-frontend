@@ -19,54 +19,13 @@ import {
 } from "../../shared/api/comment-api";
 import { followUserApi, unfollowUserApi } from "../../shared/api/follow-api";
 import { mapPostsWithUserRelations } from "../../shared/utils/postRelations";
+import {
+  adaptComment,
+  adaptFeedPost,
+  normalizeLikedPostIds,
+} from "../../shared/utils/postAdapter";
 
 import styles from "./PostFeed.module.css";
-
-const adaptFeedPost = (post) => {
-  const author = post.author || {};
-
-  const descriptionBody =
-    post.description || post.captionBody || post.descriptionBody || "";
-
-  return {
-    ...post,
-    id: post._id || post.id,
-    profile: {
-      id: author._id || author.id,
-      username: author.username || "Unknown",
-      avatar: author.avatar || testUserAvatar,
-      isFollowed: post.isFollowed ?? author.isFollowed,
-    },
-    createdAt: post.createdAt,
-    image: post.image,
-    likesCount: post.totalLikes ?? post.likesCount ?? 0,
-    comments: Array.isArray(post.comments) ? post.comments : [],
-    commentsCount: post.totalComments ?? post.commentsCount ?? 0,
-    descriptionBody,
-    captionBody: descriptionBody,
-    isLiked: Boolean(post.isLiked),
-  };
-};
-
-const adaptComment = (comment, fallbackUser) => {
-  const likes = Array.isArray(comment.likes) ? comment.likes : [];
-
-  return {
-    ...comment,
-    id: comment._id || comment.id,
-    user: comment.user || fallbackUser,
-    likes,
-    likesCount: comment.likesCount ?? likes.length ?? 0,
-  };
-};
-
-const normalizeLikedPostIds = (likes = []) =>
-  (likes || [])
-    .map((like) =>
-      typeof like === "object" && like !== null ? like.post || like.id : like
-    )
-    .filter(Boolean)
-    .map(String);
 
 const PostFeed = () => {
   const navigate = useNavigate();
@@ -373,6 +332,28 @@ const PostFeed = () => {
     );
   };
 
+  const handlePostUpdated = (updatedPost) => {
+    const updatedId = updatedPost?.id || updatedPost?._id;
+    if (!updatedId) return;
+
+    updatePostById(updatedId, (post) => ({
+      ...post,
+      ...updatedPost,
+    }));
+  };
+
+  const handlePostDeleted = (postId) => {
+    setPosts((prevPosts) =>
+      prevPosts.filter((post) => String(post.id) !== String(postId))
+    );
+    setSelectedPostId(null);
+  };
+
+  const handleViewPost = (postId) => {
+    if (!postId) return;
+    navigate(`/posts/${postId}`);
+  };
+
   const handleToggleFollow = async (post) => {
     const authorId = post?.profile?._id || post?.profile?.id;
     if (!authorId) return { error: null };
@@ -455,6 +436,9 @@ const PostFeed = () => {
           }
           onToggleFollow={() => handleToggleFollow(selectedPost)}
           onNavigateProfile={handleNavigateToProfile}
+          onPostUpdated={handlePostUpdated}
+          onPostDeleted={handlePostDeleted}
+          onViewPost={handleViewPost}
         />
       )}
     </section>
