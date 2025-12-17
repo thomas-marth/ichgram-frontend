@@ -8,8 +8,7 @@ import likedCommentIcon from "../../assets/icons/like-comment-icon-active.svg";
 import smileIcon from "../../assets/icons/smile.svg";
 import formatTimeAgo from "../../shared/utils/formatTimeAgo";
 import optionsIcon from "../../assets/icons/options.svg";
-import CreatePost from "../CreatePost/CreatePost";
-import { deletePostApi, updatePostApi } from "../../shared/api/post-api";
+import { deletePostApi } from "../../shared/api/post-api";
 
 import styles from "./PostModal.module.css";
 
@@ -39,10 +38,10 @@ const PostModal = ({
   onToggleFollow,
   onNavigateProfile,
   highlightedCommentId = null,
-  onPostUpdated,
   onPostDeleted,
   onViewPost,
   onCopyLink,
+  onEditPost,
   isPageView = false,
 }) => {
   const [newComment, setNewComment] = useState("");
@@ -51,7 +50,6 @@ const PostModal = ({
   const [followError, setFollowError] = useState(null);
   const [isFollowLoading, setIsFollowLoading] = useState(false);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isCopyToastVisible, setIsCopyToastVisible] = useState(false);
   const commentInputRef = useRef(null);
   const contentAreaRef = useRef(null);
@@ -238,15 +236,13 @@ const PostModal = ({
         return;
       }
 
-      if (!isEditModalOpen) {
-        onClose?.();
-      }
+      onClose?.();
     };
 
     window.addEventListener("keydown", handleEscape);
 
     return () => window.removeEventListener("keydown", handleEscape);
-  }, [isEditModalOpen, isManageModalOpen, onClose]);
+  }, [isManageModalOpen, onClose]);
 
   useEffect(() => {
     if (!isCopyToastVisible) return undefined;
@@ -272,7 +268,17 @@ const PostModal = ({
   });
 
   const handleOpenEdit = handleManageAction(() => {
-    setIsEditModalOpen(true);
+    const targetId = post.id || post._id;
+    const editableDescription =
+      post.descriptionBody || post.description || post.captionBody || "";
+
+    onClose?.();
+    onEditPost?.({
+      id: targetId,
+      image: post.image,
+      description: editableDescription,
+      profile: post.profile,
+    });
   });
 
   const handleGoToPost = handleManageAction(() => {
@@ -299,32 +305,6 @@ const PostModal = ({
 
     setIsCopyToastVisible(true);
   });
-
-  const handleUpdatePost = (updatedPost) => {
-    const mergedAuthor = updatedPost?.author
-      ? {
-          ...post.profile,
-          id: updatedPost.author._id || updatedPost.author.id,
-          _id: updatedPost.author._id || updatedPost.author.id,
-          username: updatedPost.author.username || post.profile?.username,
-          avatar: updatedPost.author.avatar || post.profile?.avatar,
-        }
-      : post.profile;
-
-    const mergedPost = {
-      ...post,
-      ...updatedPost,
-      profile: mergedAuthor,
-      createdAt: post.createdAt,
-      comments: post.comments || [],
-      commentsCount: post.commentsCount,
-      likesCount: post.likesCount,
-      isLiked: post.isLiked,
-    };
-
-    onPostUpdated?.(mergedPost);
-    setIsEditModalOpen(false);
-  };
 
   const modalContent = (
     <>
@@ -679,25 +659,6 @@ const PostModal = ({
         <div className={styles.copyToast}>
           <div className={styles.copyToastMessage}>link copied</div>
         </div>
-      )}
-
-      {isEditModalOpen && (
-        <CreatePost
-          onClose={() => setIsEditModalOpen(false)}
-          mode="edit"
-          initialValues={{
-            description:
-              post.description ||
-              post.descriptionBody ||
-              post.captionBody ||
-              "",
-            image: post.image,
-          }}
-          title="Edit post"
-          submitLabel="Edit"
-          onSubmitForm={(values) => updatePostApi(post.id || post._id, values)}
-          onSuccess={handleUpdatePost}
-        />
       )}
     </>
   );

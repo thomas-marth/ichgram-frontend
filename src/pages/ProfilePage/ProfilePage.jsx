@@ -6,7 +6,8 @@ import Profile from "../../modules/Profile/Profile";
 import Explore from "../../modules/Explore/Explore";
 import LoadingErrorOutput from "../../shared/components/LoadingErrorOutput/LoadingErrorOutput";
 import PostModal from "../../modules/PostFeed/PostModal";
-import { getUserPostsApi } from "../../shared/api/post-api";
+import CreatePost from "../../modules/CreatePost/CreatePost";
+import { getUserPostsApi, updatePostApi } from "../../shared/api/post-api";
 import { getUserById } from "../../shared/api/user-api";
 import {
   getUserLikedPostsApi,
@@ -103,6 +104,7 @@ const ProfilePage = () => {
   const [profileData, setProfileData] = useState(null);
   const [posts, setPosts] = useState([]);
   const [selectedPostId, setSelectedPostId] = useState(null);
+  const [editingPost, setEditingPost] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -478,6 +480,52 @@ const ProfilePage = () => {
 
   const selectedPost = posts.find((post) => post.id === selectedPostId) || null;
 
+  const handlePostUpdated = (updatedPost) => {
+    const updatedId = updatedPost?.id || updatedPost?._id;
+    if (!updatedId) return;
+
+    setPosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.id === updatedId
+          ? {
+              ...post,
+              ...updatedPost,
+              profile: updatedPost?.author
+                ? {
+                    ...post.profile,
+                    id: updatedPost.author._id || updatedPost.author.id,
+                    _id: updatedPost.author._id || updatedPost.author.id,
+                    username:
+                      updatedPost.author.username || post.profile?.username,
+                    avatar: updatedPost.author.avatar || post.profile?.avatar,
+                  }
+                : post.profile,
+            }
+          : post
+      )
+    );
+  };
+
+  const handleEditPost = (postToEdit) => {
+    if (!postToEdit?.id) return;
+
+    setEditingPost({
+      id: postToEdit.id,
+      image: postToEdit.image,
+      description:
+        postToEdit.descriptionBody ||
+        postToEdit.description ||
+        postToEdit.captionBody ||
+        "",
+    });
+    setSelectedPostId(null);
+  };
+
+  const handleEditSuccess = (updatedPost) => {
+    handlePostUpdated(updatedPost);
+    setEditingPost(null);
+  };
+
   const syncPostsFollowState = (nextIsFollowed) =>
     setPosts((prevPosts) =>
       prevPosts.map((post) => {
@@ -519,6 +567,11 @@ const ProfilePage = () => {
     });
   };
 
+  const handleViewPost = (postId) => {
+    if (!postId) return;
+    navigate(`/posts/${postId}`);
+  };
+
   if (!profileData) {
     return (
       <div className={styles.profilePage}>
@@ -551,9 +604,26 @@ const ProfilePage = () => {
           currentUser={currentUserProfile}
           onFollowStatusChange={handleModalFollowChange}
           onNavigateProfile={handleNavigateToProfile}
+          onEditPost={handleEditPost}
+          onViewPost={handleViewPost}
         />
       )}
       <LoadingErrorOutput loading={loading} error={error} />
+
+      {editingPost && (
+        <CreatePost
+          onClose={() => setEditingPost(null)}
+          mode="edit"
+          initialValues={{
+            description: editingPost.description || "",
+            image: editingPost.image,
+          }}
+          title="Edit post"
+          submitLabel="Edit"
+          onSubmitForm={(values) => updatePostApi(editingPost.id, values)}
+          onSuccess={handleEditSuccess}
+        />
+      )}
     </div>
   );
 };

@@ -6,7 +6,8 @@ import Avatar from "../../shared/components/Avatar/Avatar";
 import PostModal from "../PostFeed/PostModal";
 import formatTimeAgo from "../../shared/utils/formatTimeAgo";
 import LoadingErrorOutput from "../../shared/components/LoadingErrorOutput/LoadingErrorOutput";
-import { getPostByIdApi } from "../../shared/api/post-api";
+import CreatePost from "../CreatePost/CreatePost";
+import { getPostByIdApi, updatePostApi } from "../../shared/api/post-api";
 import {
   getPostCommentsApi,
   createCommentApi,
@@ -79,6 +80,7 @@ const Notifications = ({
   const [selectedPost, setSelectedPost] = useState(null);
   const [highlightedCommentId, setHighlightedCommentId] = useState(null);
   const [isPostLoading, setIsPostLoading] = useState(false);
+  const [editingPost, setEditingPost] = useState(null);
 
   const displayError = actionError || error;
 
@@ -201,6 +203,60 @@ const Notifications = ({
     });
   };
 
+  const handlePostUpdated = (updatedPost) => {
+    const updatedId = updatedPost?.id || updatedPost?._id;
+    if (!updatedId) return;
+
+    setSelectedPost((prev) => {
+      if (!prev || String(prev.id) !== String(updatedId)) return prev;
+
+      const mergedAuthor = updatedPost?.author
+        ? {
+            ...prev.profile,
+            id: updatedPost.author._id || updatedPost.author.id,
+            _id: updatedPost.author._id || updatedPost.author.id,
+            username: updatedPost.author.username || prev.profile?.username,
+            avatar: updatedPost.author.avatar || prev.profile?.avatar,
+          }
+        : prev.profile;
+
+      return {
+        ...prev,
+        ...updatedPost,
+        profile: mergedAuthor,
+        comments: prev.comments || [],
+        commentsCount: prev.commentsCount,
+        likesCount: prev.likesCount,
+        isLiked: prev.isLiked,
+      };
+    });
+  };
+
+  const handleEditPost = (postToEdit) => {
+    if (!postToEdit?.id) return;
+
+    setEditingPost({
+      id: postToEdit.id,
+      image: postToEdit.image,
+      description:
+        postToEdit.descriptionBody ||
+        postToEdit.description ||
+        postToEdit.captionBody ||
+        "",
+    });
+    setSelectedPost(null);
+  };
+
+  const handleEditSuccess = (updatedPost) => {
+    handlePostUpdated(updatedPost);
+    setEditingPost(null);
+  };
+
+  const handleViewPost = (postId) => {
+    if (!postId) return;
+    navigate(`/posts/${postId}`);
+  };
+
   const handleToggleFollow = async (post) => {
     const authorId = post.profile?.id;
     if (!authorId) return { error: null };
@@ -289,11 +345,28 @@ const Notifications = ({
           onToggleFollow={() => handleToggleFollow(selectedPost)}
           onNavigateProfile={handleNavigateToProfile}
           highlightedCommentId={highlightedCommentId}
+          onEditPost={handleEditPost}
+          onViewPost={handleViewPost}
         />
       )}
 
       {isPostLoading && !selectedPost && (
         <p className={styles.infoText}>Opening post...</p>
+      )}
+
+      {editingPost && (
+        <CreatePost
+          onClose={() => setEditingPost(null)}
+          mode="edit"
+          initialValues={{
+            description: editingPost.description || "",
+            image: editingPost.image,
+          }}
+          title="Edit post"
+          submitLabel="Edit"
+          onSubmitForm={(values) => updatePostApi(editingPost.id, values)}
+          onSuccess={handleEditSuccess}
+        />
       )}
     </div>
   );

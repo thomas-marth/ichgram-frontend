@@ -3,8 +3,9 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import PostModal from "../../modules/PostFeed/PostModal";
+import CreatePost from "../../modules/CreatePost/CreatePost";
 import LoadingErrorOutput from "../../shared/components/LoadingErrorOutput/LoadingErrorOutput";
-import { getPostByIdApi } from "../../shared/api/post-api";
+import { getPostByIdApi, updatePostApi } from "../../shared/api/post-api";
 import {
   getUserLikedPostsApi,
   likePostApi,
@@ -45,6 +46,7 @@ const PostPage = () => {
   const [post, setPost] = useState(locationPost || null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [editingPost, setEditingPost] = useState(null);
 
   const updatePostState = (updater) => {
     setPost((prev) => (prev ? updater(prev) : prev));
@@ -286,15 +288,52 @@ const PostPage = () => {
     return { error: null };
   };
 
-  const handlePostUpdated = (updatedPost) => {
-    setPost((prev) => ({
-      ...(prev || {}),
-      ...updatedPost,
-    }));
-  };
-
   const handlePostDeleted = () => {
     navigate("/", { replace: true });
+  };
+
+  const handleEditPost = (postToEdit) => {
+    if (!postToEdit?.id) return;
+
+    setEditingPost({
+      id: postToEdit.id,
+      image: postToEdit.image,
+      description:
+        postToEdit.descriptionBody ||
+        postToEdit.description ||
+        postToEdit.captionBody ||
+        "",
+    });
+  };
+
+  const handleEditSuccess = (updatedPost) => {
+    if (!updatedPost) return;
+
+    setPost((prev) => {
+      if (!prev) return prev;
+
+      const mergedAuthor = updatedPost?.author
+        ? {
+            ...prev.profile,
+            id: updatedPost.author._id || updatedPost.author.id,
+            _id: updatedPost.author._id || updatedPost.author.id,
+            username: updatedPost.author.username || prev.profile?.username,
+            avatar: updatedPost.author.avatar || prev.profile?.avatar,
+          }
+        : prev.profile;
+
+      return {
+        ...prev,
+        ...updatedPost,
+        profile: mergedAuthor,
+        comments: prev.comments || [],
+        commentsCount: prev.commentsCount,
+        likesCount: prev.likesCount,
+        isLiked: prev.isLiked,
+      };
+    });
+
+    setEditingPost(null);
   };
 
   const handleClose = () => {
@@ -333,9 +372,24 @@ const PostPage = () => {
         onToggleFollow={handleToggleFollow}
         onNavigateProfile={(userId) => navigate(`/profile/${userId}`)}
         isPageView
-        onPostUpdated={handlePostUpdated}
         onPostDeleted={handlePostDeleted}
+        onEditPost={handleEditPost}
       />
+
+      {editingPost && (
+        <CreatePost
+          onClose={() => setEditingPost(null)}
+          mode="edit"
+          initialValues={{
+            description: editingPost.description || "",
+            image: editingPost.image,
+          }}
+          title="Edit post"
+          submitLabel="Edit"
+          onSubmitForm={(values) => updatePostApi(editingPost.id, values)}
+          onSuccess={handleEditSuccess}
+        />
+      )}
     </section>
   );
 };
