@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useSelector } from "react-redux";
 
@@ -15,26 +15,22 @@ import { fields, createPostSchema, defaultValues } from "./fields";
 import styles from "./CreatePost.module.css";
 
 export default function CreatePost({ onClose }) {
-  const { register, handleSubmit, setValue, reset } = useForm({
+  const { control, handleSubmit, setValue, reset } = useForm({
     resolver: yupResolver(createPostSchema),
     defaultValues,
   });
+
   const currentUser = useSelector(selectUser);
+
   const currentUserProfile = useMemo(
     () => ({
       id: currentUser?._id || currentUser?.id,
       username: currentUser?.username || currentUser?.name || "",
       avatar: currentUser?.avatar || currentUser?.profile_image || "",
     }),
-    [
-      currentUser?._id,
-      currentUser?.avatar,
-      currentUser?.id,
-      currentUser?.name,
-      currentUser?.profile_image,
-      currentUser?.username,
-    ]
+    [currentUser]
   );
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [resetToggle, setResetToggle] = useState(false);
@@ -47,10 +43,7 @@ export default function CreatePost({ onClose }) {
     };
 
     document.addEventListener("keydown", handleOnKeyDown);
-
-    return () => {
-      document.removeEventListener("keydown", handleOnKeyDown);
-    };
+    return () => document.removeEventListener("keydown", handleOnKeyDown);
   }, [onClose]);
 
   const handleOnBackdropClick = (event) => {
@@ -90,7 +83,6 @@ export default function CreatePost({ onClose }) {
         username:
           createdPost?.author?.username || currentUserProfile.username || "",
         avatar: createdPost?.author?.avatar || currentUserProfile.avatar || "",
-        isFollowed: currentUserProfile.isFollowed,
       },
       createdAt: createdPost?.createdAt || new Date().toISOString(),
       updatedAt:
@@ -117,6 +109,7 @@ export default function CreatePost({ onClose }) {
             Share
           </button>
         </div>
+
         <div className={styles.uploadWrapper}>
           <Upload
             {...fields.image}
@@ -125,16 +118,24 @@ export default function CreatePost({ onClose }) {
             form="postForm"
           />
         </div>
+
         <div className={styles.textEditorWrapper}>
           <div className={styles.textEditorTop}>
-            <TextEditor
-              key={resetToggle}
-              register={register}
-              {...fields.description}
+            <Controller
+              name="description"
+              control={control}
+              render={({ field }) => (
+                <TextEditor
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder={fields.description.placeholder}
+                />
+              )}
             />
           </div>
           <div className={styles.textEditorBottom} />
         </div>
+
         <div className={styles.messageWrapper}>
           <LoadingErrorOutput loading={loading} error={error} />
         </div>
