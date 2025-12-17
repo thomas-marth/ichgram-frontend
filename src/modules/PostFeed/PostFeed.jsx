@@ -9,6 +9,7 @@ import doneIcon from "../../assets/icons/done.svg";
 import LoadingErrorOutput from "../../shared/components/LoadingErrorOutput/LoadingErrorOutput";
 import { getFeedPostsApi, updatePostApi } from "../../shared/api/post-api";
 import {
+  getPostLikesApi,
   getUserLikedPostsApi,
   likePostApi,
   unlikePostApi,
@@ -109,31 +110,35 @@ const PostFeed = () => {
 
     let isMounted = true;
 
-    const fetchComments = async () => {
-      const { data, error: commentsError } = await getPostCommentsApi(
-        selectedPostId
-      );
+    const fetchCommentsAndLikes = async () => {
+      const [commentsResponse, likesResponse] = await Promise.all([
+        getPostCommentsApi(selectedPostId),
+        getPostLikesApi(selectedPostId),
+      ]);
 
       if (!isMounted) return;
 
-      if (commentsError) {
-        setError(commentsError);
+      if (commentsResponse.error || likesResponse.error) {
+        setError(commentsResponse.error || likesResponse.error);
         return;
       }
 
-      const mappedComments = (data || []).map((comment) =>
+      const mappedComments = (commentsResponse.data || []).map((comment) =>
         adaptComment(comment, currentUser)
       );
+
+      const likes = Array.isArray(likesResponse.data) ? likesResponse.data : [];
 
       updatePostById(selectedPostId, (post) => ({
         ...post,
         comments: mappedComments,
         commentsCount: mappedComments.length,
+        likes,
       }));
       setError(null);
     };
 
-    fetchComments();
+    fetchCommentsAndLikes();
 
     return () => {
       isMounted = false;
@@ -153,11 +158,29 @@ const PostFeed = () => {
 
     updatePostById(postId, (post) => {
       const likesCount = Math.max(0, (post.likesCount || 0) + likesDelta);
+      const existingLikes = Array.isArray(post.likes) ? post.likes : [];
+      const currentUserId = currentUser.id;
+
+      const likes = isLikedNext
+        ? [
+            {
+              user: currentUserId,
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
+            },
+            ...existingLikes,
+          ]
+        : existingLikes.filter(
+            (like) =>
+              String(like?.user?._id || like?.user?.id || like?.user) !==
+              String(currentUserId)
+          );
 
       return {
         ...post,
         isLiked: isLikedNext,
         likesCount,
+        likes,
       };
     });
 
@@ -179,11 +202,29 @@ const PostFeed = () => {
       updatePostById(postId, (post) => {
         const likesDelta = isLikedNext ? -1 : 1;
         const likesCount = Math.max(0, (post.likesCount || 0) + likesDelta);
+        const existingLikes = Array.isArray(post.likes) ? post.likes : [];
+        const currentUserId = currentUser.id;
+
+        const likes = isLikedNext
+          ? existingLikes.filter(
+              (like) =>
+                String(like?.user?._id || like?.user?.id || like?.user) !==
+                String(currentUserId)
+            )
+          : [
+              {
+                user: currentUserId,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+              },
+              ...existingLikes,
+            ];
 
         return {
           ...post,
           isLiked: !isLikedNext,
           likesCount,
+          likes,
         };
       });
 

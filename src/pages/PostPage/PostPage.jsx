@@ -7,6 +7,7 @@ import EditPost from "../../modules/EditPost/EditPost";
 import LoadingErrorOutput from "../../shared/components/LoadingErrorOutput/LoadingErrorOutput";
 import { getPostByIdApi, updatePostApi } from "../../shared/api/post-api";
 import {
+  getPostLikesApi,
   getUserLikedPostsApi,
   likePostApi,
   unlikePostApi,
@@ -61,15 +62,15 @@ const PostPage = () => {
       setLoading(true);
       setError(null);
 
-      const [postResponse, likedResponse, commentsResponse] = await Promise.all(
-        [
+      const [postResponse, likedResponse, commentsResponse, likesResponse] =
+        await Promise.all([
           getPostByIdApi(postId),
           currentUserId
             ? getUserLikedPostsApi(currentUserId)
             : Promise.resolve({ data: [] }),
           getPostCommentsApi(postId),
-        ]
-      );
+          getPostLikesApi(postId),
+        ]);
 
       if (!isMounted) return;
 
@@ -82,6 +83,7 @@ const PostPage = () => {
 
       const likedIds = normalizeLikedPostIds(likedResponse.data);
       const mappedPost = adaptFeedPost(postResponse.data || {});
+      const likes = Array.isArray(likesResponse.data) ? likesResponse.data : [];
       const mappedComments = (commentsResponse.data || []).map((comment) =>
         adaptComment(comment, currentUser)
       );
@@ -89,6 +91,7 @@ const PostPage = () => {
       setPost({
         ...mappedPost,
         isLiked: likedIds.includes(String(mappedPost.id)),
+        likes,
         comments: mappedComments,
         commentsCount: mappedComments.length,
       });
@@ -111,6 +114,22 @@ const PostPage = () => {
       ...currentPost,
       isLiked: isLikedNext,
       likesCount: Math.max(0, (currentPost.likesCount || 0) + likesDelta),
+      likes: Array.isArray(currentPost.likes)
+        ? isLikedNext
+          ? [
+              {
+                user: currentUserId,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+              },
+              ...currentPost.likes,
+            ]
+          : currentPost.likes.filter(
+              (like) =>
+                String(like?.user?._id || like?.user?.id || like?.user) !==
+                String(currentUserId)
+            )
+        : currentPost.likes,
     }));
 
     const apiMethod = isLikedNext ? likePostApi : unlikePostApi;
@@ -121,6 +140,22 @@ const PostPage = () => {
         ...currentPost,
         isLiked: !isLikedNext,
         likesCount: Math.max(0, (currentPost.likesCount || 0) - likesDelta),
+        likes: Array.isArray(currentPost.likes)
+          ? isLikedNext
+            ? currentPost.likes.filter(
+                (like) =>
+                  String(like?.user?._id || like?.user?.id || like?.user) !==
+                  String(currentUserId)
+              )
+            : [
+                {
+                  user: currentUserId,
+                  createdAt: new Date().toISOString(),
+                  updatedAt: new Date().toISOString(),
+                },
+                ...currentPost.likes,
+              ]
+          : currentPost.likes,
       }));
       setError(likeError);
     }

@@ -17,3 +17,6 @@ export const unlikePostApi = (postId) =>
 
 export const getUserLikedPostsApi = (userId) =>
   wrapRequest(instance.get(`/likes/user/${userId}`));
+
+export const getPostLikesApi = (postId) =>
+  wrapRequest(instance.get(`/likes/${postId}/likes`));

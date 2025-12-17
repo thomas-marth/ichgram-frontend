@@ -50,6 +50,10 @@
   border-bottom: 0.06rem solid #efefef;
 }
 
+.headerOwner {
+  justify-content: space-between;
+}
+
 .profile {
   display: flex;
   align-items: center;
