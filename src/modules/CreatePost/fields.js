@@ -39,6 +39,7 @@ export const createPostSchema = yup.object().shape({
 export const editPostSchema = yup.object().shape({
   image: yup.mixed().test("fileType", "Unsupported file format", (value) => {
     if (!value) return true;
+    if (typeof value === "string") return true;
     return SUPPORTED_FORMATS.includes(value.type);
   }),
   description: yup.string().max(2200, "Description is too long"),

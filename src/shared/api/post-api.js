@@ -81,7 +81,10 @@ export const getPostByIdApi = (postId) =>
 export const updatePostApi = (postId, payload) => {
   const formData = new FormData();
 
-  if (payload.image) {
+  const isFileUpload =
+    payload.image instanceof File || payload.image instanceof Blob;
+
+  if (isFileUpload) {
     formData.append("image", payload.image);
   }
 
