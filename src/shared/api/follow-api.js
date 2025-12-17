@@ -14,3 +14,6 @@ export const followUserApi = ({ targetUserId }) =>
 
 export const unfollowUserApi = ({ targetUserId }) =>
   wrapRequest(instance.delete(`/follows/${targetUserId}`));
+
+export const getUserFollowingApi = (userId) =>
+  wrapRequest(instance.get(`/follows/${userId}/following`));

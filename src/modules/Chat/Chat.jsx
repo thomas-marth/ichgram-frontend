@@ -6,7 +6,13 @@ import Messenger from "./Messenger/Messenger";
 
 import styles from "./Chat.module.css";
 
-const Chat = ({ chats, currentUser, initialUserId }) => {
+const Chat = ({
+  chats,
+  currentUser,
+  initialUserId,
+  isLoading = false,
+  error,
+}) => {
   const navigate = useNavigate();
   const [localMessages, setLocalMessages] = useState({});
 
@@ -33,6 +39,8 @@ const Chat = ({ chats, currentUser, initialUserId }) => {
   }, [chatList, initialUserId]);
 
   const handleClickOnChat = (chat) => {
+    if (!currentUser) return;
+
     const otherUserId =
       chat.member1Id === currentUser.id ? chat.member2Id : chat.member1Id;
 
@@ -65,13 +73,41 @@ const Chat = ({ chats, currentUser, initialUserId }) => {
     />
   ));
 
+  if (!currentUser) {
+    return (
+      <div className={styles.chat}>
+        <div className={styles.emptyState}>
+          <p className={styles.emptyStateText}>Log in to view your messages</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.chat}>
       <div className={styles.chatsWrapper}>
         <div className={styles.chatsHeader}>
           <p className={styles.chatsHeaderUsername}>{currentUser.username}</p>
         </div>
-        <div className={styles.chats}>{chatElements}</div>
+        <div className={styles.chats}>
+          {isLoading ? (
+            <div className={styles.emptyState}>
+              <p className={styles.emptyStateText}>Loading your chats...</p>
+            </div>
+          ) : error ? (
+            <div className={styles.emptyState}>
+              <p className={styles.emptyStateText}>Failed to load chats</p>
+            </div>
+          ) : chatList.length ? (
+            chatElements
+          ) : (
+            <div className={styles.emptyState}>
+              <p className={styles.emptyStateText}>
+                Follow users to start a conversation
+              </p>
+            </div>
+          )}
+        </div>
       </div>
       {activeChat ? (
         <Messenger

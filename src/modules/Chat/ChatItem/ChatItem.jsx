@@ -32,11 +32,7 @@ const ChatItem = ({ chat, active, handleClick, currentUser }) => {
             {otherUser?.username} sent a message &bull; {lastMessageDate}
           </span>
         )}
-        {!lastMessage && (
-          <span className={styles.info}>
-            {otherUser?.username} text a message &bull; 2 week
-          </span>
-        )}
+        {!lastMessage && <span className={styles.info}>No messages yet</span>}
         {/* {lastMessageText && <p className={styles.preview}>{lastMessageText}</p>} */}
       </div>
     </button>

@@ -1,90 +1,80 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
-import currentUserAvatar from "../../assets/images/test-current-user.jpg";
-import nikitaAvatar from "../../assets/images/test-user2.jpg";
-import sashaaAvatar from "../../assets/images/test-user.jpg";
 import Chat from "../../modules/Chat/Chat";
+import { getUserFollowingApi } from "../../shared/api/follow-api";
+import { selectUser } from "../../redux/auth/authSelectors";
 
 import styles from "./MessagesPage.module.css";
 
+const normalizeUser = (user = {}) => ({
+  id: user._id || user.id || "",
+  username: user.username || user.name || "",
+  fullname: user.fullname || user.name || "",
+  avatar: user.avatar || "",
+});
+
 const MessagesPage = () => {
   const { id: initialUserId } = useParams();
+  const authUser = useSelector(selectUser);
+  const authUserId = authUser?._id || authUser?.id;
+  const [followingUsers, setFollowingUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const currentUser = useMemo(
-    () => ({
-      id: "current-user",
-      username: "itcareerhub",
-      fullname: "itcareerhub",
-      avatar: currentUserAvatar,
-    }),
-    []
+    () => (authUserId ? normalizeUser(authUser) : null),
+    [authUser, authUserId]
   );
 
+  useEffect(() => {
+    if (!authUserId) return undefined;
+
+    let isMounted = true;
+
+    const fetchFollowing = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      const { data, error: fetchError } = await getUserFollowingApi(authUserId);
+
+      if (!isMounted) return;
+
+      if (fetchError) {
+        setError(fetchError);
+        setFollowingUsers([]);
+        setIsLoading(false);
+        return;
+      }
+
+      const normalized = (data || [])
+        .map((follow) => normalizeUser(follow.following || follow))
+        .filter((user) => user.id && user.username);
+
+      setFollowingUsers(normalized);
+      setIsLoading(false);
+    };
+
+    fetchFollowing();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [authUserId]);
+
   const chats = useMemo(() => {
-    const nikitaUser = {
-      id: "UID00119485",
-      username: "nikita",
-      fullname: "nikita - ichgram",
-      avatar: nikitaAvatar,
-    };
+    if (!currentUser) return [];
 
-    const sashaaUser = {
-      id: "UID00129489",
-      username: "sasha",
-      fullname: "sasha - ichgram",
-      avatar: sashaaAvatar,
-    };
-
-    return [
-      {
-        id: "chat-1",
-        member1Id: currentUser.id,
-        member1: currentUser,
-        member2Id: nikitaUser.id,
-        member2: nikitaUser,
-        messages: [
-          {
-            id: "msg-1",
-            text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
-            authorId: nikitaUser.id,
-            author: nikitaUser,
-            createdAt: "2025-06-20T12:00:00Z",
-          },
-          {
-            id: "msg-2",
-            text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-            authorId: currentUser.id,
-            author: currentUser,
-            createdAt: "2025-06-21T12:00:00Z",
-          },
-          {
-            id: "msg-3",
-            text: "Tellus at urna condimentum mattis pellentesque id nibh tortor id.",
-            authorId: currentUser.id,
-            author: currentUser,
-            createdAt: "2025-06-22T12:00:00Z",
-          },
-        ],
-      },
-      {
-        id: "chat-2",
-        member1Id: currentUser.id,
-        member1: currentUser,
-        member2Id: sashaaUser.id,
-        member2: sashaaUser,
-        messages: [
-          {
-            id: "msg-4",
-            text: "All at urna condimentum mattis pellentesque id.",
-            authorId: sashaaUser.id,
-            author: sashaaUser,
-            createdAt: "2025-06-18T12:00:00Z",
-          },
-        ],
-      },
-    ];
-  }, [currentUser]);
+    return followingUsers.map((user) => ({
+      id: `chat-${user.id}`,
+      member1Id: currentUser.id,
+      member1: currentUser,
+      member2Id: user.id,
+      member2: user,
+      messages: [],
+    }));
+  }, [currentUser, followingUsers]);
 
   return (
     <div className={styles.chatPage}>
@@ -92,6 +82,8 @@ const MessagesPage = () => {
         chats={chats}
         currentUser={currentUser}
         initialUserId={initialUserId}
+        isLoading={isLoading}
+        error={error}
       />
     </div>
   );
