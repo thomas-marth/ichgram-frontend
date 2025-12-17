@@ -6,7 +6,7 @@
   align-items: anchor-center;
   justify-content: center;
   padding: 24px;
-  bottom: 85px;
+  background-color: rgba(0, 0, 0, 0.4);
 }
 
 .form {
