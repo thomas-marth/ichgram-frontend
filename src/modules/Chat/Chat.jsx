@@ -9,7 +9,7 @@ import styles from "./Chat.module.css";
 const Chat = ({
   chats,
   currentUser,
-  activeUserId,
+  initialUserId,
   isLoading = false,
   error,
   messagesError,
@@ -21,17 +21,17 @@ const Chat = ({
   const chatList = useMemo(() => chats ?? [], [chats]);
 
   const activeChat = useMemo(() => {
-    if (!activeUserId) {
+    if (!initialUserId) {
       return null;
     }
 
     return (
       chatList.find(
         (chat) =>
-          chat.member1Id === activeUserId || chat.member2Id === activeUserId
+          chat.member1Id === initialUserId || chat.member2Id === initialUserId
       ) ?? null
     );
-  }, [activeUserId, chatList]);
+  }, [chatList, initialUserId]);
 
   const handleClickOnChat = (chat) => {
     if (!currentUser) return;

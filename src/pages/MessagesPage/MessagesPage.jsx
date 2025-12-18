@@ -21,7 +21,7 @@ const MessagesPage = () => {
 
   const {
     chats,
-    activeUserId,
+
     isLoading,
     error,
     messagesError,
@@ -39,7 +39,7 @@ const MessagesPage = () => {
       <Chat
         chats={chats}
         currentUser={currentUser}
-        activeUserId={activeUserId}
+        initialUserId={initialUserId}
         isLoading={isLoading}
         error={error}
         messagesError={messagesError}

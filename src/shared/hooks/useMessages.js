@@ -25,11 +25,6 @@ export const useMessages = ({ currentUser, initialUserId, authUserId }) => {
   const [messagesError, setMessagesError] = useState(null);
   const [messagesLoading, setMessagesLoading] = useState(false);
 
-  const activeUserId = useMemo(
-    () => initialUserId || followingUsers[0]?.id || null,
-    [followingUsers, initialUserId]
-  );
-
   /** QUICK LOOKUP */
   const userLookup = useMemo(() => {
     const base = currentUser?.id ? { [currentUser.id]: currentUser } : {};
@@ -134,26 +129,26 @@ export const useMessages = ({ currentUser, initialUserId, authUserId }) => {
 
   /** RESET WHEN NO CHAT SELECTED */
   useEffect(() => {
-    if (!activeUserId) {
+    if (!initialUserId) {
       startTransition(() => {
         setMessagesLoading(false);
         setMessagesError(null);
       });
     }
-  }, [activeUserId]);
+  }, [initialUserId]);
 
   /** LOAD MESSAGES FOR SELECTED CHAT */
   useEffect(() => {
-    if (!currentUser || !activeUserId || isLoading) return;
+    if (!currentUser || !initialUserId || isLoading) return;
 
-    const target = followingUsers.find((u) => u.id === activeUserId);
+    const target = followingUsers.find((u) => u.id === initialUserId);
 
     if (!target) {
       startTransition(() => {
         setMessagesError("You can only message users you follow");
         setMessagesLoading(false);
 
-        const convoId = getConversationId(currentUser.id, activeUserId);
+        const convoId = getConversationId(currentUser.id, initialUserId);
         setMessagesByChatId((prev) => ({
           ...prev,
           [convoId]: [],
@@ -174,7 +169,7 @@ export const useMessages = ({ currentUser, initialUserId, authUserId }) => {
 
       try {
         const { data, error: apiErr } = await getMessagesWithUserApi(
-          activeUserId,
+          initialUserId,
           { signal: controller.signal }
         );
 
@@ -215,11 +210,11 @@ export const useMessages = ({ currentUser, initialUserId, authUserId }) => {
       });
     };
   }, [
-    activeUserId,
     appendMessageToChat,
     currentUser,
     followingUsers,
     getConversationId,
+    initialUserId,
     isLoading,
   ]);
 
@@ -261,7 +256,6 @@ export const useMessages = ({ currentUser, initialUserId, authUserId }) => {
   );
 
   return {
-    activeUserId,
     isLoading,
     error,
     chats,
