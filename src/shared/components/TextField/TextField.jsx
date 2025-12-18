@@ -11,14 +11,21 @@ export default function TextField({
   error,
   showClearButton = false,
   onClear,
+  inputRef,
   ...props
 }) {
   const id = useId();
 
   const { className, autoComplete, ...restProps } = props;
   const registration = register ? register(name, rules) : {};
+  const { ref: registrationRef, ...registrationRest } = registration;
   const defaultAutoComplete = type === "password" ? "new-password" : "on";
   const resolvedAutoComplete = autoComplete ?? defaultAutoComplete;
+
+  const handleRef = (node) => {
+    if (typeof inputRef === "function") inputRef(node);
+    if (registrationRef) registrationRef(node);
+  };
 
   return (
     <>
@@ -33,7 +40,8 @@ export default function TextField({
           type={type}
           autoComplete={resolvedAutoComplete}
           {...restProps}
-          {...registration}
+          {...registrationRest}
+          ref={handleRef}
           className={`${styles.input} ${className || ""}`.trim()}
         />
         {showClearButton && onClear ? (

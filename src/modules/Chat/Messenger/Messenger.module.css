@@ -43,7 +43,7 @@
 }
 .userInfoFullname {
   font-size: 0.8rem;
-  color: var(--color-text-secondary);
+  color: var(--secondary-color);
 }
 .userInfoButton {
   width: 100%;
@@ -53,10 +53,10 @@
 }
 
 .date {
-  margin-top: 5rem;
+  margin-top: 4rem;
   font-size: 0.75rem;
   font-weight: 500;
-  color: var(--color-text-secondary);
+  color: var(--secondary-color);
 }
 .messages {
   padding: 0 1rem;
@@ -70,6 +70,12 @@
   padding: 0 1rem;
 }
 
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
 .input {
   font-size: 18px;
   font-weight: 400;
@@ -81,7 +87,7 @@
   background: var(--background-color);
   border-radius: 22px;
   border: 1px solid var(--border-color);
-  padding: 13px 51px;
+  padding: 13px 16px 13px 46px;
 }
 
 .input::placeholder {
@@ -91,4 +97,30 @@
   font-size: 15px;
   font-weight: 400;
   line-height: 1.2;
+}
+
+.emojiButton {
+  position: absolute;
+  left: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.emojiButton:disabled {
+  cursor: not-allowed;
+}
+
+.emojiPickerWrapper {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  z-index: 2;
 }
