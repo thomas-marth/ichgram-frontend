@@ -25,11 +25,11 @@
 }
 
 .userInfo {
-  padding: 4rem 0;
+  padding: 3.94rem 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 1.06rem;
   width: 173px;
   margin: 0 auto;
 }
