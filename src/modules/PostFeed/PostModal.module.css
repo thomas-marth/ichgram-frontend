@@ -233,7 +233,7 @@
 .comment {
   display: flex;
   gap: 0.75rem;
-  align-items: flex-start;
+  /* align-items: flex-start; */
 }
 
 .commentMain {
@@ -289,8 +289,8 @@
 
 .commentActions {
   display: flex;
-  align-items: flex-start;
   margin-left: auto;
+  align-items: center;
 }
 
 .commentLikeButton {
