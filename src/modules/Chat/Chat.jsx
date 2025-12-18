@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
 import ChatItem from "./ChatItem/ChatItem";
@@ -12,18 +12,13 @@ const Chat = ({
   initialUserId,
   isLoading = false,
   error,
+  messagesError,
+  messagesLoading,
+  onSendMessage,
 }) => {
   const navigate = useNavigate();
-  const [localMessages, setLocalMessages] = useState({});
 
-  const chatList = useMemo(
-    () =>
-      (chats ?? []).map((chat) => ({
-        ...chat,
-        messages: [...(chat.messages || []), ...(localMessages[chat.id] || [])],
-      })),
-    [chats, localMessages]
-  );
+  const chatList = useMemo(() => chats ?? [], [chats]);
 
   const activeChat = useMemo(() => {
     if (!initialUserId) {
@@ -48,19 +43,7 @@ const Chat = ({
   };
 
   const handleSendMessage = (chatId, text) => {
-    const newMessageId = `${chatId}-${Date.now()}`;
-    const message = {
-      id: newMessageId,
-      text,
-      authorId: currentUser.id,
-      author: currentUser,
-      createdAt: new Date().toISOString(),
-    };
-
-    setLocalMessages((prevMessages) => ({
-      ...prevMessages,
-      [chatId]: [...(prevMessages[chatId] || []), message],
-    }));
+    onSendMessage?.(chatId, text);
   };
 
   const chatElements = chatList?.map((chat) => (
@@ -113,6 +96,8 @@ const Chat = ({
         <Messenger
           chat={activeChat}
           currentUser={currentUser}
+          error={messagesError}
+          isLoading={messagesLoading}
           onSendMessage={handleSendMessage}
         />
       ) : (

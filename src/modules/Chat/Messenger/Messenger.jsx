@@ -11,7 +11,13 @@ import Message from "./Message/Message";
 
 import styles from "./Messenger.module.css";
 
-export default function Messenger({ chat, currentUser, onSendMessage }) {
+export default function Messenger({
+  chat,
+  currentUser,
+  onSendMessage,
+  error,
+  isLoading,
+}) {
   const { register, handleSubmit, reset } = useForm();
   const msgBoxRef = useRef(null);
   const navigate = useNavigate();
@@ -82,9 +88,10 @@ export default function Messenger({ chat, currentUser, onSendMessage }) {
           name="text"
           placeholder="Write message"
           className={styles.input}
+          disabled={isLoading}
         />
       </form>
-      <LoadingErrorOutput loading={false} error={null} />
+      <LoadingErrorOutput loading={isLoading} error={error} />
     </div>
   );
 }
