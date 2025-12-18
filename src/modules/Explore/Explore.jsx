@@ -15,9 +15,17 @@ const Explore = ({ posts = [], variant, onPostSelect }) => {
 
   return (
     <div className={className}>
-      {posts.map((post) => (
-        <ExploreCard key={post.id} post={post} onSelect={handlePostSelect} />
-      ))}
+      {posts.map((post, index) => {
+        const postId = post.id ?? post._id ?? `post-${index}`;
+
+        return (
+          <ExploreCard
+            key={postId}
+            post={{ ...post, id: postId }}
+            onSelect={handlePostSelect}
+          />
+        );
+      })}
     </div>
   );
 };

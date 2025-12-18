@@ -57,7 +57,7 @@ export const getFeedPostsApi = async () => {
 
 export const getPostsApi = async () => {
   try {
-    const { data } = await instance.get("/posts");
+    const { data } = await instance.get("/posts/explore");
     const posts = data?.posts ?? data;
 
     if (Array.isArray(posts) && posts.length > 0) {

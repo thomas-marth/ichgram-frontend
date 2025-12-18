@@ -8,9 +8,11 @@ import styles from "./ExplorePage.module.css";
 export default function ExplorePage() {
   const { state, loading, error } = useFetch(getPostsApi, []);
 
+  const posts = Array.isArray(state?.posts) ? state.posts : [];
+
   return (
     <div className={styles.explorePage}>
-      <Explore posts={state.posts} />
+      <Explore posts={posts} />
       <LoadingErrorOutput error={error} loading={loading} />
     </div>
   );
