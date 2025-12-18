@@ -93,7 +93,7 @@ const PrivateLayout = () => {
       const currentScrollBottom = window.scrollY + viewportHeight;
 
       const hasScrollableContent = scrollHeight > viewportHeight;
-      const revealThreshold = scrollHeight - footerHeight - 10;
+      const revealThreshold = scrollHeight - footerHeight - 1;
       const reachedRevealPoint = currentScrollBottom >= revealThreshold;
 
       setIsFooterVisible(!hasScrollableContent || reachedRevealPoint);
