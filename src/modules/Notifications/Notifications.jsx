@@ -229,6 +229,20 @@ const Notifications = ({
         ...prev,
         ...updatedPost,
         image: updatedPost?.image || prev.image,
+        descriptionBody:
+          updatedPost?.descriptionBody ||
+          updatedPost?.description ||
+          updatedPost?.captionBody ||
+          prev.descriptionBody ||
+          prev.captionBody,
+        captionBody:
+          updatedPost?.captionBody ||
+          updatedPost?.description ||
+          updatedPost?.descriptionBody ||
+          prev.captionBody ||
+          prev.descriptionBody,
+        description:
+          updatedPost?.description ?? prev.description ?? prev.descriptionBody,
         createdAt: prev.createdAt,
         profile: mergedAuthor,
         comments: prev.comments || [],

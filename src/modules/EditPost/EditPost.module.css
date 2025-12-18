@@ -10,7 +10,7 @@
 }
 
 .form {
-  width: min(68.75rem, 100%);
+  width: min(57.06rem, 100%);
   height: min(35.25rem, calc(100vh - 48px));
   border-radius: 12px;
   background-color: #fff;
@@ -25,7 +25,7 @@
 
 .header {
   grid-area: header;
-  padding: 0.75rem 1rem;
+  padding: 0.75rem 1.3rem;
   border-bottom: 0.06rem solid var(--border-color);
   display: flex;
   align-items: center;

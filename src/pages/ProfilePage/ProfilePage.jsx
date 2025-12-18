@@ -552,6 +552,22 @@ const ProfilePage = () => {
               ...post,
               ...updatedPost,
               image: updatedPost?.image || post.image,
+              descriptionBody:
+                updatedPost?.descriptionBody ||
+                updatedPost?.description ||
+                updatedPost?.captionBody ||
+                post.descriptionBody ||
+                post.captionBody,
+              captionBody:
+                updatedPost?.captionBody ||
+                updatedPost?.description ||
+                updatedPost?.descriptionBody ||
+                post.captionBody ||
+                post.descriptionBody,
+              description:
+                updatedPost?.description ??
+                post.description ??
+                post.descriptionBody,
               createdAt: post.createdAt,
               profile: buildUpdatedProfile(post),
             }

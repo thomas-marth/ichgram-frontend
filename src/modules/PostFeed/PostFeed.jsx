@@ -398,6 +398,18 @@ const PostFeed = () => {
       ...post,
       ...updatedPost,
       image: updatedPost?.image || post.image,
+      descriptionBody:
+        updatedPost?.descriptionBody ||
+        updatedPost?.description ||
+        updatedPost?.captionBody ||
+        post.descriptionBody ||
+        post.captionBody,
+      captionBody:
+        updatedPost?.captionBody ||
+        updatedPost?.description ||
+        updatedPost?.descriptionBody ||
+        post.captionBody ||
+        post.descriptionBody,
       createdAt: post.createdAt,
       comments: post.comments || [],
       commentsCount: post.commentsCount,

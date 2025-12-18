@@ -368,11 +368,26 @@ const PostPage = () => {
       if (!prev) return prev;
 
       const mergedAuthor = buildUpdatedProfile(prev);
+      const nextDescription =
+        updatedPost?.descriptionBody ||
+        updatedPost?.description ||
+        updatedPost?.captionBody ||
+        prev.descriptionBody ||
+        prev.captionBody;
 
       return {
         ...prev,
         ...updatedPost,
         image: updatedPost?.image || prev.image,
+        descriptionBody: nextDescription,
+        captionBody:
+          updatedPost?.captionBody ||
+          updatedPost?.description ||
+          updatedPost?.descriptionBody ||
+          prev.captionBody ||
+          prev.descriptionBody,
+        description:
+          updatedPost?.description ?? prev.description ?? nextDescription,
         createdAt: prev.createdAt,
         profile: mergedAuthor,
         comments: prev.comments || [],
