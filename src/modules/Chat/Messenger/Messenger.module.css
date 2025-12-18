@@ -40,8 +40,10 @@
 .userInfoUsername {
   font-size: 1.25rem;
   font-weight: 600;
+  margin-bottom: 6px;
 }
 .userInfoFullname {
+  text-align: center;
   font-size: 0.8rem;
   color: var(--secondary-color);
 }

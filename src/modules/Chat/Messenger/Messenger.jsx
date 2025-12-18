@@ -140,8 +140,12 @@ export default function Messenger({
         <div className={styles.userInfoAvatarWrapper}>
           <Avatar size="lg" src={otherUser?.avatar} alt={otherUser?.username} />
         </div>
-        <p className={styles.userInfoUsername}>{otherUser?.username}</p>
-        <p className={styles.userInfoFullname}>{otherUser?.fullname}</p>
+        <div>
+          <p className={styles.userInfoUsername}>{otherUser?.username}</p>
+          <p className={styles.userInfoFullname}>
+            {otherUser?.fullname} · ICHgram
+          </p>
+        </div>
         <Button
           variant="gray"
           onClick={handleViewProfile}
