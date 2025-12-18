@@ -1,6 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-import { getNotificationsApi } from "../api/notification-api";
+import {
+  deleteNotificationApi,
+  getNotificationsApi,
+} from "../api/notification-api";
 
 const adaptNotification = (notification) => {
   const actor = notification.actor || {};
@@ -45,6 +48,34 @@ const useNotificationsFeed = ({ isOpen = false } = {}) => {
     notificationsRef.current = notifications;
   }, [notifications]);
 
+  const updateNotificationsState = useCallback(
+    (nextNotifications) => {
+      setNotifications(nextNotifications);
+
+      const newestId = nextNotifications[0]?.id;
+
+      if (!lastSeenRef.current && newestId) {
+        lastSeenRef.current = newestId;
+      }
+
+      if (isOpen && newestId) {
+        lastSeenRef.current = newestId;
+        setUnseenCount(0);
+      } else if (lastSeenRef.current && nextNotifications.length) {
+        const lastSeenIndex = nextNotifications.findIndex(
+          (item) => String(item.id) === String(lastSeenRef.current)
+        );
+
+        setUnseenCount(
+          lastSeenIndex === -1 ? nextNotifications.length : lastSeenIndex
+        );
+      } else {
+        setUnseenCount(0);
+      }
+    },
+    [isOpen]
+  );
+
   useEffect(() => {
     let isMounted = true;
 
@@ -62,28 +93,8 @@ const useNotificationsFeed = ({ isOpen = false } = {}) => {
       }
 
       const mapped = (data || []).map(adaptNotification);
-      setNotifications(mapped);
+      updateNotificationsState(mapped);
       setError(null);
-
-      const newestId = mapped[0]?.id;
-
-      if (!lastSeenRef.current && newestId) {
-        lastSeenRef.current = newestId;
-      }
-
-      if (isOpen && newestId) {
-        lastSeenRef.current = newestId;
-        setUnseenCount(0);
-      } else if (lastSeenRef.current && mapped.length) {
-        const lastSeenIndex = mapped.findIndex(
-          (item) => String(item.id) === String(lastSeenRef.current)
-        );
-
-        setUnseenCount(lastSeenIndex === -1 ? mapped.length : lastSeenIndex);
-      } else {
-        setUnseenCount(0);
-      }
-
       setLoading(false);
     };
 
@@ -92,33 +103,23 @@ const useNotificationsFeed = ({ isOpen = false } = {}) => {
     return () => {
       isMounted = false;
     };
-  }, [isOpen]);
+  }, [isOpen, updateNotificationsState]);
 
-  const removeNotification = (id) => {
-    setNotifications((prev) => {
-      const filtered = prev.filter((item) => String(item.id) !== String(id));
+  const removeNotification = async (id) => {
+    setError(null);
+    const previousNotifications = notificationsRef.current;
+    const filtered = previousNotifications.filter(
+      (item) => String(item.id) !== String(id)
+    );
 
-      const newestId = filtered[0]?.id;
+    updateNotificationsState(filtered);
 
-      if (!lastSeenRef.current && newestId) {
-        lastSeenRef.current = newestId;
-      }
+    const { error: removeError } = await deleteNotificationApi(id);
 
-      if (isOpen && newestId) {
-        lastSeenRef.current = newestId;
-        setUnseenCount(0);
-      } else if (lastSeenRef.current && filtered.length) {
-        const lastSeenIndex = filtered.findIndex(
-          (item) => String(item.id) === String(lastSeenRef.current)
-        );
-
-        setUnseenCount(lastSeenIndex === -1 ? filtered.length : lastSeenIndex);
-      } else {
-        setUnseenCount(0);
-      }
-
-      return filtered;
-    });
+    if (removeError) {
+      updateNotificationsState(previousNotifications);
+      setError(removeError);
+    }
   };
 
   return { notifications, loading, error, unseenCount, removeNotification };

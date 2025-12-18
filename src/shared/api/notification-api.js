@@ -11,3 +11,6 @@ const wrapRequest = async (promise) => {
 
 export const getNotificationsApi = () =>
   wrapRequest(instance.get("/notifications"));
+
+export const deleteNotificationApi = (notificationId) =>
+  wrapRequest(instance.delete(`/notifications/${notificationId}`));
