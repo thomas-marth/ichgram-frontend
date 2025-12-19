@@ -14,3 +14,6 @@ export const getMessagesWithUserApi = (userId, config = {}) =>
 
 export const sendMessageApi = (payload) =>
   wrapRequest(instance.post(`/messages`, payload));
+
+export const getLastMessagesForUserApi = () =>
+  wrapRequest(instance.get(`/messages/last-for-all`));
