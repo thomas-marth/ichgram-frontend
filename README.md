@@ -62,9 +62,7 @@ src/
 │   ├── api/               # Axios base and endpoints
 │   ├── components/        # Shared reusable UI components
 │   ├── hooks/             # Custom React hooks
-│   ├── mocks/             # Mock/test data (if any)
 │   ├── styles/            # Global and module styles
-│   ├── ui/                # UI primitives and helpers
 │   └── utils/             # Formatters and utility functions
 ├── App.jsx                # Root app and routing config
 ├── main.jsx               # React DOM entry point
