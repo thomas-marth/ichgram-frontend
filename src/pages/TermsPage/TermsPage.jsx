@@ -13,20 +13,20 @@ export default function TermsPage() {
           the following terms and conditions:
         </p>
 
-        <h2 className={styles.h2}>1. Acceptance of Terms</h2>
+        <h2 className={styles.h2}>Acceptance of Terms</h2>
         <p className={styles.p}>
           By registering, browsing, or posting content on ICHgram, you accept
           these Terms of Service in full.
         </p>
 
-        <h2 className={styles.h2}>2. User Content</h2>
+        <h2 className={styles.h2}>User Content</h2>
         <p className={styles.p}>
           You retain ownership of all content you upload. However, by sharing
           content, you grant ICHgram a non-exclusive, royalty-free license to
           display and distribute it within the platform.
         </p>
 
-        <h2 className={styles.h2}>3. User Conduct</h2>
+        <h2 className={styles.h2}>User Conduct</h2>
         <p className={styles.p}>You agree not to:</p>
         <ul className={styles.ul}>
           <li className={styles.li}>
@@ -42,20 +42,20 @@ export default function TermsPage() {
           violate these rules.
         </p>
 
-        <h2 className={styles.h2}>4. Privacy</h2>
+        <h2 className={styles.h2}>Privacy</h2>
         <p className={styles.p}>
           We value your privacy. Please refer to our Privacy Policy for details
           on how we collect, store, and use your data.
         </p>
 
-        <h2 className={styles.h2}>5. Availability</h2>
+        <h2 className={styles.h2}>Availability</h2>
         <p className={styles.p}>
           ICHgram is provided "as is." We do our best to keep the platform
           running smoothly but offer no guarantees regarding uptime or
           performance.
         </p>
 
-        <h2 className={styles.h2}>6. Changes to Terms</h2>
+        <h2 className={styles.h2}>Changes to Terms</h2>
         <p className={styles.p}>
           These terms may be updated from time to time. We will notify users of
           significant changes.

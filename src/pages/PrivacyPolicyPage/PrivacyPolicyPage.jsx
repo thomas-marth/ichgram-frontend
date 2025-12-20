@@ -30,7 +30,7 @@ export default function PrivacyPolicyPage() {
           </li>
         </ul>
 
-        <h2>2. How We Use Your Data</h2>
+        <h2 className={styles.h2}>2. How We Use Your Data</h2>
         <p className={styles.p}>We use your data to:</p>
         <ul className={styles.ul}>
           <li className={styles.li}>
