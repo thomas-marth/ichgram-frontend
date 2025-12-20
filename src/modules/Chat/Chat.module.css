@@ -32,6 +32,10 @@
   min-height: 100%;
 }
 
+.emptyState.emptyStateChatItem {
+  margin-left: 24px;
+}
+
 .emptyStateText {
   color: var(--secondary-color);
   font-size: 1rem;

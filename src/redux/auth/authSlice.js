@@ -15,9 +15,9 @@ const initialState = {
   isSignupSuccess: false,
 };
 
-const normalizeUser = (user) => {
+const normalizeUser = (user, fallbackId) => {
   if (!user || typeof user !== "object") return user;
-  const normalizedId = user.id || user._id;
+  const normalizedId = user.id || user._id || fallbackId;
   return normalizedId ? { ...user, id: normalizedId } : user;
 };
 
@@ -32,7 +32,8 @@ const authSlice = createSlice({
     logout: () => initialState,
     setCredentials: (state, { payload }) => {
       const { user, accessToken, refreshToken } = payload || {};
-      state.user = normalizeUser(user);
+      const fallbackId = state.user?.id || state.user?._id;
+      state.user = normalizeUser(user, fallbackId);
       state.accessToken = accessToken;
       state.refreshToken = refreshToken;
     },

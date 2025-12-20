@@ -56,16 +56,6 @@ const Chat = ({
     />
   ));
 
-  if (!currentUser) {
-    return (
-      <div className={styles.chat}>
-        <div className={styles.emptyState}>
-          <p className={styles.emptyStateText}>Log in to view your messages</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className={styles.chat}>
       <div className={styles.chatsWrapper}>
@@ -84,7 +74,9 @@ const Chat = ({
           ) : chatList.length ? (
             chatElements
           ) : (
-            <div className={styles.emptyState}>
+            <div
+              className={`${styles.emptyState} ${styles.emptyStateChatItem}`}
+            >
               <p className={styles.emptyStateText}>
                 Follow users to start a conversation
               </p>

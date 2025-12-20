@@ -26,14 +26,13 @@ const Sidebar = ({
   unseenNotificationsCount = 0,
 }) => {
   const currentUser = useSelector(selectUser);
+  const userId = currentUser?.id || currentUser?._id;
   const userAvatar = currentUser?.avatar || currentUser?.profile_image;
   const profileAlt =
     currentUser?.username || currentUser?.name || "User profile";
 
   const navItems = useMemo(() => {
-    const profilePath = currentUser?.id
-      ? `/profile/${currentUser.id}`
-      : "/profile";
+    const profilePath = userId ? `/profile/${userId}` : "/profile";
     const ProfileIcon = (props) => (
       <UserIcon {...props} src={userAvatar} alt={`${profileAlt} avatar`} />
     );
@@ -73,7 +72,7 @@ const Sidebar = ({
         activeIcon: ProfileIcon,
       },
     ];
-  }, [currentUser?.id, profileAlt, unseenNotificationsCount, userAvatar]);
+  }, [profileAlt, unseenNotificationsCount, userAvatar, userId]);
 
   return (
     <aside className={styles.sidebar}>
