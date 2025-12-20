@@ -15,7 +15,8 @@ This is the frontend of **ICHgram**, a full-featured Instagram-style social medi
 
 Use one of the following accounts to test the application without registration:
 
-**Email:** test1@gmail.comPassword: QWEasdZXC123!
+**Email:** test1@gmail.com
+**Password:** QWEasdZXC123!
 
 ---
 
