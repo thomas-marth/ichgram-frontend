@@ -6,7 +6,10 @@ import {
   startTransition,
 } from "react";
 import { getUserFollowingApi } from "../../shared/api/follow-api";
-import { getMessagesWithUserApi } from "../../shared/api/message-api";
+import {
+  getLastMessagesForUserApi,
+  getMessagesWithUserApi,
+} from "../../shared/api/message-api";
 import { getSocket } from "../../shared/utils/socket";
 
 const normalizeUser = (user = {}) => ({
@@ -24,6 +27,7 @@ export const useMessages = ({ currentUser, initialUserId, authUserId }) => {
   const [messagesByChatId, setMessagesByChatId] = useState({});
   const [messagesError, setMessagesError] = useState(null);
   const [messagesLoading, setMessagesLoading] = useState(false);
+  const [lastMessagesByUserId, setLastMessagesByUserId] = useState({});
 
   /** QUICK LOOKUP */
   const userLookup = useMemo(() => {
@@ -67,8 +71,17 @@ export const useMessages = ({ currentUser, initialUserId, authUserId }) => {
 
         return { ...prev, [convoId]: updated };
       });
+
+      if (currentUser?.id) {
+        const otherUserId =
+          messageDto.from === currentUser.id ? messageDto.to : messageDto.from;
+        setLastMessagesByUserId((prev) => ({
+          ...prev,
+          [otherUserId]: normalized,
+        }));
+      }
     },
-    [getConversationId, userLookup]
+    [currentUser?.id, getConversationId, userLookup]
   );
 
   /** SOCKET MESSAGE RECEIVER */
@@ -122,6 +135,40 @@ export const useMessages = ({ currentUser, initialUserId, authUserId }) => {
     };
 
     load();
+    return () => {
+      alive = false;
+    };
+  }, [authUserId]);
+
+  /** LOAD LAST MESSAGES PER CHAT */
+  useEffect(() => {
+    if (!authUserId) return;
+
+    let alive = true;
+
+    const loadLastMessages = async () => {
+      const { data, error: apiErr } = await getLastMessagesForUserApi();
+      if (!alive) return;
+      if (apiErr) return;
+
+      const normalized = (data || []).reduce((acc, item) => {
+        if (!item?.userId) return acc;
+        acc[item.userId] = {
+          id: item.id || `${item.userId}:${item.createdAt}`,
+          text: item.text,
+          createdAt: item.createdAt,
+          authorId: item.from,
+        };
+        return acc;
+      }, {});
+
+      startTransition(() => {
+        setLastMessagesByUserId(normalized);
+      });
+    };
+
+    loadLastMessages();
+
     return () => {
       alive = false;
     };
@@ -231,9 +278,16 @@ export const useMessages = ({ currentUser, initialUserId, authUserId }) => {
         member2Id: u.id,
         member2: u,
         messages: messagesByChatId[id] || [],
+        lastMessage: lastMessagesByUserId[u.id] || null,
       };
     });
-  }, [currentUser, followingUsers, getConversationId, messagesByChatId]);
+  }, [
+    currentUser,
+    followingUsers,
+    getConversationId,
+    lastMessagesByUserId,
+    messagesByChatId,
+  ]);
 
   /** SEND MESSAGE */
   const handleSendMessage = useCallback(
@@ -262,6 +316,7 @@ export const useMessages = ({ currentUser, initialUserId, authUserId }) => {
     messagesByChatId,
     messagesError,
     messagesLoading,
+    lastMessagesByUserId,
     handleSendMessage,
   };
 };

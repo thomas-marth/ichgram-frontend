@@ -33,7 +33,8 @@ const ChatItem = ({ chat, active, handleClick, currentUser }) => {
   const otherUser =
     chat.member1Id === currentUser.id ? chat.member2 : chat.member1;
 
-  const lastMessage = (chat.messages || []).slice(-1)[0];
+  const lastMessage =
+    (chat.messages || []).slice(-1)[0] || chat.lastMessage || null;
   const lastMessageDate = formatRelativeTime(lastMessage?.createdAt);
   // const lastMessageText = lastMessage?.text;
 
