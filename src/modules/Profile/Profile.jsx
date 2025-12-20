@@ -138,7 +138,7 @@ const Profile = ({ user, postsCount, onFollowChange }) => {
                 </Button>
               ))}
             {!isOwner ? (
-              <Link to={`/messages/${profileData?.id}`}>
+              <Link to={`/direct/${profileData?.id}`}>
                 <Button variant="gray" className={styles.actionButton}>
                   Message
                 </Button>
