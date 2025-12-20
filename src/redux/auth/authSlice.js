@@ -15,6 +15,12 @@ const initialState = {
   isSignupSuccess: false,
 };
 
+const normalizeUser = (user) => {
+  if (!user || typeof user !== "object") return user;
+  const normalizedId = user.id || user._id;
+  return normalizedId ? { ...user, id: normalizedId } : user;
+};
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -25,9 +31,10 @@ const authSlice = createSlice({
     },
     logout: () => initialState,
     setCredentials: (state, { payload }) => {
-      state.user = payload.user;
-      state.accessToken = payload.accessToken;
-      state.refreshToken = payload.refreshToken;
+      const { user, accessToken, refreshToken } = payload || {};
+      state.user = normalizeUser(user);
+      state.accessToken = accessToken;
+      state.refreshToken = refreshToken;
     },
   },
 
@@ -40,7 +47,7 @@ const authSlice = createSlice({
       })
       .addCase(signupUser.fulfilled, (state, { payload }) => {
         state.loading = false;
-        state.user = payload.user || null;
+        state.user = normalizeUser(payload?.user ?? null);
         state.isSignupSuccess = true;
       })
       .addCase(signupUser.rejected, (state, { payload }) => {
@@ -53,10 +60,10 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, { payload }) => {
         state.loading = false;
-        state.user = payload.user || null;
+        state.user = normalizeUser(payload?.user ?? null);
         // state.isLoginSuccess = true;
-        state.accessToken = payload.accessToken || null;
-        state.refreshToken = payload.refreshToken || null;
+        state.accessToken = payload?.accessToken || null;
+        state.refreshToken = payload?.refreshToken || null;
       })
       .addCase(loginUser.rejected, (state, { payload }) => {
         state.loading = false;
@@ -68,14 +75,13 @@ const authSlice = createSlice({
       })
       .addCase(getCurrentUser.fulfilled, (state, { payload }) => {
         state.loading = false;
-        state.user = payload.user;
-        state.accessToken = payload.accessToken;
-        state.refreshToken = payload.refreshToken;
+        state.user = normalizeUser(payload?.user ?? null);
+        state.accessToken = payload?.accessToken || null;
+        state.refreshToken = payload?.refreshToken || null;
       })
-      .addCase(getCurrentUser.rejected, (state) => {
+      .addCase(getCurrentUser.rejected, (state, { payload }) => {
         state.loading = false;
-        state.error = null;
-        state.user = null;
+        state.error = payload;
         state.accessToken = null;
         state.refreshToken = null;
       })
