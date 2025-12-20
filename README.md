@@ -11,6 +11,14 @@ This is the frontend of **ICHgram**, a full-featured Instagram-style social medi
 
 ---
 
+## 🧪 Demo Test Accounts
+
+Use one of the following accounts to test the application without registration:
+
+**Email:** test1@gmail.comPassword: QWEasdZXC123!
+
+---
+
 ## ⚙️ Tech Stack
 
 - **React** — core UI framework
