@@ -11,7 +11,7 @@
 
 .modal {
   display: flex;
-  background: #ffffff;
+  background: var(--background-color);
   border-radius: 0.21rem;
   overflow: hidden;
   width: min(68.75rem, 100%);
@@ -21,7 +21,7 @@
 
 .mediaWrapper {
   flex: 1 1 55%;
-  background: #000;
+  background: var(--primary-color);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -374,7 +374,7 @@
   grid-template-columns: repeat(6, 1fr);
   gap: 0.38rem;
   padding: 0.5rem;
-  background: #ffffff;
+  background: var(--background-color);
   border: 0.06rem solid #efefef;
   border-radius: 0.63rem;
   box-shadow: 0 0.75rem 1.88rem rgba(0, 0, 0, 0.15);
@@ -401,7 +401,7 @@
 
 .submitButton {
   background: transparent;
-  color: #0095f6;
+  color: var(--accent-color);
   border: none;
   padding: 0.38rem 0.5rem;
   border-radius: 0.25rem;
@@ -420,7 +420,7 @@
 .commentLikeButton:focus-visible,
 .emojiButton:focus-visible,
 .submitButton:focus-visible {
-  outline: 2px solid #0095f6;
+  outline: 2px solid var(--accent-color);
   outline-offset: 2px;
 }
 
@@ -440,7 +440,7 @@
 }
 
 .manageModal {
-  background: #ffffff;
+  background: var(--background-color);
   border-radius: 0.75rem;
   padding: 0;
   width: 100%;
@@ -503,7 +503,7 @@
 
 .copyToastMessage {
   background: rgba(60, 60, 60, 0.85);
-  color: #ffffff;
+  color: var(--background-color);
   padding: 0.75rem 1.5rem;
   border-radius: 1rem;
   font-weight: 600;
