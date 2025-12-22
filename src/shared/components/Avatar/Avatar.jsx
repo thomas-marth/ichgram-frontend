@@ -1,3 +1,4 @@
+import noPhotoImg from "../../../assets/images/noPhoto.png";
 import styles from "./Avatar.module.css";
 
 const sizeClasses = {
@@ -14,6 +15,7 @@ const gradientClasses = {
 };
 
 const Avatar = ({ size = "sm", src, alt = "", withGradient = false }) => {
+  const avatarSrc = src || noPhotoImg;
   const sizeClass = sizeClasses[size] ?? styles.medium;
   const gradientClass = gradientClasses[size];
   const shouldApplyGradient = withGradient && Boolean(gradientClass);
@@ -28,11 +30,7 @@ const Avatar = ({ size = "sm", src, alt = "", withGradient = false }) => {
       <div
         className={shouldApplyGradient ? styles.gapRing : styles.innerWrapper}
       >
-        {src ? (
-          <img className={styles.avatar} src={src} alt={alt} />
-        ) : (
-          <div className={styles.avatar} />
-        )}
+        <img className={styles.avatar} src={avatarSrc} alt={alt} />
       </div>
     </div>
   );

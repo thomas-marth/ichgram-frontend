@@ -1,3 +1,4 @@
+import Avatar from "../../../shared/components/Avatar/Avatar";
 import styles from "./ChatItem.module.css";
 
 const formatRelativeTime = (isoDate) => {
@@ -45,7 +46,11 @@ const ChatItem = ({ chat, active, handleClick, currentUser }) => {
       type="button"
     >
       <div className={styles.avatarWrapper}>
-        <img src={otherUser?.avatar} alt="" className={styles.avatar} />
+        <Avatar
+          size="md"
+          src={otherUser?.avatar}
+          alt={otherUser?.username || ""}
+        />
       </div>
       <div className={styles.infoWrapper}>
         <p className={styles.username}>{otherUser?.username}</p>
