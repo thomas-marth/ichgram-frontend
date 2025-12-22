@@ -150,9 +150,11 @@ const Profile = ({ user, postsCount, onFollowChange }) => {
                 </Button>
               </Link>
             )}
-            <Link to="/logout" className={styles.logout}>
-              Logout
-            </Link>
+            {isOwner && (
+              <Link to="/logout" className={styles.logout}>
+                Logout
+              </Link>
+            )}
           </div>
           <div className={styles.stats}>
             <div className={styles.statsItem}>
