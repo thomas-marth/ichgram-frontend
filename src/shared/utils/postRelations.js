@@ -16,9 +16,18 @@ const getAuthorData = (post = {}) => {
 
 export const mapPostsWithUserRelations = (
   posts = [],
-  { currentUserId, likedPostIds = [], defaultIsFollowed = false } = {}
+  {
+    currentUserId,
+    likedPostIds = [],
+    followedUserIds = [],
+    defaultIsFollowed = false,
+  } = {}
 ) => {
   const likedIdsSet = new Set((likedPostIds || []).map(toStringId));
+  const followedIdsSet = new Set(
+    (followedUserIds || []).map(toStringId).filter(Boolean)
+  );
+  const hasFollowedIds = followedIdsSet.size > 0;
   const currentIdStr = toStringId(currentUserId);
 
   return (posts || []).map((post = {}) => {
@@ -29,10 +38,15 @@ export const mapPostsWithUserRelations = (
     const isLiked =
       Boolean(post.isLiked) || (postId && likedIdsSet.has(toStringId(postId)));
 
-    const isFollowed =
-      post.isFollowed ??
-      author.isFollowed ??
-      (authorIdStr && defaultIsFollowed);
+    let isFollowed = post.isFollowed ?? author.isFollowed;
+
+    if (isFollowed === undefined || isFollowed === null) {
+      if (authorIdStr && hasFollowedIds) {
+        isFollowed = followedIdsSet.has(authorIdStr);
+      } else {
+        isFollowed = Boolean(authorIdStr && defaultIsFollowed);
+      }
+    }
 
     const isOwnedByCurrentUser =
       Boolean(currentIdStr) && authorIdStr === currentIdStr;

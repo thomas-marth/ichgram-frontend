@@ -16,7 +16,11 @@ import {
   getPostCommentsApi,
   toggleCommentLikeApi,
 } from "../../shared/api/comment-api";
-import { followUserApi, unfollowUserApi } from "../../shared/api/follow-api";
+import {
+  followUserApi,
+  getUserFollowingApi,
+  unfollowUserApi,
+} from "../../shared/api/follow-api";
 import { mapPostsWithUserRelations } from "../../shared/utils/postRelations";
 import {
   adaptComment,
@@ -62,16 +66,27 @@ export default function ExplorePage() {
       setError(null);
 
       try {
-        const [exploreResponse, likedPostsResponse] = await Promise.all([
-          getPostsApi(),
-          authUserId
-            ? getUserLikedPostsApi(authUserId)
-            : Promise.resolve({ data: [] }),
-        ]);
+        const emptyListResponse = Promise.resolve({ data: [] });
+        const [exploreResponse, likedPostsResponse, followingResponse] =
+          await Promise.all([
+            getPostsApi(),
+            authUserId ? getUserLikedPostsApi(authUserId) : emptyListResponse,
+            authUserId ? getUserFollowingApi(authUserId) : emptyListResponse,
+          ]);
 
         if (!isMounted) return;
 
         const likedPostIds = normalizeLikedPostIds(likedPostsResponse.data);
+        const followedUserIds = (followingResponse.data || [])
+          .map((relation) => {
+            const followingUser =
+              relation.following || relation.user || relation.targetUser;
+            return (
+              followingUser?._id || followingUser?.id || relation.following
+            );
+          })
+          .filter(Boolean)
+          .map(String);
         const mappedPosts = mapPostsWithUserRelations(
           (exploreResponse.posts || [])
             .map((post) => adaptFeedPost(post))
@@ -79,6 +94,7 @@ export default function ExplorePage() {
           {
             currentUserId: authUserId,
             likedPostIds,
+            followedUserIds,
             defaultIsFollowed: false,
           }
         );
